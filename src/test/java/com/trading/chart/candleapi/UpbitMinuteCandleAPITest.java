@@ -1,4 +1,4 @@
-package com.trading.chart.callapi;
+package com.trading.chart.candleapi;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,18 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @DisplayName("업비트 API 호출 테스트")
 @SpringBootTest
-public class UpbitCallApiTest {
+public class UpbitMinuteCandleAPITest {
 
     @Autowired
-    CallApi upbitCallApi;
+    CandleAPI upbitCandleAPI;
 
     @DisplayName("분 단위로 캔들 호출하기")
     @Test
     void getCandlesWithUnit() {
         final int unit = 3;
         assertFalse(
-                upbitCallApi.getCandles(unit).stream()
-                        .anyMatch((callApiResponse) -> !callApiResponse.getUnit() == unit)
+                upbitCandleAPI.getCandles(unit).stream()
+                        .anyMatch((callApiResponse) -> callApiResponse.getUnit() != unit)
         );
     }
 
@@ -36,7 +36,7 @@ public class UpbitCallApiTest {
     void getCandlesWithCount() {
         final int unit = 3;
         final int count = 10;
-        assertEquals(count, upbitCallApi.getCandles(unit, count).size());
+        assertEquals(count, upbitCandleAPI.getCandles(unit, count).size());
     }
 
     @DisplayName("마켓으로 캔들 호출하기")
@@ -45,7 +45,7 @@ public class UpbitCallApiTest {
         final int unit = 3;
         final String market = "KRW-BTC";
         assertFalse(
-                upbitCallApi.getCandles(unit, market).stream()
+                upbitCandleAPI.getCandles(unit, market).stream()
                         .anyMatch((callApiResponse) -> !callApiResponse.getMarket().equals(market))
         );
     }
@@ -57,7 +57,7 @@ public class UpbitCallApiTest {
         final int unit = 3;
         final String timeStr = "2021-10-27T22:28:25";
         final LocalDateTime time = LocalDateTime.parse(timeStr, DateTimeFormatter.ISO_INSTANT);
-        assertTrue(time.isAfter(upbitCallApi.getCandles(unit, time).getReverse(0).getCandleDateTimeKst()));
+        assertTrue(time.isAfter(upbitCandleAPI.getCandles(unit, time).getReverse(0).getCandleDateTimeKST()));
     }
 
 
