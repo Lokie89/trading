@@ -1,12 +1,16 @@
 package com.trading.chart.candleapi;
 
+import com.trading.chart.candleapi.request.CandleRequest;
+import com.trading.chart.candleapi.request.UpbitCandleRequest;
+import com.trading.chart.candleapi.request.UpbitMinuteUnit;
+import com.trading.chart.candleapi.response.CandleResponse;
+import com.trading.chart.common.CustomArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author SeongRok.Oh
  * @since 2021/10/27
  */
-@DisplayName("업비트 API 호출 테스트")
+@DisplayName("업비트 Minute Candle 호출 테스트")
 @SpringBootTest
 public class UpbitMinuteCandleAPITest {
 
@@ -24,40 +28,47 @@ public class UpbitMinuteCandleAPITest {
     @DisplayName("분 단위로 캔들 호출하기")
     @Test
     void getCandlesWithUnit() {
-        final int unit = 3;
+        final UpbitMinuteUnit unit = UpbitMinuteUnit.THREE;
+        final String market = "KRW-BTC";
+        CandleRequest threeMinCandleRequest = UpbitCandleRequest.builder(unit, market).build();
         assertFalse(
-                upbitCandleAPI.getCandles(unit).stream()
-                        .anyMatch((callApiResponse) -> callApiResponse.getUnit() != unit)
+                upbitCandleAPI.getCandles(threeMinCandleRequest).stream()
+                        .anyMatch((callApiResponse) -> !callApiResponse.getUnit().equals(unit.getUnit()))
         );
     }
 
     @DisplayName("개수로 캔들 호출하기")
     @Test
     void getCandlesWithCount() {
-        final int unit = 3;
-        final int count = 10;
-        assertEquals(count, upbitCandleAPI.getCandles(unit, count).size());
-    }
-
-    @DisplayName("마켓으로 캔들 호출하기")
-    @Test
-    void getCandlesWithMarket() {
-        final int unit = 3;
+        final UpbitMinuteUnit unit = UpbitMinuteUnit.THREE;
         final String market = "KRW-BTC";
-        assertFalse(
-                upbitCandleAPI.getCandles(unit, market).stream()
-                        .anyMatch((callApiResponse) -> !callApiResponse.getMarket().equals(market))
-        );
+        final int count = 10;
+        CandleRequest threeMinTenCountCandleRequest = UpbitCandleRequest.builder(unit, market).count(count).build();
+        assertEquals(count, upbitCandleAPI.getCandles(threeMinTenCountCandleRequest).size());
     }
 
 
     @DisplayName("마지막 시간으로 캔들 호출하기")
     @Test
     void getCandlesWithTime() {
-        final int unit = 3;
-        final String timeStr = "2021-10-27T22:28:25";
-        final LocalDateTime time = LocalDateTime.parse(timeStr, DateTimeFormatter.ISO_INSTANT);
-        assertTrue(time.isAfter(upbitCandleAPI.getCandles(unit, time).getReverse(0).getCandleDateTimeKST()));
+        final LocalDateTime time = LocalDateTime.now();
+        final UpbitMinuteUnit unit = UpbitMinuteUnit.THREE;
+        final String market = "KRW-BTC";
+        CandleRequest threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).build();
+        assertTrue(time.isAfter(upbitCandleAPI.getCandles(threeMinLastTimeCandleRequest).getReverse(0).getCandleDateTimeKST()));
+    }
+
+    @DisplayName("마지막 시간, 개수로 캔들 호출하기")
+    @Test
+    void getCandlesWithTimeAndCount() {
+        final LocalDateTime time = LocalDateTime.now();
+        final UpbitMinuteUnit unit = UpbitMinuteUnit.THREE;
+        final String market = "KRW-BTC";
+        final Integer count = 3;
+        CandleRequest threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).count(count).build();
+        CustomArrayList<CandleResponse> candleList = upbitCandleAPI.getCandles(threeMinLastTimeCandleRequest);
+        assertTrue(time.isAfter(candleList.getReverse(0).getCandleDateTimeKST()));
+        assertEquals(count, candleList.size());
     }
 
 

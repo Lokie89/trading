@@ -33,10 +33,11 @@ public class CallAPI {
     }
 
     private String callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body) {
-        log.info(url);
+        log.info("CallAPI.callApiEndpoint url : " +url);
         String response = null;
         try {
             response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(body, httpHeaders), String.class).getBody();
+            log.info("CallAPI.callApiEndpoint response : " +response);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
