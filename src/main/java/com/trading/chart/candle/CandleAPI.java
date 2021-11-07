@@ -1,7 +1,7 @@
-package com.trading.chart.candleapi;
+package com.trading.chart.candle;
 
-import com.trading.chart.candleapi.request.CandleRequest;
-import com.trading.chart.candleapi.response.CandleResponse;
+import com.trading.chart.candle.request.CandleRequest;
+import com.trading.chart.candle.response.CandleResponse;
 import com.trading.chart.common.CustomArrayList;
 
 /**

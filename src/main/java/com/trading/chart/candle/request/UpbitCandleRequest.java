@@ -1,4 +1,4 @@
-package com.trading.chart.candleapi.request;
+package com.trading.chart.candle.request;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,14 +13,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UpbitCandleRequest implements CandleRequest {
 
-    private final UpbitMinuteUnit unit;
+    private final UpbitUnit unit;
     private final Integer count;
     private final String market;
     private final LocalDateTime to;
 
     @Override
     public String getUrl() {
-        String url = "https://api.upbit.com/v1/candles/minutes/" + unit.getUnit() + "?market=" + market;
+        String url = unit.getUrl() + "?market=" + market;
         if (Objects.nonNull(count) && count > 0) {
             url += "&count=" + count;
         }
@@ -30,17 +30,17 @@ public class UpbitCandleRequest implements CandleRequest {
         return url;
     }
 
-    public static Builder builder(UpbitMinuteUnit unit, String market) {
+    public static Builder builder(UpbitUnit unit, String market) {
         return new Builder(unit, market);
     }
 
     public static class Builder {
-        private final UpbitMinuteUnit unit;
+        private final UpbitUnit unit;
         private Integer count;
         private String market;
         private LocalDateTime to;
 
-        public Builder(final UpbitMinuteUnit unit, final String market) {
+        public Builder(final UpbitUnit unit, final String market) {
             this.unit = unit;
             this.market = market;
         }

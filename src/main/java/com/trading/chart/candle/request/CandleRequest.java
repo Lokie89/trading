@@ -1,4 +1,4 @@
-package com.trading.chart.candleapi.request;
+package com.trading.chart.candle.request;
 
 /**
  * @author SeongRok.Oh

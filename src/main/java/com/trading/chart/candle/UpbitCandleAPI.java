@@ -1,8 +1,8 @@
-package com.trading.chart.candleapi;
+package com.trading.chart.candle;
 
-import com.trading.chart.candleapi.request.CandleRequest;
-import com.trading.chart.candleapi.response.CandleResponse;
-import com.trading.chart.candleapi.response.UpbitMinuteCandle;
+import com.trading.chart.candle.request.CandleRequest;
+import com.trading.chart.candle.response.CandleResponse;
+import com.trading.chart.candle.response.UpbitCandle;
 import com.trading.chart.common.ConvertType;
 import com.trading.chart.common.CustomArrayList;
 import com.trading.chart.tunnel.CallAPI;
@@ -18,14 +18,14 @@ import java.util.Arrays;
  */
 @RequiredArgsConstructor
 @Component
-public class UpbitMinuteCandleAPI implements CandleAPI {
+public class UpbitCandleAPI implements CandleAPI {
 
     private final CallAPI callAPI;
 
     @Override
     public CustomArrayList<CandleResponse> getCandles(CandleRequest candleRequest) {
         String response = callAPI.get(candleRequest.getUrl(), HttpHeaders.EMPTY);
-        UpbitMinuteCandle[] candles = ConvertType.stringToType(response, UpbitMinuteCandle[].class);
+        UpbitCandle[] candles = ConvertType.stringToType(response, UpbitCandle[].class);
         return new CustomArrayList<>(Arrays.asList(candles));
     }
 

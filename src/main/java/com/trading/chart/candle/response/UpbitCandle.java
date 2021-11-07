@@ -1,4 +1,4 @@
-package com.trading.chart.candleapi.response;
+package com.trading.chart.candle.response;
 
 /**
  * @author SeongRok.Oh
@@ -25,8 +25,13 @@ import java.time.LocalDateTime;
  * candle_acc_trade_price : 누적 거래 금액
  * candle_acc_trade_volume : 누적 거래량
  * unit : 분 단위(유닛)
+ * prev_closing_price : 전일 종가(UTC 0시 기준)
+ * change_price : 전일 종가 대비 변화 금액
+ * change_rate : 전일 종가 대비 변화량
+ * converted_trade_price : 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.)
+ * first_day_of_period : 캔들 기간의 가장 첫 날
  */
-public class UpbitMinuteCandle implements CandleResponse {
+public class UpbitCandle implements CandleResponse {
 
     @Getter
     @ApiModelProperty(value = "마켓", example = "KRW-BTC")
@@ -76,4 +81,23 @@ public class UpbitMinuteCandle implements CandleResponse {
     @Getter
     private Integer unit;
 
+    @ApiModelProperty(value = "전일 종가", example = "74575000")
+    @JsonProperty("prev_closing_price")
+    private Double prevClosingPrice;
+
+    @ApiModelProperty(value = "전일 종가 대비 변화 금액", example = "765000")
+    @JsonProperty("change_price")
+    private Double changePrice;
+
+    @ApiModelProperty(value = "전일 종가 대비 변화율", example = "0.0102581294")
+    @JsonProperty("change_rate")
+    private Double changeRate;
+
+    @ApiModelProperty(value = "종가 환산 화폐 단위로 환산된 가격")
+    @JsonProperty("converted_trade_price")
+    private Double convertedTradePrice;
+
+    @ApiModelProperty(value = "캔들 기간의 가장 첫 날", example = "2021-10-18")
+    @JsonProperty("first_day_of_period")
+    private String firstDayOfPeriod;
 }

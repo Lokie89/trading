@@ -1,4 +1,4 @@
-package com.trading.chart.candleapi.response;
+package com.trading.chart.candle.response;
 
 import java.time.LocalDateTime;
 
