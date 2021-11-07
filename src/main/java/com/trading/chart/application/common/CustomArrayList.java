@@ -1,4 +1,4 @@
-package com.trading.chart.common;
+package com.trading.chart.application.common;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.trading.chart.item.response;
+package com.trading.chart.application.item.response;
 
 /**
  * @author SeongRok.Oh

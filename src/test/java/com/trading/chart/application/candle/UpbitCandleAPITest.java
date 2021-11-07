@@ -1,10 +1,10 @@
-package com.trading.chart.candle;
+package com.trading.chart.application.candle;
 
-import com.trading.chart.candle.request.CandleRequest;
-import com.trading.chart.candle.request.UpbitCandleRequest;
-import com.trading.chart.candle.request.UpbitUnit;
-import com.trading.chart.candle.response.CandleResponse;
-import com.trading.chart.common.CustomArrayList;
+import com.trading.chart.application.candle.request.CandleRequest;
+import com.trading.chart.application.candle.request.UpbitCandleRequest;
+import com.trading.chart.application.candle.request.UpbitUnit;
+import com.trading.chart.application.candle.response.CandleResponse;
+import com.trading.chart.application.common.CustomArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

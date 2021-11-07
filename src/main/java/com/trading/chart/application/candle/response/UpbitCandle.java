@@ -1,4 +1,4 @@
-package com.trading.chart.candle.response;
+package com.trading.chart.application.candle.response;
 
 /**
  * @author SeongRok.Oh

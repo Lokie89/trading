@@ -1,10 +1,10 @@
-package com.trading.chart.item;
+package com.trading.chart.application.item;
 
-import com.trading.chart.common.ConvertType;
-import com.trading.chart.common.CustomArrayList;
-import com.trading.chart.item.response.ItemResponse;
-import com.trading.chart.item.response.UpbitItem;
-import com.trading.chart.tunnel.CallAPI;
+import com.trading.chart.application.common.ConvertType;
+import com.trading.chart.application.common.CustomArrayList;
+import com.trading.chart.application.item.response.ItemResponse;
+import com.trading.chart.application.item.response.UpbitItem;
+import com.trading.chart.application.tunnel.CallAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

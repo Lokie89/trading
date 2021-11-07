@@ -1,4 +1,4 @@
-package com.trading.chart.tunnel;
+package com.trading.chart.application.tunnel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
