@@ -1,6 +1,7 @@
 package com.trading.chart.application.trader;
 
 import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.OrderResponse;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ import java.util.List;
  */
 public interface Trader {
     List<AccountResponse> getAccounts(String id);
+    List<OrderResponse> getOrders(String id);
 }

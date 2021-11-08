@@ -25,4 +25,9 @@ public class TraderTest {
                 .anyMatch(accountResponse -> accountResponse.getBalance() <= 0));
     }
 
+    @DisplayName("거래한 내역 조회")
+    @Test
+    void getOrderTest(){
+        upbitTrader.getOrders("tjdfhrdk10@naver.com");
+    }
 }

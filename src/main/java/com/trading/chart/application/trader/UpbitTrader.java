@@ -1,5 +1,6 @@
 package com.trading.chart.application.trader;
 
+import com.trading.chart.application.trader.response.OrderResponse;
 import com.trading.chart.common.ConvertType;
 import com.trading.chart.common.CustomArrayList;
 import com.trading.chart.application.trader.response.AccountResponse;
@@ -30,5 +31,10 @@ public class UpbitTrader implements Trader {
         String response = callAPI.get(url, upbitTradeAPIHeader.getHeaders(id));
         UpbitAccount[] accounts = ConvertType.stringToType(response, UpbitAccount[].class);
         return new CustomArrayList<>(Arrays.asList(accounts));
+    }
+
+    @Override
+    public List<OrderResponse> getOrders(String id) {
+        return null;
     }
 }
