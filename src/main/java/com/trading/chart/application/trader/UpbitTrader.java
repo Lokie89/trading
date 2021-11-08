@@ -1,7 +1,7 @@
 package com.trading.chart.application.trader;
 
-import com.trading.chart.application.common.ConvertType;
-import com.trading.chart.application.common.CustomArrayList;
+import com.trading.chart.common.ConvertType;
+import com.trading.chart.common.CustomArrayList;
 import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.application.trader.response.UpbitAccount;
 import com.trading.chart.application.tunnel.CallAPI;

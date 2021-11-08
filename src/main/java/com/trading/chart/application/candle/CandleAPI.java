@@ -2,7 +2,7 @@ package com.trading.chart.application.candle;
 
 import com.trading.chart.application.candle.request.CandleRequest;
 import com.trading.chart.application.candle.response.CandleResponse;
-import com.trading.chart.application.common.CustomArrayList;
+import com.trading.chart.common.CustomArrayList;
 
 /**
  * @author SeongRok.Oh

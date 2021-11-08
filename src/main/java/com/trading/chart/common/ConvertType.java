@@ -1,4 +1,4 @@
-package com.trading.chart.application.common;
+package com.trading.chart.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

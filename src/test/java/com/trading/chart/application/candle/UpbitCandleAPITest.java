@@ -4,7 +4,7 @@ import com.trading.chart.application.candle.request.CandleRequest;
 import com.trading.chart.application.candle.request.UpbitCandleRequest;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.candle.response.CandleResponse;
-import com.trading.chart.application.common.CustomArrayList;
+import com.trading.chart.common.CustomArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

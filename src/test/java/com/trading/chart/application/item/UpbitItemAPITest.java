@@ -1,6 +1,6 @@
 package com.trading.chart.application.item;
 
-import com.trading.chart.application.common.CustomArrayList;
+import com.trading.chart.common.CustomArrayList;
 import com.trading.chart.application.item.response.ItemResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.trading.chart.application.config;
+package com.trading.chart.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
