@@ -26,10 +26,10 @@ public class UpbitOrderTest {
     @DisplayName("업비트 주문하기")
     @Test
     void upbitOrderTest() {
-        final String market = "KRW-BTC";
+        final String market = "KRW-BTT";
         final TradeType tradeType = TradeType.BUY;
-        final Integer cash = 5000;
-        final Double price = 321.35;
+        final Integer cash = 5100;
+        final Double price = 3.5;
         OrderRequest request = UpbitOrderRequest.builder().item(market).tradeType(tradeType).cash(cash).price(price).build();
         OrderResponse response = upbitOrder.order(request);
         assertEquals(market, response.getMarket());

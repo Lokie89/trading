@@ -24,7 +24,7 @@ public class UpbitOrder implements Order {
 
     @Override
     public OrderResponse order(OrderRequest request) {
-        String response = callAPI.post(url, header.getHeaders("tjdfhrdk10@naver.com", request), null);
+        String response = callAPI.post(url, header.getHeaders("tjdfhrdk10@naver.com", request), request);
         UpbitOrderResponse upbitOrderResponse = ConvertType.stringToType(response, UpbitOrderResponse.class);
         return upbitOrderResponse;
     }
