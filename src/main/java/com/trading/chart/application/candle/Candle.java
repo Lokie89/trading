@@ -8,6 +8,6 @@ import com.trading.chart.common.CustomArrayList;
  * @author SeongRok.Oh
  * @since 2021/11/04
  */
-public interface CandleAPI {
+public interface Candle {
     CustomArrayList<CandleResponse> getCandles(CandleRequest request);
 }

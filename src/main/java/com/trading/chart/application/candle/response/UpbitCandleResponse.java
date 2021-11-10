@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  * converted_trade_price : 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.)
  * first_day_of_period : 캔들 기간의 가장 첫 날
  */
-public class UpbitCandle implements CandleResponse {
+public class UpbitCandleResponse implements CandleResponse {
 
     @Getter
     @ApiModelProperty(value = "마켓", example = "KRW-BTC")

@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 @RequiredArgsConstructor
 @Component
-public class UpbitTradeItemAPI implements TradeItemAPI {
+public class UpbitTradeItem implements TradeItem {
 
     private final String url = "https://api.upbit.com/v1/market/all?isDetails=true";
     private final CallAPI callAPI;

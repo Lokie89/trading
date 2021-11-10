@@ -7,6 +7,6 @@ import com.trading.chart.application.item.response.ItemResponse;
  * @author SeongRok.Oh
  * @since 2021/11/07
  */
-public interface TradeItemAPI {
+public interface TradeItem {
     CustomArrayList<ItemResponse> getItems();
 }

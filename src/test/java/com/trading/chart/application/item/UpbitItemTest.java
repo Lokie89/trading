@@ -14,16 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @DisplayName("업비트 Market 호출 테스트")
 @SpringBootTest
-public class UpbitItemAPITest {
+public class UpbitItemTest {
 
     @Autowired
-    TradeItemAPI upbitTradeItemAPI;
+    TradeItem upbitTradeItem;
 
     @DisplayName("업비트 마켓내역 가져오기")
     @Test
     void getItemsTest() {
         final String krwBtcMarket = "KRW-BTC";
-        CustomArrayList<ItemResponse> items = upbitTradeItemAPI.getItems();
+        CustomArrayList<ItemResponse> items = upbitTradeItem.getItems();
         assertTrue(
                 items.stream().anyMatch(item->item.getName().equals(krwBtcMarket))
         );
