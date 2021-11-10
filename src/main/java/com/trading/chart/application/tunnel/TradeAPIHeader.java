@@ -8,4 +8,5 @@ import org.springframework.http.HttpHeaders;
  */
 public interface TradeAPIHeader {
     HttpHeaders getHeaders(String id);
+    HttpHeaders getHeaders(String id, Object data);
 }
