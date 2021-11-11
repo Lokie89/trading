@@ -5,4 +5,5 @@ package com.trading.chart.application.order.request;
  * @since 2021-11-10
  */
 public interface OrderRequest {
+    String getAccount();
 }

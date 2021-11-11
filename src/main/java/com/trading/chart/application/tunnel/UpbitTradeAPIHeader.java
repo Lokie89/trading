@@ -3,6 +3,7 @@ package com.trading.chart.application.tunnel;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.trading.chart.common.ConvertType;
 import com.trading.chart.domain.user.User;
 import com.trading.chart.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -46,19 +45,7 @@ public class UpbitTradeAPIHeader implements TradeAPIHeader {
     }
 
     private void includeToken(JWTCreator.Builder builder, Object data) {
-        Field[] declaredFields = data.getClass().getDeclaredFields();
-        ArrayList<String> queryElements = new ArrayList<>();
-        for (Field field : declaredFields) {
-            field.setAccessible(true);
-            try {
-                queryElements.add(field.getName() + "=" + field.get(data));
-            } catch (IllegalAccessException e) {
-                log.info("Reflection Error. {}", e);
-            }
-        }
-
-        String queryString = String.join("&", queryElements.toArray(new String[0]));
-
+        String queryString = ConvertType.ObjectToQueryString(data, "account");
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(queryString.getBytes("UTF-8"));

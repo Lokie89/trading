@@ -1,13 +1,19 @@
 package com.trading.chart.application.order;
 
 import com.trading.chart.application.order.request.OrderRequest;
-import com.trading.chart.application.trader.response.OrderResponse;
-import com.trading.chart.application.trader.response.UpbitOrderResponse;
+import com.trading.chart.application.order.response.OrderResponse;
+import com.trading.chart.application.order.response.UpbitOrderResponse;
 import com.trading.chart.application.tunnel.CallAPI;
 import com.trading.chart.application.tunnel.TradeAPIHeader;
 import com.trading.chart.common.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.Convert;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author SeongRok.Oh
@@ -23,9 +29,16 @@ public class UpbitOrder implements Order {
     private final TradeAPIHeader header;
 
     @Override
-    public OrderResponse order(OrderRequest request) {
-        String response = callAPI.post(url, header.getHeaders("tjdfhrdk10@naver.com", request), request);
-        UpbitOrderResponse upbitOrderResponse = ConvertType.stringToType(response, UpbitOrderResponse.class);
-        return upbitOrderResponse;
+    public OrderResponse order(final OrderRequest request) {
+        String response = callAPI.post(url, header.getHeaders(request.getAccount(), request), request);
+        return ConvertType.stringToType(response, UpbitOrderResponse.class);
+    }
+
+    @Override
+    public List<OrderResponse> getOrderList(final OrderRequest request) {
+        String response = callAPI.get(url + "?" + ConvertType.ObjectToQueryString(request, "account"),
+                header.getHeaders(request.getAccount(), request));
+        UpbitOrderResponse[] upbitOrderResponses = ConvertType.stringToType(response, UpbitOrderResponse[].class);
+        return Arrays.asList(upbitOrderResponses);
     }
 }

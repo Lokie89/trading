@@ -1,9 +1,7 @@
-package com.trading.chart.application.trader.response;
+package com.trading.chart.application.order.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 /**
  * uuid : 주문의 고유 아이디
@@ -25,17 +23,17 @@ public class UpbitOrderResponse implements OrderResponse {
 
     private String uuid;
     private String side;
-    @JsonProperty("ord_Type")
+    @JsonProperty("ord_type")
     private String orderType;
     private Double price;
     private String state;
     private String market;
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private String createdAt;
     private Double volume;
     @JsonProperty("remaining_volume")
     private Double remainingVolume;
-    @JsonProperty("reversed_fee")
+    @JsonProperty("reserved_fee")
     private Double reversedFee;
     @JsonProperty("remaining_fee")
     private Double remainingFee;
@@ -44,6 +42,7 @@ public class UpbitOrderResponse implements OrderResponse {
     private Double locked;
     @JsonProperty("executed_volume")
     private Double executedVolume;
-    @JsonProperty("trade_count")
-    private Double tradeCount;
+    @JsonProperty("trades_count")
+    private Double tradesCount;
+
 }
