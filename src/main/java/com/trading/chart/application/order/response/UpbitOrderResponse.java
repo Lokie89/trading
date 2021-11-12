@@ -1,6 +1,8 @@
 package com.trading.chart.application.order.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.application.order.request.UpbitOrderState;
 import lombok.Getter;
 
 /**
@@ -22,11 +24,13 @@ import lombok.Getter;
 public class UpbitOrderResponse implements OrderResponse {
 
     private String uuid;
-    private String side;
+    @JsonProperty("side")
+    private TradeType side;
     @JsonProperty("ord_type")
     private String orderType;
     private Double price;
-    private String state;
+    @JsonProperty("state")
+    private UpbitOrderState state;
     private String market;
     @JsonProperty("created_at")
     private String createdAt;

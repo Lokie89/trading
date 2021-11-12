@@ -28,7 +28,7 @@ public class UpbitOrderRequest implements OrderRequest, Serializable {
                              final Double price) {
         this.account = account;
         this.market = item;
-        this.side = tradeType.getUpbitSide();
+        this.side = tradeType.getSide();
         this.price = price;
         this.volume = cash / price;
         this.ord_type = price == 0 ? tradeType.getUpbitOrderType() : "limit";

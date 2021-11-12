@@ -1,19 +1,16 @@
 package com.trading.chart.application.order;
 
-import com.trading.chart.application.order.request.OrderRequest;
-import com.trading.chart.application.order.request.UpbitOrderListRequest;
-import com.trading.chart.application.order.request.UpbitOrderRequest;
-import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.application.order.request.*;
 import com.trading.chart.application.order.response.OrderResponse;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author SeongRok.Oh
@@ -40,10 +37,10 @@ public class UpbitOrderTest {
 
     @DisplayName("업비트 주문내역 보기")
     @Test
-    void getUpbitOrderListTest(){
+    void getUpbitOrderListTest() {
         final String market = "KRW-BTT";
-        final String state = "wait";
-        OrderRequest request = UpbitOrderListRequest.builder().account("tjdfhrdk10@naver.com").market(market).state(state).build();
+        final UpbitOrderState state = UpbitOrderState.DONE;
+        OrderRequest request = UpbitOrderListRequest.builder().account("tjdfhrdk10@naver.com").state(state).build();
         List<OrderResponse> responses = upbitOrder.getOrderList(request);
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getMarket().equals(market)));

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -31,19 +33,21 @@ public class UpbitOrderListRequest implements OrderRequest {
                                  final String market,
                                  final List<String> uuids,
                                  final List<String> identifiers,
-                                 final String state,
-                                 final List<String> states,
+                                 final UpbitOrderState state,
+                                 final List<UpbitOrderState> states,
                                  final Integer page,
                                  final Integer limit,
-                                 final String orderBy) {
+                                 final UpbitOrderSort orderBy) {
         this.account = account;
         this.market = market;
         this.uuids = uuids;
         this.identifiers = identifiers;
-        this.state = state;
-        this.states = states;
+        this.state = Objects.nonNull(state) ? state.getState() : null;
+        this.states = Objects.nonNull(states) ? states.stream()
+                .map(UpbitOrderState::getState)
+                .collect(Collectors.toList()) : null;
         this.page = page;
         this.limit = limit;
-        this.orderBy = orderBy;
+        this.orderBy = Objects.nonNull(orderBy) ? orderBy.getUpbitOrderSort() : null;
     }
 }
