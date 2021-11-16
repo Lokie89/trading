@@ -1,6 +1,8 @@
 package com.trading.chart.application.trader;
 
+import com.trading.chart.application.trader.request.DealtRequest;
 import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.DealtResponse;
 
 import java.util.List;
 
@@ -10,4 +12,5 @@ import java.util.List;
  */
 public interface Trader {
     List<AccountResponse> getAccounts(String id);
+    List<DealtResponse> getRecentlyDealt(DealtRequest dealtRequest);
 }

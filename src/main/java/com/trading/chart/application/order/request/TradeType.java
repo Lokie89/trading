@@ -26,7 +26,7 @@ public enum TradeType {
     @JsonCreator
     public static TradeType fromString(String side) {
         return Arrays.stream(values())
-                .filter(tradeType -> tradeType.getSide().equals(side))
+                .filter(tradeType -> tradeType.getSide().equals(side.toLowerCase()))
                 .findAny()
                 .orElseThrow()
                 ;
