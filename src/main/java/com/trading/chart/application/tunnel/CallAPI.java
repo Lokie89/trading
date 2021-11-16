@@ -31,8 +31,8 @@ public class CallAPI {
         return callApiEndpoint(url, HttpMethod.POST, httpHeaders, body);
     }
 
-    public String delete(String url, HttpHeaders httpHeaders, Object body) {
-        return callApiEndpoint(url, HttpMethod.DELETE, httpHeaders, body);
+    public String delete(String url, HttpHeaders httpHeaders) {
+        return callApiEndpoint(url, HttpMethod.DELETE, httpHeaders, null);
     }
 
     private String callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body) {

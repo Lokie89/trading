@@ -12,5 +12,5 @@ import java.util.List;
 public interface Order {
     OrderResponse order(final OrderRequest request);
     List<OrderResponse> getOrderList(final OrderRequest request);
-
+    OrderResponse cancelOrder(final OrderRequest cancelRequest);
 }

@@ -25,6 +25,7 @@ import java.util.List;
 public class UpbitOrder implements Order {
 
     private final String url = "https://api.upbit.com/v1/orders";
+    private final String deleteUrl = "https://api.upbit.com/v1/order";
     private final CallAPI callAPI;
     private final TradeAPIHeader header;
 
@@ -40,5 +41,12 @@ public class UpbitOrder implements Order {
                 header.getHeaders(request.getAccount(), request));
         UpbitOrderResponse[] upbitOrderResponses = ConvertType.stringToType(response, UpbitOrderResponse[].class);
         return Arrays.asList(upbitOrderResponses);
+    }
+
+    @Override
+    public OrderResponse cancelOrder(final OrderRequest request) {
+        String response = callAPI.delete(deleteUrl + "?" + ConvertType.ObjectToQueryString(request, "account"),
+                header.getHeaders(request.getAccount(), request));
+        return ConvertType.stringToType(response, UpbitOrderResponse.class);
     }
 }

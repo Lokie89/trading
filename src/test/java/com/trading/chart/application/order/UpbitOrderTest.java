@@ -47,4 +47,22 @@ public class UpbitOrderTest {
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getState().equals(state)));
     }
+
+    @DisplayName("업비트 주문취소 하기")
+    @Test
+    void deleteUpbitOrderTest() {
+        final String market = "KRW-BTT";
+        final TradeType tradeType = TradeType.BUY;
+        final Integer cash = 5100;
+        final Double price = 3.5;
+        OrderRequest request = UpbitOrderRequest.builder().account("tjdfhrdk10@naver.com").item(market).tradeType(tradeType).cash(cash).price(price).build();
+        OrderResponse response = upbitOrder.order(request);
+        String uuid = response.getUuid();
+
+        OrderRequest cancelRequest = UpbitOrderCancelRequest.builder().account("tjdfhrdk10@naver.com").uuid(uuid).build();
+
+        OrderResponse cancelResponse = upbitOrder.cancelOrder(cancelRequest);
+        assertEquals(uuid, cancelResponse.getUuid());
+    }
+
 }
