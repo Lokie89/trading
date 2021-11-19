@@ -8,7 +8,6 @@ import com.trading.chart.application.trader.response.UpbitDealtResponse;
 import com.trading.chart.application.tunnel.CallAPI;
 import com.trading.chart.application.tunnel.TradeAPIHeader;
 import com.trading.chart.common.ConvertType;
-import com.trading.chart.common.CustomArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,7 @@ public class UpbitTrader implements Trader {
     public List<AccountResponse> getAccounts(String id) {
         String response = callAPI.get(accountUrl, upbitTradeAPIHeader.getHeaders(id));
         UpbitAccount[] accounts = ConvertType.stringToType(response, UpbitAccount[].class);
-        return new CustomArrayList<>(Arrays.asList(accounts));
+        return Arrays.asList(accounts);
     }
 
     @Override
@@ -41,6 +40,6 @@ public class UpbitTrader implements Trader {
         String response = callAPI.get(dealtUrl + "?" + ConvertType.ObjectToQueryString(dealtRequest, "account"),
                 upbitTradeAPIHeader.getHeaders(dealtRequest.getAccount()));
         UpbitDealtResponse[] dealt = ConvertType.stringToType(response, UpbitDealtResponse[].class);
-        return new CustomArrayList<>(Arrays.asList(dealt));
+        return Arrays.asList(dealt);
     }
 }

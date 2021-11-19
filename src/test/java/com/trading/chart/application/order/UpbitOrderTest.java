@@ -23,16 +23,32 @@ public class UpbitOrderTest {
     @Autowired
     Order upbitOrder;
 
-    @DisplayName("업비트 주문하기")
+    @DisplayName("업비트 주문하기 하고 취소하기")
     @Test
     void upbitOrderTest() {
         final String market = "KRW-BTT";
         final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
-        final Double price = 3.5;
-        OrderRequest request = UpbitOrderRequest.builder().account("tjdfhrdk10@naver.com").item(market).tradeType(tradeType).cash(cash).price(price).build();
+        final Double price = 1.5;
+        OrderRequest request = UpbitOrderRequest.builder()
+                .account("tjdfhrdk10@naver.com")
+                .item(market)
+                .tradeType(tradeType)
+                .cash(cash)
+                .price(price)
+                .build();
         OrderResponse response = upbitOrder.order(request);
         assertEquals(market, response.getMarket());
+
+        // 취소하기
+        String uuid = response.getUuid();
+        OrderRequest cancelRequest = UpbitOrderCancelRequest.builder()
+                .account("tjdfhrdk10@naver.com")
+                .uuid(uuid)
+                .build();
+
+        OrderResponse cancelResponse = upbitOrder.cancelOrder(cancelRequest);
+        assertEquals(uuid, cancelResponse.getUuid());
     }
 
     @DisplayName("업비트 주문내역 보기")
@@ -40,29 +56,16 @@ public class UpbitOrderTest {
     void getUpbitOrderListTest() {
         final String market = "KRW-BTT";
         final UpbitOrderState state = UpbitOrderState.DONE;
-        OrderRequest request = UpbitOrderListRequest.builder().account("tjdfhrdk10@naver.com").state(state).build();
+        OrderRequest request = UpbitOrderListRequest.builder()
+                .account("tjdfhrdk10@naver.com")
+                .state(state)
+                .market(market)
+                .build();
         List<OrderResponse> responses = upbitOrder.getOrderList(request);
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getMarket().equals(market)));
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getState().equals(state)));
-    }
-
-    @DisplayName("업비트 주문취소 하기")
-    @Test
-    void deleteUpbitOrderTest() {
-        final String market = "KRW-BTT";
-        final TradeType tradeType = TradeType.BUY;
-        final Integer cash = 5100;
-        final Double price = 3.5;
-        OrderRequest request = UpbitOrderRequest.builder().account("tjdfhrdk10@naver.com").item(market).tradeType(tradeType).cash(cash).price(price).build();
-        OrderResponse response = upbitOrder.order(request);
-        String uuid = response.getUuid();
-
-        OrderRequest cancelRequest = UpbitOrderCancelRequest.builder().account("tjdfhrdk10@naver.com").uuid(uuid).build();
-
-        OrderResponse cancelResponse = upbitOrder.cancelOrder(cancelRequest);
-        assertEquals(uuid, cancelResponse.getUuid());
     }
 
 }

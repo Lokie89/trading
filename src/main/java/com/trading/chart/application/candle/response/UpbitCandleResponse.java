@@ -8,6 +8,7 @@ package com.trading.chart.application.candle.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.trading.chart.application.chart.response.UpbitChartResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
@@ -31,9 +32,9 @@ import java.time.LocalDateTime;
  * converted_trade_price : 종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.)
  * first_day_of_period : 캔들 기간의 가장 첫 날
  */
+@Getter
 public class UpbitCandleResponse implements CandleResponse {
 
-    @Getter
     @ApiModelProperty(value = "마켓", example = "KRW-BTC")
     @JsonProperty("market")
     private String market;
@@ -43,7 +44,6 @@ public class UpbitCandleResponse implements CandleResponse {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime candleDateTimeUTC;
 
-    @Getter
     @ApiModelProperty(value = "캔들 기준 시각 (KST)", example = "2018-04-18T00:09:00")
     @JsonProperty("candle_date_time_kst")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -61,7 +61,6 @@ public class UpbitCandleResponse implements CandleResponse {
     @JsonProperty("low_price")
     private Double lowPrice;
 
-    @Getter
     @ApiModelProperty(value = "종가", example = "73100000")
     @JsonProperty("trade_price")
     private Double tradePrice;
@@ -78,7 +77,6 @@ public class UpbitCandleResponse implements CandleResponse {
     @JsonProperty("candle_acc_trade_volume")
     private Double accTradeVolume;
 
-    @Getter
     private Integer unit;
 
     @ApiModelProperty(value = "전일 종가", example = "74575000")
@@ -100,4 +98,9 @@ public class UpbitCandleResponse implements CandleResponse {
     @ApiModelProperty(value = "캔들 기간의 가장 첫 날", example = "2021-10-18")
     @JsonProperty("first_day_of_period")
     private String firstDayOfPeriod;
+
+    @Override
+    public UpbitChartResponse toChart() {
+        return new UpbitChartResponse(this);
+    }
 }

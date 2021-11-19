@@ -1,8 +1,11 @@
 package com.trading.chart.application.candle.request;
 
+import com.trading.chart.application.chart.response.ChartResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -25,7 +28,8 @@ public class UpbitCandleRequest implements CandleRequest {
             url += "&count=" + count;
         }
         if (Objects.nonNull(to) && LocalDateTime.now().isAfter(to)) {
-            url += "&to=" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").format(to);
+            url += "&to=" + ZonedDateTime.of(to, ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ISO_INSTANT);
+//            url += "&to=" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").format(to);
         }
         return url;
     }
@@ -51,7 +55,7 @@ public class UpbitCandleRequest implements CandleRequest {
         }
 
         public Builder lastTime(LocalDateTime lastTime) {
-            this.to = lastTime;
+            this.to = Objects.nonNull(lastTime) ? lastTime : LocalDateTime.now();
             return this;
         }
 

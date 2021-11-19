@@ -1,11 +1,13 @@
 package com.trading.chart.application.item;
 
-import com.trading.chart.common.CustomArrayList;
 import com.trading.chart.application.item.response.ItemResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -23,9 +25,9 @@ public class UpbitItemTest {
     @Test
     void getItemsTest() {
         final String krwBtcMarket = "KRW-BTC";
-        CustomArrayList<ItemResponse> items = upbitTradeItem.getItems();
+        List<ItemResponse> items = upbitTradeItem.getItems();
         assertTrue(
-                items.stream().anyMatch(item->item.getName().equals(krwBtcMarket))
+                items.stream().anyMatch(item -> item.getName().equals(krwBtcMarket))
         );
     }
 

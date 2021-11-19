@@ -1,13 +1,12 @@
 package com.trading.chart.application.candle;
 
 import com.trading.chart.application.candle.request.CandleRequest;
-import com.trading.chart.application.candle.response.CandleResponse;
-import com.trading.chart.common.CustomArrayList;
+import com.trading.chart.application.candle.response.CandleResponses;
 
 /**
  * @author SeongRok.Oh
  * @since 2021/11/04
  */
 public interface Candle {
-    CustomArrayList<CandleResponse> getCandles(CandleRequest request);
+    CandleResponses getCandles(CandleRequest request);
 }
