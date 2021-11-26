@@ -41,7 +41,6 @@ public class CallAPI {
         try {
             String jsonValue = objectMapper.writeValueAsString(body);
             response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(jsonValue, httpHeaders), String.class).getBody();
-            log.info("CallAPI.callApiEndpoint response : " + response);
         } catch (RuntimeException | JsonProcessingException e) {
             e.printStackTrace();
         }

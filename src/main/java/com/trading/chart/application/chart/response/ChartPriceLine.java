@@ -2,12 +2,14 @@ package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.chart.request.LinePeriod;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * @author SeongRok.Oh
  * @since 2021/11/25
  */
 @EqualsAndHashCode(of = "period")
+@Getter
 public class ChartPriceLine {
     private LinePeriod period;
     private Double value;

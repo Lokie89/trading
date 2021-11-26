@@ -8,6 +8,7 @@ import com.trading.chart.application.chart.response.ChartResponses;
  * @since 2021/11/21
  */
 public interface Chart {
-    void drawLine(ChartRequest request);
+    void drawPriceLine(ChartRequest request);
+    void drawBollingerBands(ChartRequest request);
     ChartResponses getChart(ChartRequest chartRequest);
 }

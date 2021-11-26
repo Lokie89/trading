@@ -4,27 +4,16 @@ import com.trading.chart.application.candle.request.CandleRequest;
 import com.trading.chart.application.candle.request.UpbitCandleRequest;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * @author SeongRok.Oh
- * @since 2021-11-18
- */
-@Getter
-public class DrawLineUpbitChartRequest extends UpbitChartRequest {
-    private final LinePeriod period;
+public class DrawBollingerBandsUpbitChartRequest extends UpbitChartRequest {
 
+    private final LinePeriod period = LinePeriod.TWENTY;
 
-    private DrawLineUpbitChartRequest(String market, UpbitUnit unit, Integer count, LocalDateTime to, LinePeriod period) {
+    private DrawBollingerBandsUpbitChartRequest(String market, UpbitUnit unit, int count, LocalDateTime to) {
         super(market, unit, count, to);
-        this.period = period;
-    }
-
-    public int getPeriod() {
-        return period.getPeriod();
     }
 
     @Override
@@ -33,39 +22,42 @@ public class DrawLineUpbitChartRequest extends UpbitChartRequest {
     }
 
     @Override
+    public int getPeriod() {
+        return period.getPeriod();
+    }
+
+    @Override
     public ChartResponse[] forWorkIndex() {
         return fromTo((long) unit.getMinute() * (count + period.getPeriod()));
     }
 
-    public static Builder builder(final String market, final LinePeriod period, final UpbitUnit unit) {
-        return new Builder(market, period, unit);
+    public static DrawBollingerBandsUpbitChartRequest.Builder builder(final String market, final UpbitUnit unit) {
+        return new DrawBollingerBandsUpbitChartRequest.Builder(market, unit);
     }
 
     public static class Builder {
         private final String market;
-        private final LinePeriod period;
         private final UpbitUnit unit;
         private int count = 100;
         private LocalDateTime to = LocalDateTime.now();
 
-        public Builder(final String market, final LinePeriod period, final UpbitUnit unit) {
+        public Builder(final String market, final UpbitUnit unit) {
             this.market = market;
-            this.period = period;
             this.unit = unit;
         }
 
-        public Builder count(final int count) {
+        public DrawBollingerBandsUpbitChartRequest.Builder count(final int count) {
             this.count = count;
             return this;
         }
 
-        public Builder lastTime(LocalDateTime to) {
+        public DrawBollingerBandsUpbitChartRequest.Builder lastTime(LocalDateTime to) {
             this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }
 
-        public DrawLineUpbitChartRequest build() {
-            return new DrawLineUpbitChartRequest(this.market, this.unit, this.count, this.to, this.period);
+        public DrawBollingerBandsUpbitChartRequest build() {
+            return new DrawBollingerBandsUpbitChartRequest(this.market, this.unit, this.count, this.to);
         }
     }
 }

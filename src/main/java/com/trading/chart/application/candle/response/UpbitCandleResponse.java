@@ -77,6 +77,7 @@ public class UpbitCandleResponse implements CandleResponse {
     @JsonProperty("candle_acc_trade_volume")
     private Double accTradeVolume;
 
+    @JsonProperty("unit")
     private Integer unit;
 
     @ApiModelProperty(value = "전일 종가", example = "74575000")
