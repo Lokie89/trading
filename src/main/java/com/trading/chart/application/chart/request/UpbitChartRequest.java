@@ -1,5 +1,7 @@
 package com.trading.chart.application.chart.request;
 
+import com.trading.chart.application.candle.request.CandleRequest;
+import com.trading.chart.application.candle.request.UpbitCandleRequest;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.application.chart.response.UpbitChartResponse;
@@ -20,6 +22,7 @@ public abstract class UpbitChartRequest implements ChartRequest {
     protected final UpbitUnit unit;
     protected final int count;
     protected final LocalDateTime to;
+    protected final LinePeriod period;
 
     @Override
     public ChartKey getRequestKey() {
@@ -38,6 +41,20 @@ public abstract class UpbitChartRequest implements ChartRequest {
         chartResponses[0] = new UpbitChartResponse(market, from, unit);
         chartResponses[1] = new UpbitChartResponse(market, to, unit);
         return chartResponses;
+    }
+
+    @Override
+    public CandleRequest toCandleRequest() {
+        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod() - 1).lastTime(to).build();
+    }
+
+    public int getPeriod() {
+        return period.getPeriod();
+    }
+
+    @Override
+    public ChartResponse[] forWorkIndex() {
+        return fromTo((long) unit.getMinute() * (count + period.getPeriod()));
     }
 
 }

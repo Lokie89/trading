@@ -11,4 +11,5 @@ public interface ChartResponse {
     LocalDateTime getTime();
     void drawPriceLine(ChartPriceLine line);
     void drawBollingerBands(Double standardDeviation);
+    void drawRsi(Double rsi);
 }

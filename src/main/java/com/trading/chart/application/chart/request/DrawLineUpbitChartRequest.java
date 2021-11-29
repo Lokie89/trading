@@ -1,9 +1,6 @@
 package com.trading.chart.application.chart.request;
 
-import com.trading.chart.application.candle.request.CandleRequest;
-import com.trading.chart.application.candle.request.UpbitCandleRequest;
 import com.trading.chart.application.candle.request.UpbitUnit;
-import com.trading.chart.application.chart.response.ChartResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,26 +12,9 @@ import java.util.Objects;
  */
 @Getter
 public class DrawLineUpbitChartRequest extends UpbitChartRequest {
-    private final LinePeriod period;
-
 
     private DrawLineUpbitChartRequest(String market, UpbitUnit unit, Integer count, LocalDateTime to, LinePeriod period) {
-        super(market, unit, count, to);
-        this.period = period;
-    }
-
-    public int getPeriod() {
-        return period.getPeriod();
-    }
-
-    @Override
-    public CandleRequest getCandleRequest() {
-        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod() - 1).lastTime(to).build();
-    }
-
-    @Override
-    public ChartResponse[] forWorkIndex() {
-        return fromTo((long) unit.getMinute() * (count + period.getPeriod()));
+        super(market, unit, count, to, period);
     }
 
     public static Builder builder(final String market, final LinePeriod period, final UpbitUnit unit) {
@@ -43,10 +23,10 @@ public class DrawLineUpbitChartRequest extends UpbitChartRequest {
 
     public static class Builder {
         private final String market;
-        private final LinePeriod period;
         private final UpbitUnit unit;
         private int count = 100;
         private LocalDateTime to = LocalDateTime.now();
+        private final LinePeriod period;
 
         public Builder(final String market, final LinePeriod period, final UpbitUnit unit) {
             this.market = market;

@@ -27,12 +27,16 @@ public class UpbitChartResponse implements ChartResponse {
     private Double highPrice;
     private Double volume;
     private UpbitUnit unit;
+    private Double changePrice;
     private Double changeRate;
 
     private Set<ChartPriceLine> priceLines;
 
     private Double upperBollingerBand;
     private Double downBollingerBand;
+
+    private Double rsi;
+    private Double rsiSignal;
 
 
     public UpbitChartResponse(String market, LocalDateTime time, UpbitUnit unit) {
@@ -50,6 +54,7 @@ public class UpbitChartResponse implements ChartResponse {
         this.highPrice = upbitCandleResponse.getHighPrice();
         this.volume = upbitCandleResponse.getAccTradeVolume();
         this.unit = UpbitUnit.get(upbitCandleResponse.getUnit());
+        this.changePrice = upbitCandleResponse.getChangePrice();
         this.changeRate = upbitCandleResponse.getChangeRate();
     }
 
@@ -66,12 +71,16 @@ public class UpbitChartResponse implements ChartResponse {
         Optional<ChartPriceLine> twentyPriceLine
                 = priceLines.stream()
                 .filter(priceLine -> LinePeriod.TWENTY.equals(priceLine.getPeriod()))
-                .findAny()
-                ;
+                .findAny();
         if (twentyPriceLine.isPresent()) {
             this.upperBollingerBand = twentyPriceLine.get().getValue() + standardDeviation * 2;
             this.downBollingerBand = twentyPriceLine.get().getValue() - standardDeviation * 2;
         }
+    }
+
+    @Override
+    public void drawRsi(Double rsi) {
+        this.rsi = rsi;
     }
 
 }

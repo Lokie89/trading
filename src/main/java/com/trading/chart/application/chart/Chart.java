@@ -10,5 +10,6 @@ import com.trading.chart.application.chart.response.ChartResponses;
 public interface Chart {
     void drawPriceLine(ChartRequest request);
     void drawBollingerBands(ChartRequest request);
-    ChartResponses getChart(ChartRequest chartRequest);
+    ChartResponses getChart(ChartRequest request);
+    void drawRsi(ChartRequest request);
 }

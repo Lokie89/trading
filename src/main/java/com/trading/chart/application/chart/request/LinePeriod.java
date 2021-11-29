@@ -14,6 +14,8 @@ public enum LinePeriod {
     THREE(3),
     FIVE(5),
     TEN(10),
+    FOURTEEN(14),
+    FIFTEEN(15),
     TWENTY(20),
     SIXTY(60),
     ONETWENTY(120),

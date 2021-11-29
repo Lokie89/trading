@@ -1,10 +1,7 @@
 package com.trading.chart.application.chart;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
-import com.trading.chart.application.chart.request.ChartRequest;
-import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
-import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
-import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.application.chart.request.*;
 import com.trading.chart.application.chart.response.ChartResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +41,7 @@ public class UpbitChartTest {
 
     @DisplayName("볼린저 밴드 생성")
     @Test
-    void drawBollingerBandsTest(){
+    void drawBollingerBandsTest() {
         final String market = "KRW-SSX";
         final LinePeriod period = LinePeriod.get(20).orElseThrow(RuntimeException::new);
         final UpbitUnit unit = UpbitUnit.DAY;
@@ -55,6 +52,20 @@ public class UpbitChartTest {
         ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
         upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         ChartResponses chartResponses = upbitChart.getChart(drawBollingerBandsUpbitChartRequest);
+        assertEquals(count, chartResponses.size());
+        assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
+    }
+
+    @DisplayName("RSI 지표 생성")
+    @Test
+    void drawRsiTest() {
+        final String market = "KRW-SSX";
+        final UpbitUnit unit = UpbitUnit.DAY;
+        final int count = 3;
+        final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
+        ChartRequest drawRsiUpbitChartRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        upbitChart.drawRsi(drawRsiUpbitChartRequest);
+        ChartResponses chartResponses = upbitChart.getChart(drawRsiUpbitChartRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
     }

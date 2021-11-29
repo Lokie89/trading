@@ -44,7 +44,7 @@ public class CacheUpbitChart implements Chart {
     }
 
     private ChartResponses getChartWithApi(ChartRequest request) {
-        return apiUpbitCandle.getCandles(request.getCandleRequest()).toChart();
+        return apiUpbitCandle.getCandles(request.toCandleRequest()).toChart();
     }
 
     @Override
@@ -103,6 +103,44 @@ public class CacheUpbitChart implements Chart {
         ChartResponses charts = cache.get(request.getRequestKey());
         ChartResponse[] fromTo = request.forRequestIndex();
         return charts.substitute(fromTo[0], fromTo[1]);
+    }
+
+    @Override
+    public void drawRsi(ChartRequest request) {
+        verifyExistCache(request);
+        ChartResponses charts = cache.get(request.getRequestKey());
+        if (Objects.nonNull(charts)) {
+            ChartResponse[] fromTo = request.forWorkIndex();
+            ChartResponses forWork = charts.substitute(fromTo[0], fromTo[1]);
+            final Queue<ChartResponse> queue = new LinkedList<>();
+            int period = request.getPeriod();
+            Spliterator<ChartResponse> spliterator = forWork.spliterator();
+            while (spliterator.tryAdvance(
+                    (chart) -> {
+                        queue.add(chart);
+                        if (queue.size() == period + 1) {
+                            double beforeTradePrice = queue.poll().getTradePrice();
+                            double ups = 0;
+                            double downs = 0;
+                            for (int i = 1; i < queue.size(); i++) {
+                                ChartResponse tempPoll = queue.poll();
+                                double tradePrice = tempPoll.getTradePrice();
+                                if (tradePrice > beforeTradePrice) {
+                                    ups += (tradePrice - beforeTradePrice);
+                                } else {
+                                    downs += (beforeTradePrice - tradePrice);
+                                }
+                                beforeTradePrice = tradePrice;
+                                queue.add(tempPoll);
+                            }
+                            double au = ups / period;
+                            double ad = downs / period;
+                            double rsi = (au / ad) / (1 + (au / ad)) * 100;
+                            chart.drawRsi(rsi);
+                        }
+                    }
+            )) ;
+        }
     }
 
 }

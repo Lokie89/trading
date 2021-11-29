@@ -9,7 +9,7 @@ import com.trading.chart.common.ChartKey;
  * @since 2021-11-18
  */
 public interface ChartRequest {
-    CandleRequest getCandleRequest();
+    CandleRequest toCandleRequest();
     int getPeriod();
     ChartKey getRequestKey();
     int getCount();
