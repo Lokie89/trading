@@ -47,100 +47,90 @@ public class CacheUpbitChart implements Chart {
         return apiUpbitCandle.getCandles(request.toCandleRequest()).toChart();
     }
 
+    private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {
+        ChartResponses chartResponses = getChart(request);
+        return chartResponses.spliterator();
+    }
+
     @Override
     public void drawPriceLine(ChartRequest request) {
-        verifyExistCache(request);
-
-        ChartResponses charts = cache.get(request.getRequestKey());
-        if (Objects.nonNull(charts)) {
-            ChartResponse[] fromTo = request.forWorkIndex();
-            ChartResponses forWork = charts.substitute(fromTo[0], fromTo[1]);
-            final Queue<ChartResponse> queue = new LinkedList<>();
-            int period = request.getPeriod();
-            Spliterator<ChartResponse> spliterator = forWork.spliterator();
-            while (spliterator.tryAdvance(
-                    (chart) -> {
-                        queue.add(chart);
-                        if (queue.size() == period) {
-                            chart.drawPriceLine(
-                                    ChartPriceLine.of(LinePeriod.get(period).orElseThrow(),
-                                            queue.stream().mapToDouble(ChartResponse::getTradePrice).average().orElse(0)));
-                            queue.poll();
-                        }
+        final Queue<ChartResponse> queue = new LinkedList<>();
+        int period = request.getPeriod();
+        Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        while (spliterator.tryAdvance(
+                (chart) -> {
+                    queue.add(chart);
+                    if (queue.size() == period) {
+                        chart.drawPriceLine(
+                                ChartPriceLine.of(LinePeriod.get(period).orElseThrow(),
+                                        queue.stream().mapToDouble(ChartResponse::getTradePrice).average().orElse(0)));
+                        queue.poll();
                     }
-            )) ;
-        }
+                }
+        )) ;
     }
 
     @Override
     public void drawBollingerBands(ChartRequest request) {
-        verifyExistCache(request);
-        ChartResponses charts = cache.get(request.getRequestKey());
-        if (Objects.nonNull(charts)) {
-            ChartResponse[] fromTo = request.forWorkIndex();
-            ChartResponses forWork = charts.substitute(fromTo[0], fromTo[1]);
-            final Queue<ChartResponse> queue = new LinkedList<>();
-            int period = request.getPeriod();
-            Spliterator<ChartResponse> spliterator = forWork.spliterator();
-            while (spliterator.tryAdvance(
-                    (chart) -> {
-                        queue.add(chart);
-                        if (queue.size() == period) {
-                            double avg = queue.stream().mapToDouble(ChartResponse::getTradePrice).average().orElse(0);
-                            double deviationSum = queue.stream().mapToDouble(chartResponse -> Math.pow(avg - chartResponse.getTradePrice(), 2)).sum();
-                            double standardDeviation = Math.sqrt(deviationSum / period);
-                            chart.drawBollingerBands(standardDeviation);
-                            queue.poll();
-                        }
+        final Queue<ChartResponse> queue = new LinkedList<>();
+        int period = request.getPeriod();
+        Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        while (spliterator.tryAdvance(
+                (chart) -> {
+                    queue.add(chart);
+                    if (queue.size() == period) {
+                        double avg = queue.stream().mapToDouble(ChartResponse::getTradePrice).average().orElse(0);
+                        double deviationSum = queue.stream().mapToDouble(chartResponse -> Math.pow(avg - chartResponse.getTradePrice(), 2)).sum();
+                        double standardDeviation = Math.sqrt(deviationSum / period);
+                        chart.drawBollingerBands(standardDeviation);
+                        queue.poll();
                     }
-            )) ;
-        }
+                }
+        )) ;
     }
 
     @Override
     public ChartResponses getChart(ChartRequest request) {
         verifyExistCache(request);
         ChartResponses charts = cache.get(request.getRequestKey());
-        ChartResponse[] fromTo = request.forRequestIndex();
-        return charts.substitute(fromTo[0], fromTo[1]);
+        if (Objects.nonNull(charts)) {
+            ChartResponse[] fromTo = request.forWorkIndex();
+            return charts.substitute(fromTo[0], fromTo[1]);
+        }
+        // TODO : Custom Exception
+        throw new RuntimeException();
     }
 
     @Override
     public void drawRsi(ChartRequest request) {
-        verifyExistCache(request);
-        ChartResponses charts = cache.get(request.getRequestKey());
-        if (Objects.nonNull(charts)) {
-            ChartResponse[] fromTo = request.forWorkIndex();
-            ChartResponses forWork = charts.substitute(fromTo[0], fromTo[1]);
-            final Queue<ChartResponse> queue = new LinkedList<>();
-            int period = request.getPeriod();
-            Spliterator<ChartResponse> spliterator = forWork.spliterator();
-            while (spliterator.tryAdvance(
-                    (chart) -> {
-                        queue.add(chart);
-                        if (queue.size() == period + 1) {
-                            double beforeTradePrice = queue.poll().getTradePrice();
-                            double ups = 0;
-                            double downs = 0;
-                            for (int i = 1; i < queue.size(); i++) {
-                                ChartResponse tempPoll = queue.poll();
-                                double tradePrice = tempPoll.getTradePrice();
-                                if (tradePrice > beforeTradePrice) {
-                                    ups += (tradePrice - beforeTradePrice);
-                                } else {
-                                    downs += (beforeTradePrice - tradePrice);
-                                }
-                                beforeTradePrice = tradePrice;
-                                queue.add(tempPoll);
+        final Queue<ChartResponse> queue = new LinkedList<>();
+        int period = request.getPeriod();
+        Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        while (spliterator.tryAdvance(
+                (chart) -> {
+                    queue.add(chart);
+                    if (queue.size() == period + 1) {
+                        double beforeTradePrice = queue.poll().getTradePrice();
+                        double ups = 0;
+                        double downs = 0;
+                        for (int i = 1; i < queue.size(); i++) {
+                            ChartResponse tempPoll = queue.poll();
+                            double tradePrice = tempPoll.getTradePrice();
+                            if (tradePrice > beforeTradePrice) {
+                                ups += (tradePrice - beforeTradePrice);
+                            } else {
+                                downs += (beforeTradePrice - tradePrice);
                             }
-                            double au = ups / period;
-                            double ad = downs / period;
-                            double rsi = (au / ad) / (1 + (au / ad)) * 100;
-                            chart.drawRsi(rsi);
+                            beforeTradePrice = tradePrice;
+                            queue.add(tempPoll);
                         }
+                        double au = ups / period;
+                        double ad = downs / period;
+                        double rsi = (au / ad) / (1 + (au / ad)) * 100;
+                        chart.drawRsi(rsi);
                     }
-            )) ;
-        }
+                }
+        )) ;
     }
 
 }
