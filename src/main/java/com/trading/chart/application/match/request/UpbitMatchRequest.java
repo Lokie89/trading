@@ -1,9 +1,15 @@
 package com.trading.chart.application.match.request;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
+import com.trading.chart.application.chart.request.ChartRequest;
+import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
+import com.trading.chart.application.chart.request.UpbitChartRequest;
+import com.trading.chart.application.chart.response.ChartResponses;
+import com.trading.chart.application.match.response.MatchResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * @author SeongRok.Oh
@@ -11,6 +17,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 public class UpbitMatchRequest implements MatchRequest {
+    private final String market;
     private final UpbitUnit unit;
     private final TradeStrategy tradeStrategy;
     private final LocalDateTime date;
@@ -19,13 +26,15 @@ public class UpbitMatchRequest implements MatchRequest {
     private final Integer matchMin;
     private final Integer matchMax;
 
-    private UpbitMatchRequest(UpbitUnit unit,
+    private UpbitMatchRequest(String market,
+                              UpbitUnit unit,
                               TradeStrategy tradeStrategy,
                               LocalDateTime date,
                               Integer standard,
                               Integer range,
                               Integer matchMin,
                               Integer matchMax) {
+        this.market = market;
         this.unit = unit;
         this.tradeStrategy = tradeStrategy;
         this.date = date;
@@ -35,11 +44,24 @@ public class UpbitMatchRequest implements MatchRequest {
         this.matchMax = matchMax;
     }
 
-    public static Builder builder(UpbitUnit unit, TradeStrategy tradeStrategy) {
-        return new Builder(unit, tradeStrategy);
+    public static Builder builder(String market, UpbitUnit unit, TradeStrategy tradeStrategy) {
+        return new Builder(market, unit, tradeStrategy);
+    }
+
+    @Override
+    public ChartRequest toChartRequest() {
+        return SimpleUpbitChartRequest.builder(market, unit).count(standard + range).to(date).build();
+    }
+
+    @Override
+    public boolean test(ChartResponses chart) {
+        Boolean[] result = tradeStrategy.test(chart);
+        final long count = Arrays.stream(result).filter(Boolean::booleanValue).count();
+        return count >= matchMin && count <= matchMax;
     }
 
     public static class Builder {
+        private final String market;
         private final UpbitUnit unit;
         private final TradeStrategy tradeStrategy;
         private LocalDateTime date;
@@ -48,7 +70,8 @@ public class UpbitMatchRequest implements MatchRequest {
         private Integer matchMin;
         private Integer matchMax;
 
-        private Builder(UpbitUnit unit, TradeStrategy tradeStrategy) {
+        private Builder(String market, UpbitUnit unit, TradeStrategy tradeStrategy) {
+            this.market = market;
             this.unit = unit;
             this.tradeStrategy = tradeStrategy;
         }
@@ -79,7 +102,7 @@ public class UpbitMatchRequest implements MatchRequest {
         }
 
         public UpbitMatchRequest build() {
-            return new UpbitMatchRequest(unit, tradeStrategy, date, standard, range, matchMin, matchMax);
+            return new UpbitMatchRequest(market, unit, tradeStrategy, date, standard, range, matchMin, matchMax);
         }
     }
 }

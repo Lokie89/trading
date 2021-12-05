@@ -1,6 +1,7 @@
 package com.trading.chart.application.chart.response;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author SeongRok.Oh
@@ -37,5 +38,9 @@ public class ChartResponses {
 
     public Spliterator<ChartResponse> spliterator() {
         return chartResponses.spliterator();
+    }
+
+    public Stream<ChartResponse> stream() {
+        return chartResponses.stream();
     }
 }

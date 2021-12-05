@@ -39,21 +39,32 @@ public class UpbitMatchTest {
         final LinePeriod period = LinePeriod.get(20).orElseThrow(RuntimeException::new);
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;
-        final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
+        final LocalDateTime lastTime = LocalDateTime.of(2021, 9, 21, 22, 5);
         ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
         upbitChart.drawPriceLine(drawLineRequest);
         ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
         upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         MatchRequest bollingerBandsMatchRequest
-                = UpbitMatchRequest.builder(UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
-                .standard(3)
-                .range(5)
+                = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
+                .standard(0)
+                .range(2)
                 .matchMin(1)
                 .matchMax(30)
                 .date(lastTime)
                 .build();
-        MatchResponse upbitMatchResponse = upbitMatch.match(bollingerBandsMatchRequest);
-        Assertions.assertTrue(upbitMatchResponse.size() > 0);
+        boolean matchTest = upbitMatch.match(bollingerBandsMatchRequest);
+        Assertions.assertTrue(matchTest);
+
+        MatchRequest bollingerBandsMatchRequest2
+                = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
+                .standard(0)
+                .range(3)
+                .matchMin(3)
+                .matchMax(30)
+                .date(lastTime)
+                .build();
+        boolean matchTest2 = upbitMatch.match(bollingerBandsMatchRequest2);
+        Assertions.assertFalse(matchTest2);
     }
 
 }

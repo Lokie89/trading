@@ -8,5 +8,5 @@ import com.trading.chart.application.match.response.MatchResponse;
  * @since 2021/12/04
  */
 public interface Match {
-    MatchResponse match(MatchRequest request);
+    boolean match(MatchRequest request);
 }

@@ -13,6 +13,7 @@ public interface ChartRequest {
     int getPeriod();
     ChartKey getRequestKey();
     int getCount();
+    int getMandatoryCount();
     ChartResponse[] forWorkIndex();
     ChartResponse[] forRequestIndex();
 }

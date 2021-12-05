@@ -18,8 +18,8 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
         super(market, unit, count, to, period);
     }
 
-    public static DrawRsiUpbitChartRequest.Builder builder(final String market, final UpbitUnit unit) {
-        return new DrawRsiUpbitChartRequest.Builder(market, unit);
+    public static Builder builder(final String market, final UpbitUnit unit) {
+        return new Builder(market, unit);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
             this.unit = unit;
         }
 
-        public DrawRsiUpbitChartRequest.Builder count(final int count) {
+        public Builder count(final int count) {
             this.count = count;
             return this;
         }
 
-        public DrawRsiUpbitChartRequest.Builder lastTime(LocalDateTime to) {
+        public Builder lastTime(LocalDateTime to) {
             this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }

@@ -36,7 +36,7 @@ public class CacheUpbitChart implements Chart {
             cache.put(chartKey, getChartWithApi(request));
             return;
         }
-        final int mandatoryCount = request.getPeriod() + request.getCount() - 1;
+        final int mandatoryCount = request.getMandatoryCount();
         ChartResponse[] fromTo = request.forWorkIndex();
         if (charts.substitute(fromTo[0], fromTo[1]).size() < mandatoryCount) {
             cache.get(chartKey).add(getChartWithApi(request));

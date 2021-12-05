@@ -57,4 +57,8 @@ public abstract class UpbitChartRequest implements ChartRequest {
         return fromTo((long) unit.getMinute() * (count + period.getPeriod()));
     }
 
+    @Override
+    public int getMandatoryCount() {
+        return period.getPeriod() + count - 1;
+    }
 }

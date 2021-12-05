@@ -11,8 +11,8 @@ public class DrawBollingerBandsUpbitChartRequest extends UpbitChartRequest {
         super(market, unit, count, to, period);
     }
 
-    public static DrawBollingerBandsUpbitChartRequest.Builder builder(final String market, final UpbitUnit unit) {
-        return new DrawBollingerBandsUpbitChartRequest.Builder(market, unit);
+    public static Builder builder(final String market, final UpbitUnit unit) {
+        return new Builder(market, unit);
     }
 
     public static class Builder {
@@ -27,12 +27,12 @@ public class DrawBollingerBandsUpbitChartRequest extends UpbitChartRequest {
             this.unit = unit;
         }
 
-        public DrawBollingerBandsUpbitChartRequest.Builder count(final int count) {
+        public Builder count(final int count) {
             this.count = count;
             return this;
         }
 
-        public DrawBollingerBandsUpbitChartRequest.Builder lastTime(LocalDateTime to) {
+        public Builder lastTime(LocalDateTime to) {
             this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }

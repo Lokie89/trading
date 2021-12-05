@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
  */
 public interface ChartResponse {
     Double getTradePrice();
+    Double getDownBollingerBand();
+    Double getUpperBollingerBand();
     LocalDateTime getTime();
     void drawPriceLine(ChartPriceLine line);
     void drawBollingerBands(Double standardDeviation);
