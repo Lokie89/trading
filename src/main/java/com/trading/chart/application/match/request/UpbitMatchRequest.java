@@ -3,9 +3,7 @@ package com.trading.chart.application.match.request;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
-import com.trading.chart.application.chart.request.UpbitChartRequest;
 import com.trading.chart.application.chart.response.ChartResponses;
-import com.trading.chart.application.match.response.MatchResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

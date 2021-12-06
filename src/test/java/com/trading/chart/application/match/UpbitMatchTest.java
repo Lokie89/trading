@@ -2,14 +2,10 @@ package com.trading.chart.application.match;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
-import com.trading.chart.application.chart.request.ChartRequest;
-import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
-import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
-import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.application.chart.request.*;
 import com.trading.chart.application.match.request.MatchRequest;
 import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.match.request.UpbitMatchRequest;
-import com.trading.chart.application.match.response.MatchResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +60,38 @@ public class UpbitMatchTest {
                 .date(lastTime)
                 .build();
         boolean matchTest2 = upbitMatch.match(bollingerBandsMatchRequest2);
+        Assertions.assertFalse(matchTest2);
+    }
+
+    @DisplayName("RSI 전략 확인 테스트")
+    @Test
+    void matchRsiTest() {
+        final String market = "KRW-XRP";
+        final UpbitUnit unit = UpbitUnit.DAY;
+        final int count = 10;
+        final LocalDateTime lastTime = LocalDateTime.of(2021, 6, 22, 22, 5);
+        ChartRequest drawRsiRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        upbitChart.drawRsi(drawRsiRequest);
+        MatchRequest rsiMatchRequest
+                = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_RSI30)
+                .standard(0)
+                .range(2)
+                .matchMin(1)
+                .matchMax(30)
+                .date(lastTime)
+                .build();
+        boolean matchTest = upbitMatch.match(rsiMatchRequest);
+        Assertions.assertTrue(matchTest);
+
+        MatchRequest rsiMatchRequest2
+                = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_RSI30)
+                .standard(0)
+                .range(5)
+                .matchMin(5)
+                .matchMax(30)
+                .date(lastTime)
+                .build();
+        boolean matchTest2 = upbitMatch.match(rsiMatchRequest2);
         Assertions.assertFalse(matchTest2);
     }
 

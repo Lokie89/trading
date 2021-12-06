@@ -16,6 +16,15 @@ public enum TradeStrategy {
                     ;
         }
     },
+    LOWER_RSI30() {
+        @Override
+        public Boolean[] test(ChartResponses charts) {
+            return charts.stream()
+                    .map((chart) -> chart.getRsi() <= 30)
+                    .toArray(Boolean[]::new)
+                    ;
+        }
+    },
     ;
 
     public abstract Boolean[] test(ChartResponses charts);

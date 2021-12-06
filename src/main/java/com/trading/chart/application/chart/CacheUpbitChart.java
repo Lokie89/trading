@@ -110,13 +110,14 @@ public class CacheUpbitChart implements Chart {
                 (chart) -> {
                     queue.add(chart);
                     if (queue.size() == period + 1) {
-                        double beforeTradePrice = queue.poll().getTradePrice();
+                        ChartResponse poll = queue.poll();
+                        double beforeTradePrice = poll.getTradePrice();
                         double ups = 0;
                         double downs = 0;
-                        for (int i = 1; i < queue.size(); i++) {
+                        for (int i = 0; i < queue.size(); i++) {
                             ChartResponse tempPoll = queue.poll();
                             double tradePrice = tempPoll.getTradePrice();
-                            if (tradePrice > beforeTradePrice) {
+                            if (tradePrice >= beforeTradePrice) {
                                 ups += (tradePrice - beforeTradePrice);
                             } else {
                                 downs += (beforeTradePrice - tradePrice);
