@@ -22,4 +22,8 @@ public class UpbitOrderCancelRequest implements OrderRequest, Serializable {
     private final String client;
     @JsonProperty(value = "uuid")
     private final String uuid;
+
+    public String getMarket() {
+        return null;
+    }
 }

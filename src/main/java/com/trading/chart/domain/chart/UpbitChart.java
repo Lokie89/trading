@@ -1,4 +1,4 @@
-package com.trading.chart.domain.user;
+package com.trading.chart.domain.chart;
 
 
 /**

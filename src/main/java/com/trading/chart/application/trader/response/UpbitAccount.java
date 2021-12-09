@@ -2,7 +2,10 @@ package com.trading.chart.application.trader.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * @author SeongRok.Oh
@@ -17,6 +20,7 @@ import lombok.Getter;
  * avg_buy_price_modified : 매수평균가 수정 여부
  * unit_currency : 평단가 기준 화폐
  */
+@NoArgsConstructor
 public class UpbitAccount implements AccountResponse {
 
     @ApiModelProperty(value = "화폐", example = "KRW")
@@ -43,5 +47,15 @@ public class UpbitAccount implements AccountResponse {
     @ApiModelProperty(value = "평균 기준 화폐", example = "KRW")
     @JsonProperty("unit_currency")
     private String unitCurrency;
+
+
+    private UpbitAccount(String currency, Double balance) {
+        this.currency = currency;
+        this.balance = balance;
+    }
+
+    public static UpbitAccount of(String currency, Double balance) {
+        return new UpbitAccount(currency, balance);
+    }
 
 }
