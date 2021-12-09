@@ -31,7 +31,7 @@ public class UpbitOrderTest {
         final Integer cash = 5100;
         final Double price = 1.5;
         OrderRequest request = UpbitOrderRequest.builder()
-                .account("tjdfhrdk10@naver.com")
+                .client("tjdfhrdk10@naver.com")
                 .item(market)
                 .tradeType(tradeType)
                 .cash(cash)
@@ -43,7 +43,7 @@ public class UpbitOrderTest {
         // 취소하기
         String uuid = response.getUuid();
         OrderRequest cancelRequest = UpbitOrderCancelRequest.builder()
-                .account("tjdfhrdk10@naver.com")
+                .client("tjdfhrdk10@naver.com")
                 .uuid(uuid)
                 .build();
 
@@ -57,7 +57,7 @@ public class UpbitOrderTest {
         final String market = "KRW-BTT";
         final UpbitOrderState state = UpbitOrderState.DONE;
         OrderRequest request = UpbitOrderListRequest.builder()
-                .account("tjdfhrdk10@naver.com")
+                .client("tjdfhrdk10@naver.com")
                 .state(state)
                 .market(market)
                 .build();

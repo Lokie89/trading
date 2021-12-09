@@ -11,6 +11,6 @@ import java.util.List;
  * @since 2021/11/07
  */
 public interface Trader {
-    List<AccountResponse> getAccounts(String id);
+    List<AccountResponse> getAccounts(String client);
     List<DealtResponse> getRecentlyDealt(DealtRequest dealtRequest);
 }

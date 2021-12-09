@@ -29,16 +29,16 @@ public class UpbitTrader implements Trader {
     private final TradeAPIHeader upbitTradeAPIHeader;
 
     @Override
-    public List<AccountResponse> getAccounts(String id) {
-        String response = callAPI.get(accountUrl, upbitTradeAPIHeader.getHeaders(id));
+    public List<AccountResponse> getAccounts(String client) {
+        String response = callAPI.get(accountUrl, upbitTradeAPIHeader.getHeaders(client));
         UpbitAccount[] accounts = ConvertType.stringToType(response, UpbitAccount[].class);
         return Arrays.asList(accounts);
     }
 
     @Override
     public List<DealtResponse> getRecentlyDealt(DealtRequest dealtRequest) {
-        String response = callAPI.get(dealtUrl + "?" + ConvertType.ObjectToQueryString(dealtRequest, "account"),
-                upbitTradeAPIHeader.getHeaders(dealtRequest.getAccount()));
+        String response = callAPI.get(dealtUrl + "?" + ConvertType.ObjectToQueryString(dealtRequest, "client"),
+                upbitTradeAPIHeader.getHeaders(dealtRequest.getClient()));
         UpbitDealtResponse[] dealt = ConvertType.stringToType(response, UpbitDealtResponse[].class);
         return Arrays.asList(dealt);
     }

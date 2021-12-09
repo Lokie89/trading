@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class UpbitOrderCancelRequest implements OrderRequest, Serializable {
     @Getter
     @JsonIgnore
-    private final String account;
+    private final String client;
     @JsonProperty(value = "uuid")
     private final String uuid;
 }

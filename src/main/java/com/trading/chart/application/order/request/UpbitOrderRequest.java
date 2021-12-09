@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Getter
 public class UpbitOrderRequest implements OrderRequest, Serializable {
     @JsonIgnore
-    private final String account;
+    private final String client;
     private final String market;
     private final String side;
     private final Double price;
@@ -21,12 +21,12 @@ public class UpbitOrderRequest implements OrderRequest, Serializable {
     private final String ord_type;
 
     @Builder
-    public UpbitOrderRequest(final String account,
+    public UpbitOrderRequest(final String client,
                              final String item,
                              final TradeType tradeType,
                              final Integer cash,
                              final Double price) {
-        this.account = account;
+        this.client = client;
         this.market = item;
         this.side = tradeType.getSide();
         this.price = price;

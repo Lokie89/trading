@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 public class UpbitOrderListRequest implements OrderRequest {
     @JsonIgnore
-    private final String account;
+    private final String client;
     private final String market;
     private final List<String> uuids;
     private final List<String> identifiers;
@@ -29,7 +29,7 @@ public class UpbitOrderListRequest implements OrderRequest {
     private final String orderBy;
 
     @Builder
-    public UpbitOrderListRequest(final String account,
+    public UpbitOrderListRequest(final String client,
                                  final String market,
                                  final List<String> uuids,
                                  final List<String> identifiers,
@@ -38,7 +38,7 @@ public class UpbitOrderListRequest implements OrderRequest {
                                  final Integer page,
                                  final Integer limit,
                                  final UpbitOrderSort orderBy) {
-        this.account = account;
+        this.client = client;
         this.market = market;
         this.uuids = uuids;
         this.identifiers = identifiers;

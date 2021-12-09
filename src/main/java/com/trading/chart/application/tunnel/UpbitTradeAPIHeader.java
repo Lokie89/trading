@@ -45,7 +45,7 @@ public class UpbitTradeAPIHeader implements TradeAPIHeader {
     }
 
     private void includeToken(JWTCreator.Builder builder, Object data) {
-        String queryString = ConvertType.ObjectToQueryString(data, "account");
+        String queryString = ConvertType.ObjectToQueryString(data, "client");
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(queryString.getBytes("UTF-8"));

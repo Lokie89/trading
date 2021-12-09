@@ -31,22 +31,22 @@ public class UpbitOrder implements Order {
 
     @Override
     public OrderResponse order(final OrderRequest request) {
-        String response = callAPI.post(url, header.getHeaders(request.getAccount(), request), request);
+        String response = callAPI.post(url, header.getHeaders(request.getClient(), request), request);
         return ConvertType.stringToType(response, UpbitOrderResponse.class);
     }
 
     @Override
     public List<OrderResponse> getOrderList(final OrderRequest request) {
-        String response = callAPI.get(url + "?" + ConvertType.ObjectToQueryString(request, "account"),
-                header.getHeaders(request.getAccount(), request));
+        String response = callAPI.get(url + "?" + ConvertType.ObjectToQueryString(request, "client"),
+                header.getHeaders(request.getClient(), request));
         UpbitOrderResponse[] upbitOrderResponses = ConvertType.stringToType(response, UpbitOrderResponse[].class);
         return Arrays.asList(upbitOrderResponses);
     }
 
     @Override
     public OrderResponse cancelOrder(final OrderRequest request) {
-        String response = callAPI.delete(deleteUrl + "?" + ConvertType.ObjectToQueryString(request, "account"),
-                header.getHeaders(request.getAccount(), request));
+        String response = callAPI.delete(deleteUrl + "?" + ConvertType.ObjectToQueryString(request, "client"),
+                header.getHeaders(request.getClient(), request));
         return ConvertType.stringToType(response, UpbitOrderResponse.class);
     }
 }
