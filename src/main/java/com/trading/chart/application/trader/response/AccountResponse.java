@@ -6,4 +6,9 @@ package com.trading.chart.application.trader.response;
  */
 public interface AccountResponse {
     Double getBalance();
+    Double getAvgBuyPrice();
+    String getCurrency();
+    boolean isOwn();
+    void sellBalance(Double balance);
+    void buyBalance(Double balance);
 }

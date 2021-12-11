@@ -2,6 +2,9 @@ package com.trading.chart.application.order;
 
 import com.trading.chart.application.order.request.*;
 import com.trading.chart.application.order.response.OrderResponse;
+import com.trading.chart.application.order.response.UpbitOrderResponse;
+import com.trading.chart.application.trader.Trader;
+import com.trading.chart.application.trader.response.AccountResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UpbitOrderTest {
 
     @Autowired
-    Order upbitOrder;
+    Order<UpbitOrderResponse> upbitOrder;
+
+    @Autowired
+    Order<UpbitOrderResponse> simulateUpbitOrder;
+
+    @Autowired
+    Trader simulateUpbitTrader;
 
     @DisplayName("업비트 주문하기 하고 취소하기")
     @Test
@@ -30,10 +39,8 @@ public class UpbitOrderTest {
         final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
         final Double price = 1.5;
-        OrderRequest request = UpbitOrderRequest.builder()
-                .client("tjdfhrdk10@naver.com")
-                .item(market)
-                .tradeType(tradeType)
+        OrderRequest request = UpbitOrderRequest
+                .builder("tjdfhrdk10@naver.com", market, tradeType)
                 .cash(cash)
                 .price(price)
                 .build();
@@ -61,11 +68,42 @@ public class UpbitOrderTest {
                 .state(state)
                 .market(market)
                 .build();
-        List<OrderResponse> responses = upbitOrder.getOrderList(request);
+        List<UpbitOrderResponse> responses = upbitOrder.getOrderList(request);
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getMarket().equals(market)));
         assertTrue(responses.stream()
                 .allMatch(orderResponse -> orderResponse.getState().equals(state)));
     }
+
+    @DisplayName("가상 주문 하기")
+    @Test
+    void simulateUpbitOrderTest() {
+        final String market = "KRW-BTT";
+        final TradeType buyTradeType = TradeType.BUY;
+        final Integer cash = 5100;
+        final Double buyPrice = 1.5;
+
+        final String client = "tjdfhrdk10@naver.com";
+        OrderRequest buyRequest = UpbitOrderRequest.builder(client, market, buyTradeType)
+                .cash(cash)
+                .price(buyPrice)
+                .build();
+        OrderResponse buyResponse = simulateUpbitOrder.order(buyRequest);
+        AccountResponses accountResponses = simulateUpbitTrader.getAccounts(client);
+        assertEquals(market, buyResponse.getMarket());
+        assertEquals(2, accountResponses.size());
+
+        final TradeType sellTradeType = TradeType.SELL;
+        final Double sellPrice = 1.7;
+
+        OrderRequest sellRequest = UpbitOrderRequest.builder(client, market, sellTradeType)
+                .price(sellPrice)
+                .volume(cash / buyPrice).build();
+
+        simulateUpbitOrder.order(sellRequest);
+        assertEquals(1, simulateUpbitOrder.getOrderList(sellRequest).size());
+        assertEquals(1, accountResponses.size());
+    }
+
 
 }

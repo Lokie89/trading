@@ -1,7 +1,7 @@
 package com.trading.chart.application.trader;
 
 import com.trading.chart.application.trader.request.DealtRequest;
-import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.application.trader.response.DealtResponse;
 import com.trading.chart.application.trader.response.UpbitAccount;
 import org.springframework.stereotype.Component;
@@ -17,14 +17,14 @@ import java.util.Map;
 @Component
 public class SimulateUpbitTrader implements Trader {
 
-    private static Map<String, List<AccountResponse>> accounts = new HashMap<>();
+    private static Map<String, AccountResponses> accounts = new HashMap<>();
 
     static {
-        accounts.put("tjdfhrdk10@naver.com", List.of(UpbitAccount.of("KRW", 1000000.0)));
+        accounts.put("tjdfhrdk10@naver.com", AccountResponses.of(UpbitAccount.of("KRW", 1000000.0, 0.0)));
     }
 
     @Override
-    public List<AccountResponse> getAccounts(String client) {
+    public AccountResponses getAccounts(String client) {
         return accounts.get(client);
     }
 

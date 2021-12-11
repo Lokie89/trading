@@ -49,4 +49,24 @@ public class UpbitOrderResponse implements OrderResponse {
     @JsonProperty("trades_count")
     private Double tradesCount;
 
+    public UpbitOrderResponse(String uuid, TradeType side, String orderType, Double price, UpbitOrderState state,
+                              String market, String createdAt, Double volume) {
+        this.uuid = uuid;
+        this.side = side;
+        this.orderType = orderType;
+        this.price = price;
+        this.state = state;
+        this.market = market;
+        this.createdAt = createdAt;
+        this.volume = volume;
+    }
+
+    public boolean equalsOnMarketAndSide(OrderResponse orderResponse) {
+        if (!(orderResponse instanceof UpbitOrderResponse)) {
+            return false;
+        }
+        UpbitOrderResponse other = (UpbitOrderResponse) orderResponse;
+        return this.side.equals(other.side) && this.market.equals(other.market);
+
+    }
 }

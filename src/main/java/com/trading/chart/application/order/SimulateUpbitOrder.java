@@ -2,15 +2,15 @@ package com.trading.chart.application.order;
 
 import com.trading.chart.application.order.request.OrderRequest;
 import com.trading.chart.application.order.request.UpbitOrderRequest;
-import com.trading.chart.application.order.response.OrderResponse;
+import com.trading.chart.application.order.response.UpbitOrderResponse;
 import com.trading.chart.application.trader.Trader;
-import com.trading.chart.application.trader.response.AccountResponse;
-import com.trading.chart.application.trader.response.UpbitAccount;
+import com.trading.chart.application.trader.response.AccountResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -18,36 +18,42 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Component
-public class SimulateUpbitOrder implements Order {
+public class SimulateUpbitOrder implements Order<UpbitOrderResponse> {
 
     private final Trader simulateUpbitTrader;
-    private final List<UpbitOrderRequest> orderList = new ArrayList<>();
+    private final List<UpbitOrderResponse> orderedList = new ArrayList<>();
 
-    @Override
-    public OrderResponse order(OrderRequest request) {
+    private UpbitOrderRequest validateParameter(OrderRequest request) {
         // TODO : OrderRequest 를 분리해야함 -> 메서드 넣는게 아니라고 생각 필드를 들고오는게 인터페이스 성격은 아닌듯
         if (!(request instanceof UpbitOrderRequest)) {
             throw new RuntimeException();
         }
-        UpbitOrderRequest upbitOrderRequest = (UpbitOrderRequest) request;
+        return (UpbitOrderRequest) request;
+    }
+
+    @Override
+    public UpbitOrderResponse order(OrderRequest request) {
+        UpbitOrderRequest upbitOrderRequest = validateParameter(request);
 
         final String client = request.getClient();
-        List<AccountResponse> accounts = simulateUpbitTrader.getAccounts(client);
-        accounts.add(
-                UpbitAccount.of(upbitOrderRequest.getMarket().replace("KRW-", ""),
-                upbitOrderRequest.getPrice() * upbitOrderRequest.getVolume())
-        );
-        orderList.add(upbitOrderRequest);
-        return null;
+        AccountResponses accounts = simulateUpbitTrader.getAccounts(client);
+        accounts.apply(upbitOrderRequest);
+        UpbitOrderResponse orderResponse = upbitOrderRequest.toOrderResponse();
+        orderedList.add(orderResponse);
+        return orderResponse;
+    }
+
+    public List<UpbitOrderResponse> getOrderList(OrderRequest request) {
+        UpbitOrderRequest upbitOrderRequest = validateParameter(request);
+
+        return this.orderedList.stream()
+                .filter(orderResponse -> upbitOrderRequest.toOrderResponse().equalsOnMarketAndSide(orderResponse))
+                .collect(Collectors.toList())
+                ;
     }
 
     @Override
-    public List<OrderResponse> getOrderList(OrderRequest request) {
-        return null;
-    }
-
-    @Override
-    public OrderResponse cancelOrder(OrderRequest cancelRequest) {
+    public UpbitOrderResponse cancelOrder(OrderRequest cancelRequest) {
         return null;
     }
 }

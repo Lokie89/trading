@@ -2,8 +2,6 @@ package com.trading.chart.application.trader.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +19,7 @@ import lombok.NoArgsConstructor;
  * unit_currency : 평단가 기준 화폐
  */
 @NoArgsConstructor
+@Getter
 public class UpbitAccount implements AccountResponse {
 
     @ApiModelProperty(value = "화폐", example = "KRW")
@@ -29,7 +28,6 @@ public class UpbitAccount implements AccountResponse {
 
     @ApiModelProperty(value = "주문가능 금액/수량", example = "1000000.0")
     @JsonProperty(value = "balance")
-    @Getter
     private Double balance;
 
     @ApiModelProperty(value = "묶인 금액/수량", example = "0.0")
@@ -49,13 +47,29 @@ public class UpbitAccount implements AccountResponse {
     private String unitCurrency;
 
 
-    private UpbitAccount(String currency, Double balance) {
+    private UpbitAccount(String currency, Double balance, Double avgBuyPrice) {
         this.currency = currency;
         this.balance = balance;
+        this.avgBuyPrice = avgBuyPrice;
     }
 
-    public static UpbitAccount of(String currency, Double balance) {
-        return new UpbitAccount(currency, balance);
+    public static UpbitAccount of(String currency, Double volume, Double price) {
+        return new UpbitAccount(currency, volume, price);
+    }
+
+    @Override
+    public boolean isOwn() {
+        return balance > 0;
+    }
+
+    @Override
+    public void sellBalance(Double balance) {
+        this.balance -= balance;
+    }
+
+    @Override
+    public void buyBalance(Double balance) {
+        this.balance += balance;
     }
 
 }

@@ -9,8 +9,10 @@ import java.util.List;
  * @author SeongRok.Oh
  * @since 2021-11-10
  */
-public interface Order {
-    OrderResponse order(final OrderRequest request);
-    List<OrderResponse> getOrderList(final OrderRequest request);
-    OrderResponse cancelOrder(final OrderRequest cancelRequest);
+
+// TODO : 리턴타입을 포함해서 넣긴했는데 확인해야될듯
+public interface Order<T extends OrderResponse> {
+    T order(final OrderRequest request);
+    List<T> getOrderList(final OrderRequest request);
+    T cancelOrder(final OrderRequest cancelRequest);
 }

@@ -1,7 +1,7 @@
 package com.trading.chart.application.trader;
 
 import com.trading.chart.application.trader.request.DealtRequest;
-import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.application.trader.response.DealtResponse;
 import com.trading.chart.application.trader.response.UpbitAccount;
 import com.trading.chart.application.trader.response.UpbitDealtResponse;
@@ -29,10 +29,10 @@ public class UpbitTrader implements Trader {
     private final TradeAPIHeader upbitTradeAPIHeader;
 
     @Override
-    public List<AccountResponse> getAccounts(String client) {
+    public AccountResponses getAccounts(String client) {
         String response = callAPI.get(accountUrl, upbitTradeAPIHeader.getHeaders(client));
         UpbitAccount[] accounts = ConvertType.stringToType(response, UpbitAccount[].class);
-        return Arrays.asList(accounts);
+        return AccountResponses.of(Arrays.asList(accounts));
     }
 
     @Override
