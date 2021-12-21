@@ -2,6 +2,8 @@ package com.trading.chart.application.order.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.chart.application.order.response.UpbitOrderResponse;
+import com.trading.chart.application.trader.request.AccountRequest;
+import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import java.util.Objects;
  * @since 2021-11-10
  */
 @Getter
-public class UpbitOrderRequest implements OrderRequest, Serializable {
+public class UpbitOrderRequest implements OrderRequest {
     @JsonIgnore
     private final String client;
     private final String market;
@@ -38,6 +40,11 @@ public class UpbitOrderRequest implements OrderRequest, Serializable {
 
     public static Builder builder(String client, String item, TradeType tradeType) {
         return new Builder(client, item, tradeType);
+    }
+
+    @Override
+    public AccountRequest toAccountRequest() {
+        return UpbitAccountRequest.of(client);
     }
 
     public static class Builder {

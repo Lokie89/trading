@@ -2,8 +2,8 @@ package com.trading.chart.application.trader.request;
 
 /**
  * @author SeongRok.Oh
- * @since 2021/11/16
+ * @since 2021/12/21
  */
-public interface DealtRequest {
+public interface AccountRequest {
     String getClient();
 }

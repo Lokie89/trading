@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 
 @Getter
-public class UpbitOrderListRequest implements OrderRequest {
+public class UpbitOrderListRequest {
     @JsonIgnore
     private final String client;
     private final String market;

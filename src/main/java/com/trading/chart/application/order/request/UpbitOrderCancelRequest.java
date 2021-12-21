@@ -2,6 +2,8 @@ package com.trading.chart.application.order.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.trading.chart.application.trader.request.AccountRequest;
+import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +18,15 @@ import java.io.Serializable;
 @ToString
 @RequiredArgsConstructor
 @Builder
-public class UpbitOrderCancelRequest implements OrderRequest, Serializable {
+public class UpbitOrderCancelRequest implements OrderRequest {
     @Getter
     @JsonIgnore
     private final String client;
     @JsonProperty(value = "uuid")
     private final String uuid;
+
+    @Override
+    public AccountRequest toAccountRequest() {
+        return UpbitAccountRequest.of(client);
+    }
 }

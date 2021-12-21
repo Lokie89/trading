@@ -35,8 +35,7 @@ public class SimulateUpbitOrder implements Order<UpbitOrderResponse> {
     public UpbitOrderResponse order(OrderRequest request) {
         UpbitOrderRequest upbitOrderRequest = validateParameter(request);
 
-        final String client = request.getClient();
-        AccountResponses accounts = simulateUpbitTrader.getAccounts(client);
+        AccountResponses accounts = simulateUpbitTrader.getAccounts(upbitOrderRequest.toAccountRequest());
         accounts.apply(upbitOrderRequest);
         UpbitOrderResponse orderResponse = upbitOrderRequest.toOrderResponse();
         orderedList.add(orderResponse);
