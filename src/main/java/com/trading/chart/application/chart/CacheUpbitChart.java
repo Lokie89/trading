@@ -48,8 +48,19 @@ public class CacheUpbitChart implements Chart {
     }
 
     private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {
-        ChartResponses chartResponses = getChart(request);
+        ChartResponses chartResponses = getWorkChart(request);
         return chartResponses.spliterator();
+    }
+
+    private ChartResponses getWorkChart(ChartRequest request) {
+        verifyExistCache(request);
+        ChartResponses charts = cache.get(request.getRequestKey());
+        if (Objects.nonNull(charts)) {
+            ChartResponse[] fromTo = request.forWorkIndex();
+            return charts.substitute(fromTo[0], fromTo[1]);
+        }
+        // TODO : Custom Exception
+        throw new RuntimeException();
     }
 
     @Override
@@ -89,16 +100,16 @@ public class CacheUpbitChart implements Chart {
         )) ;
     }
 
+
     @Override
     public ChartResponses getChart(ChartRequest request) {
-        verifyExistCache(request);
         ChartResponses charts = cache.get(request.getRequestKey());
-        if (Objects.nonNull(charts)) {
-            ChartResponse[] fromTo = request.forWorkIndex();
-            return charts.substitute(fromTo[0], fromTo[1]);
+        if (Objects.isNull(charts)) {
+            // TODO : Custom Exception
+            throw new RuntimeException();
         }
-        // TODO : Custom Exception
-        throw new RuntimeException();
+        ChartResponse[] fromTo = request.forRequestIndex();
+        return charts.substitute(fromTo[0], fromTo[1]);
     }
 
     @Override

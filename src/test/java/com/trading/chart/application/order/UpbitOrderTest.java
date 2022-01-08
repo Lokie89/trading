@@ -2,7 +2,6 @@ package com.trading.chart.application.order;
 
 import com.trading.chart.application.order.request.*;
 import com.trading.chart.application.order.response.OrderResponse;
-import com.trading.chart.application.order.response.UpbitOrderResponse;
 import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
@@ -12,10 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author SeongRok.Oh
@@ -26,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UpbitOrderTest {
 
     @Autowired
-    Order<UpbitOrderResponse> upbitOrder;
+    Order upbitOrder;
 
     @Autowired
-    Order<UpbitOrderResponse> simulateUpbitOrder;
+    Order simulateUpbitOrder;
 
     @Autowired
     Trader simulateUpbitTrader;
@@ -37,7 +33,7 @@ public class UpbitOrderTest {
     @DisplayName("업비트 주문하기 하고 취소하기")
     @Test
     void upbitOrderTest() {
-        final String market = "KRW-BTT";
+        final String market = "KRW-BTC";
         final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
         final Double price = 1.5;
@@ -51,7 +47,7 @@ public class UpbitOrderTest {
 
         // 취소하기
         String uuid = response.getUuid();
-        OrderRequest cancelRequest = UpbitOrderCancelRequest.builder()
+        OrderCancelRequest cancelRequest = UpbitOrderCancelRequest.builder()
                 .client("tjdfhrdk10@naver.com")
                 .uuid(uuid)
                 .build();
@@ -60,37 +56,20 @@ public class UpbitOrderTest {
         assertEquals(uuid, cancelResponse.getUuid());
     }
 
-//    @DisplayName("업비트 주문내역 보기")
-//    @Test
-//    void getUpbitOrderListTest() {
-//        final String market = "KRW-BTT";
-//        final UpbitOrderState state = UpbitOrderState.DONE;
-//        OrderRequest request = UpbitOrderListRequest.builder()
-//                .client("tjdfhrdk10@naver.com")
-//                .state(state)
-//                .market(market)
-//                .build();
-//        List<UpbitOrderResponse> responses = upbitOrder.getOrderList(request);
-//        assertTrue(responses.stream()
-//                .allMatch(orderResponse -> orderResponse.getMarket().equals(market)));
-//        assertTrue(responses.stream()
-//                .allMatch(orderResponse -> orderResponse.getState().equals(state)));
-//    }
-
     @DisplayName("가상 주문 하기")
     @Test
     void simulateUpbitOrderTest() {
-        final String market = "KRW-BTT";
-        final TradeType buyTradeType = TradeType.BUY;
+        final String market = "KRW-BTC";
+        final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
         final Double buyPrice = 1.5;
 
         final String client = "million";
-        OrderRequest buyRequest = UpbitOrderRequest.builder(client, market, buyTradeType)
+        OrderRequest buyRequest = UpbitOrderRequest.builder(client, market, tradeType)
                 .cash(cash)
                 .price(buyPrice)
                 .build();
-        OrderResponse buyResponse = simulateUpbitOrder.order(buyRequest);
+        OrderResponse buyResponse = simulateUpbitTrader.order(buyRequest);
         AccountRequest accountRequest = UpbitAccountRequest.builder(client)
                 .build();
         AccountResponses accountResponses = simulateUpbitTrader.getAccounts(accountRequest);
@@ -104,8 +83,9 @@ public class UpbitOrderTest {
                 .price(sellPrice)
                 .volume(cash / buyPrice).build();
 
-        simulateUpbitOrder.order(sellRequest);
-        assertEquals(1, simulateUpbitOrder.getOrderList(sellRequest).size());
+        simulateUpbitTrader.order(sellRequest);
+        OrderListRequest listRequest = sellRequest.toOrderListRequest();
+        assertEquals(2, simulateUpbitOrder.orderList(listRequest).size());
         assertEquals(1, accountResponses.size());
     }
 

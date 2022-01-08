@@ -35,24 +35,4 @@ public class TraderTest {
                 .anyMatch(AccountResponse::isOwn));
     }
 
-//    @DisplayName("최근 체결 내역 조회")
-//    @Test
-//    void getRecentlyDealtTest() {
-//
-//        final String market = "KRW-BTT";
-//        DealtRequest dealtRequest = UpbitDealtRequest.builder("tjdfhrdk10@naver.com", market).build();
-//        assertTrue(upbitTrader.getRecentlyDealt(dealtRequest).stream()
-//                .allMatch(dealt -> market.equals(dealt.getMarket())));
-//    }
-
-    @DisplayName("가상 계정 남아있는 금액 조회")
-    @Test
-    void getSimulatorBalanceTest() {
-        final String client = "tjdfhrdk10@naver.com";
-        AccountRequest accountRequest = UpbitAccountRequest.builder(client)
-                .build();
-        assertTrue(simulateUpbitTrader.getAccounts(accountRequest).stream()
-                .anyMatch(AccountResponse::isOwn));
-    }
-
 }

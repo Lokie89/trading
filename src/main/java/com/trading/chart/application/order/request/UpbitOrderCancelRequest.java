@@ -18,15 +18,11 @@ import java.io.Serializable;
 @ToString
 @RequiredArgsConstructor
 @Builder
-public class UpbitOrderCancelRequest implements OrderRequest {
+public class UpbitOrderCancelRequest implements OrderCancelRequest {
     @Getter
     @JsonIgnore
     private final String client;
     @JsonProperty(value = "uuid")
     private final String uuid;
 
-    @Override
-    public AccountRequest toAccountRequest() {
-        return UpbitAccountRequest.of(client);
-    }
 }

@@ -5,5 +5,4 @@ package com.trading.chart.application.match.response;
  * @since 2021/12/04
  */
 public interface MatchResponse {
-    Integer size();
 }

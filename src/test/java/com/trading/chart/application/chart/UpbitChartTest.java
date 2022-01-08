@@ -27,7 +27,7 @@ public class UpbitChartTest {
     @DisplayName("라인 생성")
     @Test
     void drawLineTest() {
-        final String market = "KRW-BTT";
+        final String market = "KRW-BTC";
         final LinePeriod period = LinePeriod.get(5).orElseThrow(RuntimeException::new);
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;

@@ -28,7 +28,7 @@ public class UpbitMatchTest {
     @Autowired
     Chart upbitChart;
 
-    @DisplayName("전략 확인 테스트")
+    @DisplayName("Bollinger 전략 확인 테스트")
     @Test
     void matchTest() {
         final String market = "KRW-SSX";

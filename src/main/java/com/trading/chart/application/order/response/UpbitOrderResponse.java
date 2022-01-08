@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderState;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * uuid : 주문의 고유 아이디
@@ -20,6 +21,7 @@ import lombok.Getter;
  * executed_volume : 체결된 거래량
  * trade_count : 주문에 걸린 체결 수
  */
+@NoArgsConstructor
 @Getter
 public class UpbitOrderResponse implements OrderResponse {
 

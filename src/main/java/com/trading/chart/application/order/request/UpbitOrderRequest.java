@@ -6,7 +6,6 @@ import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -45,6 +44,14 @@ public class UpbitOrderRequest implements OrderRequest {
     @Override
     public AccountRequest toAccountRequest() {
         return UpbitAccountRequest.of(client);
+    }
+
+    @Override
+    public OrderListRequest toOrderListRequest() {
+        return UpbitOrderListRequest.builder()
+                .client(client)
+                .market(market)
+                .build();
     }
 
     public static class Builder {
@@ -88,7 +95,7 @@ public class UpbitOrderRequest implements OrderRequest {
         }
     }
 
-
+    @Override
     public UpbitOrderResponse toOrderResponse() {
         return new UpbitOrderResponse("", TradeType.fromString(side), ord_type,
                 price, UpbitOrderState.DONE, market, LocalDateTime.now().toString(), volume);
