@@ -4,6 +4,7 @@ import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author SeongRok.Oh
@@ -22,8 +23,8 @@ public class SimpleUpbitChartRequest extends UpbitChartRequest {
 
         private final String market;
         private final UpbitUnit unit;
-        private int count;
-        private LocalDateTime to;
+        private int count = 1;
+        private LocalDateTime to = LocalDateTime.now();
 
 
         private Builder(String market, UpbitUnit unit) {
@@ -37,7 +38,9 @@ public class SimpleUpbitChartRequest extends UpbitChartRequest {
         }
 
         public Builder to(LocalDateTime to) {
-            this.to = to;
+            if (Objects.nonNull(to)) {
+                this.to = to;
+            }
             return this;
         }
 

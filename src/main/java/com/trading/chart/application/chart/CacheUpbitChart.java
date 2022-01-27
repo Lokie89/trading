@@ -103,6 +103,7 @@ public class CacheUpbitChart implements Chart {
 
     @Override
     public ChartResponses getChart(ChartRequest request) {
+        verifyExistCache(request);
         ChartResponses charts = cache.get(request.getRequestKey());
         if (Objects.isNull(charts)) {
             // TODO : Custom Exception

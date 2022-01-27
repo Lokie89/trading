@@ -45,7 +45,7 @@ public abstract class UpbitChartRequest implements ChartRequest {
 
     @Override
     public CandleRequest toCandleRequest() {
-        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod() - 1).lastTime(to).build();
+        return UpbitCandleRequest.builder(unit, market).count(count + (period == null ? 0 : period.getPeriod() - 1)).lastTime(to).build();
     }
 
     public int getPeriod() {

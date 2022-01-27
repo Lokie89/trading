@@ -1,6 +1,5 @@
 package com.trading.chart.application.trader.request;
 
-import com.trading.chart.application.order.request.OrderRequest;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -23,11 +22,6 @@ public class UpbitAccountRequest implements AccountRequest {
 
     public static UpbitAccountRequest of(String client) {
         return new UpbitAccountRequest(client);
-    }
-
-    @Override
-    public OrderRequest toOrderRequest() {
-        return null;
     }
 
     public static class Builder {

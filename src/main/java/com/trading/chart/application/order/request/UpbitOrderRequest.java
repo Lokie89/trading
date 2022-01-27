@@ -62,7 +62,6 @@ public class UpbitOrderRequest implements OrderRequest {
         private Integer cash;
         private Double price;
         private Double volume;
-        private String orderType;
 
         private Builder(String client, String item, TradeType tradeType) {
             this.client = client;
@@ -71,22 +70,23 @@ public class UpbitOrderRequest implements OrderRequest {
         }
 
         public Builder cash(Integer cash) {
-            this.cash = cash;
+            if (Objects.nonNull(cash)) {
+                this.cash = cash;
+            }
             return this;
         }
 
         public Builder price(Double price) {
-            this.price = price;
+            if (Objects.nonNull(price)) {
+                this.price = price;
+            }
             return this;
         }
 
         public Builder volume(Double volume) {
-            this.volume = volume;
-            return this;
-        }
-
-        public Builder orderType(String orderType) {
-            this.orderType = orderType;
+            if (Objects.nonNull(volume)) {
+                this.volume = volume;
+            }
             return this;
         }
 

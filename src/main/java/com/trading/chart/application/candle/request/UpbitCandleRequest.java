@@ -1,6 +1,5 @@
 package com.trading.chart.application.candle.request;
 
-import com.trading.chart.application.chart.response.ChartResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;

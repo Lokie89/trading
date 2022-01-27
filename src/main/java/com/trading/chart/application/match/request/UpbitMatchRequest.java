@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * @author SeongRok.Oh
@@ -17,27 +18,27 @@ import java.util.Arrays;
 public class UpbitMatchRequest implements MatchRequest {
     private final String market;
     private final UpbitUnit unit;
-    private final TradeStrategy tradeStrategy;
     private final LocalDateTime date;
     private final Integer standard;
     private final Integer range;
+    private final TradeStrategy tradeStrategy;
     private final Integer matchMin;
     private final Integer matchMax;
 
     private UpbitMatchRequest(String market,
                               UpbitUnit unit,
-                              TradeStrategy tradeStrategy,
                               LocalDateTime date,
                               Integer standard,
                               Integer range,
+                              TradeStrategy tradeStrategy,
                               Integer matchMin,
                               Integer matchMax) {
         this.market = market;
         this.unit = unit;
-        this.tradeStrategy = tradeStrategy;
         this.date = date;
         this.standard = standard;
         this.range = range;
+        this.tradeStrategy = tradeStrategy;
         this.matchMin = matchMin;
         this.matchMax = matchMax;
     }
@@ -62,11 +63,11 @@ public class UpbitMatchRequest implements MatchRequest {
         private final String market;
         private final UpbitUnit unit;
         private final TradeStrategy tradeStrategy;
-        private LocalDateTime date;
-        private Integer standard;
-        private Integer range;
-        private Integer matchMin;
-        private Integer matchMax;
+        private LocalDateTime date = LocalDateTime.now();
+        private Integer standard = 0;
+        private Integer range = 0;
+        private Integer matchMin = 1;
+        private Integer matchMax = 1;
 
         private Builder(String market, UpbitUnit unit, TradeStrategy tradeStrategy) {
             this.market = market;
@@ -75,32 +76,42 @@ public class UpbitMatchRequest implements MatchRequest {
         }
 
         public Builder date(LocalDateTime date) {
-            this.date = date;
+            if (Objects.nonNull(date)) {
+                this.date = date;
+            }
             return this;
         }
 
         public Builder standard(Integer standard) {
-            this.standard = standard;
+            if (Objects.nonNull(standard)) {
+                this.standard = standard;
+            }
             return this;
         }
 
         public Builder range(Integer range) {
-            this.range = range;
+            if (Objects.nonNull(range)) {
+                this.range = range;
+            }
             return this;
         }
 
         public Builder matchMin(Integer matchMin) {
-            this.matchMin = matchMin;
+            if (Objects.nonNull(matchMin)) {
+                this.matchMin = matchMin;
+            }
             return this;
         }
 
         public Builder matchMax(Integer matchMax) {
-            this.matchMax = matchMax;
+            if (Objects.nonNull(matchMax)) {
+                this.matchMax = matchMax;
+            }
             return this;
         }
 
         public UpbitMatchRequest build() {
-            return new UpbitMatchRequest(market, unit, tradeStrategy, date, standard, range, matchMin, matchMax);
+            return new UpbitMatchRequest(market, unit, date, standard, range, tradeStrategy, matchMin, matchMax);
         }
     }
 }
