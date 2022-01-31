@@ -13,4 +13,7 @@ public interface OrderRequest {
     OrderListRequest toOrderListRequest();
     OrderResponse toOrderResponse();
     Boolean isBuyOrder();
+    String getCurrency();
+    Double getVolume();
+    Double getPrice();
 }

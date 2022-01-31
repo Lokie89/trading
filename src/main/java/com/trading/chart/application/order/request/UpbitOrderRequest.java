@@ -124,4 +124,9 @@ public class UpbitOrderRequest implements OrderRequest {
     public Boolean isBuyOrder() {
         return TradeType.BUY.equals(TradeType.fromString(side));
     }
+
+    @Override
+    public String getCurrency() {
+        return market.replace("KRW-","");
+    }
 }

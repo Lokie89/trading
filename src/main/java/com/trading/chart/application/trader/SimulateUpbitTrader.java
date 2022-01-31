@@ -35,12 +35,8 @@ public class SimulateUpbitTrader implements Trader {
 
     @Override
     public OrderResponse order(OrderRequest orderRequest) {
-        if (!(orderRequest instanceof UpbitOrderRequest)) {
-            throw new RuntimeException();
-        }
-        UpbitOrderRequest upbitOrderRequest = (UpbitOrderRequest) orderRequest;
         AccountResponses accountResponses = SIMULATE_ACCOUNT.get(orderRequest.toAccountRequest());
-        accountResponses.apply(upbitOrderRequest);
+        accountResponses.apply(orderRequest);
         return simulateUpbitOrder.order(orderRequest);
     }
 

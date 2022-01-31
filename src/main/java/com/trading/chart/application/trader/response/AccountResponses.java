@@ -1,5 +1,6 @@
 package com.trading.chart.application.trader.response;
 
+import com.trading.chart.application.order.request.OrderRequest;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,40 +32,40 @@ public class AccountResponses {
         return accounts.stream();
     }
 
-    public void apply(UpbitOrderRequest request) {
-        if (TradeType.BUY.equals(TradeType.fromString(request.getSide()))) {
+    public void apply(OrderRequest request) {
+        if (request.isBuyOrder()) {
             add(request);
         }
-        if (TradeType.SELL.equals(TradeType.fromString(request.getSide()))) {
+        if (!request.isBuyOrder()) {
             remove(request);
         }
     }
 
-    private void remove(UpbitOrderRequest request) {
-        final String currency = request.getMarket().replace("KRW-", "");
+    private void remove(OrderRequest request) {
+        final String currency = request.getCurrency();
         Optional<AccountResponse> optExisting = getAccount(currency);
         if (optExisting.isPresent()) {
             AccountResponse existing = optExisting.get();
             existing.sellBalance(request.getVolume());
-            Double total = request.getPrice() * request.getVolume();
             if (!existing.isOwn()) {
                 accounts.remove(existing);
             }
+            Double total = request.getPrice() * request.getVolume();
             earnCash(total);
         }
     }
 
-    private void add(UpbitOrderRequest request) {
-        final String currency = request.getMarket().replace("KRW-", "");
+    private void add(OrderRequest request) {
+        final String currency = request.getCurrency();
         final Double volume = Objects.isNull(request.getVolume()) ? 1 : request.getVolume();
         final Double price = Objects.isNull(request.getPrice()) ? 1 : request.getPrice();
         AccountResponse accountResponse = UpbitAccount.of(currency, volume, price);
         Optional<AccountResponse> optExisting = getAccount(currency);
-        useCash(volume * price);
+        Double total = price * volume;
+        useCash(total);
         if (optExisting.isPresent()) {
             AccountResponse existing = optExisting.get();
             Double existingTotal = existing.getBalance() * existing.getAvgBuyPrice();
-            Double total = price * volume;
             double totalVolume = existing.getBalance() + volume;
             accounts.add(
                     UpbitAccount.of(currency, totalVolume,

@@ -1,7 +1,6 @@
 package com.trading.chart.domain.user.response;
 
 import com.trading.chart.application.order.request.OrderRequest;
-import com.trading.chart.application.order.request.UpbitOrderRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 
 import java.util.Objects;
@@ -36,9 +35,8 @@ public class UpbitUserResponse {
 
     // 해당 계정의 buyingLimit 가 남았는지, cashAtOnce 이상 여유가 있는지
     public boolean isAvailableTrade(OrderRequest orderRequest) {
-        UpbitOrderRequest upbitOrderRequest = (UpbitOrderRequest) orderRequest;
         boolean remainCash = upbitAccounts.remainCash(cashAtOnce);
-        upbitAccounts.apply(upbitOrderRequest); // apply 메서드는 OrderRequest 로 만들지 않아 위에서 캐스팅함
+        upbitAccounts.apply(orderRequest);
         return upbitAccounts.usedCash() <= buyLimit && remainCash;
     }
 
