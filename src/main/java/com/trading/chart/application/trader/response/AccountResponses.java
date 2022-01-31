@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -55,14 +56,16 @@ public class AccountResponses {
 
     private void add(UpbitOrderRequest request) {
         final String currency = request.getMarket().replace("KRW-", "");
-        AccountResponse accountResponse = UpbitAccount.of(currency, request.getVolume(), request.getPrice());
+        final Double volume = Objects.isNull(request.getVolume()) ? 1 : request.getVolume();
+        final Double price = Objects.isNull(request.getPrice()) ? 1 : request.getPrice();
+        AccountResponse accountResponse = UpbitAccount.of(currency, volume, price);
         Optional<AccountResponse> optExisting = getAccount(currency);
-        useCash(request.getVolume() * request.getPrice());
+        useCash(volume * price);
         if (optExisting.isPresent()) {
             AccountResponse existing = optExisting.get();
             Double existingTotal = existing.getBalance() * existing.getAvgBuyPrice();
-            Double total = request.getPrice() * request.getVolume();
-            double totalVolume = existing.getBalance() + request.getVolume();
+            Double total = price * volume;
+            double totalVolume = existing.getBalance() + volume;
             accounts.add(
                     UpbitAccount.of(currency, totalVolume,
                             (existingTotal + total) / totalVolume)
@@ -93,5 +96,17 @@ public class AccountResponses {
 
     public int size() {
         return accounts.size();
+    }
+
+    public boolean remainCash(int compare) {
+        return getCash().getBalance() >= compare;
+    }
+
+    public double usedCash() {
+        return accounts.stream()
+                .filter(account -> !account.getCurrency().equals("KRW"))
+                .mapToDouble(account -> account.getBalance() * account.getAvgBuyPrice())
+                .sum()
+                ;
     }
 }

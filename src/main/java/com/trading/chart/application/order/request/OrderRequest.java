@@ -12,4 +12,5 @@ public interface OrderRequest {
     AccountRequest toAccountRequest();
     OrderListRequest toOrderListRequest();
     OrderResponse toOrderResponse();
+    Boolean isBuyOrder();
 }

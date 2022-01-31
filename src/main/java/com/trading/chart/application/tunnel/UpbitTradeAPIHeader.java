@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.trading.chart.common.ConvertType;
 import com.trading.chart.domain.user.UpbitUser;
-import com.trading.chart.repository.user.UserRepository;
+import com.trading.chart.repository.user.UpbitUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -27,18 +27,18 @@ import java.util.UUID;
 @Component
 public class UpbitTradeAPIHeader implements TradeAPIHeader {
 
-    private final UserRepository userRepository;
+    private final UpbitUserRepository upbitUserRepository;
 
     @Override
     public HttpHeaders getHeaders(String id) {
-        UpbitUser upbitUser = userRepository.findById(id).orElseThrow(RuntimeException::new);
+        UpbitUser upbitUser = upbitUserRepository.findById(id).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());
     }
 
     @Override
     public HttpHeaders getHeaders(String id, Object data) {
-        UpbitUser upbitUser = userRepository.findById(id).orElseThrow(RuntimeException::new);
+        UpbitUser upbitUser = upbitUserRepository.findById(id).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         includeToken(tokenCreatorBuilder, data);
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());

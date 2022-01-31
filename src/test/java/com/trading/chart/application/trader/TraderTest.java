@@ -3,6 +3,7 @@ package com.trading.chart.application.trader;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.AccountResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,8 @@ public class TraderTest {
         final String client = "tjdfhrdk10@naver.com";
         AccountRequest accountRequest = UpbitAccountRequest.builder(client)
                 .build();
-        assertTrue(upbitTrader.getAccounts(accountRequest).stream()
+        AccountResponses responses = upbitTrader.getAccounts(accountRequest);
+        assertTrue(responses.stream()
                 .anyMatch(AccountResponse::isOwn));
     }
 

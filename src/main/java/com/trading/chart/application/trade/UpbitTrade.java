@@ -1,9 +1,9 @@
 package com.trading.chart.application.trade;
 
 import com.trading.chart.application.match.Match;
-import com.trading.chart.application.order.Order;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
+import com.trading.chart.application.trader.Trader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 public class UpbitTrade implements Trade {
 
     private final Match upbitMatch;
-    private final Order upbitOrder;
+    private final Trader upbitTrader;
 
     @Override
     public OrderResponse trade(TradeRequest request) {
         boolean isMatched = upbitMatch.match(request.toMatchRequest());
         if (isMatched) {
-            return upbitOrder.order(request.toOrderRequest());
+            return upbitTrader.order(request.toOrderRequest());
         }
         return null;
     }

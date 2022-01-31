@@ -2,9 +2,11 @@ package com.trading.chart.application.order.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.chart.application.order.response.UpbitOrderResponse;
+import com.trading.chart.application.trade.Trade;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -32,9 +34,14 @@ public class UpbitOrderRequest implements OrderRequest {
         this.client = client;
         this.market = item;
         this.side = tradeType.getSide();
-        this.price = price;
-        this.volume = Objects.isNull(volume) ? cash / price : volume;
-        this.ord_type = Objects.isNull(price) ? tradeType.getUpbitOrderType() : "limit";
+        this.price = TradeType.BUY.equals(tradeType) ?
+                (Objects.isNull(price) ? Double.valueOf(cash) : price) :
+                (Objects.isNull(cash) ? null : cash / volume);
+        this.volume = TradeType.BUY.equals(tradeType) ?
+                (Objects.isNull(price) ? null : cash / price)
+                : volume;
+        this.ord_type = Objects.nonNull(price) && Objects.nonNull(volume) ? "limit" : tradeType.getUpbitOrderType();
+        validateTradeResources(tradeType);
     }
 
     public static Builder builder(String client, String item, TradeType tradeType) {
@@ -54,6 +61,15 @@ public class UpbitOrderRequest implements OrderRequest {
                 .build();
     }
 
+    private void validateTradeResources(TradeType tradeType) {
+        if (TradeType.BUY.equals(tradeType) && Objects.isNull(this.price)) {
+            throw new RuntimeException(); // TODO : Custom Exception
+        }
+        if (TradeType.SELL.equals(tradeType) && Objects.isNull(this.volume)) {
+            throw new RuntimeException(); // TODO : Custom Exception
+        }
+    }
+
     public static class Builder {
         private final String client;
         private final String item;
@@ -67,6 +83,9 @@ public class UpbitOrderRequest implements OrderRequest {
             this.client = client;
             this.item = item;
             this.tradeType = tradeType;
+            if (TradeType.BUY.equals(tradeType)) {
+                this.cash = 5000;
+            }
         }
 
         public Builder cash(Integer cash) {
@@ -99,5 +118,10 @@ public class UpbitOrderRequest implements OrderRequest {
     public UpbitOrderResponse toOrderResponse() {
         return new UpbitOrderResponse("", TradeType.fromString(side), ord_type,
                 price, UpbitOrderState.DONE, market, LocalDateTime.now().toString(), volume);
+    }
+
+    @Override
+    public Boolean isBuyOrder() {
+        return TradeType.BUY.equals(TradeType.fromString(side));
     }
 }

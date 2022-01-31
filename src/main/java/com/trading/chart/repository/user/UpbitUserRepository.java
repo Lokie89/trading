@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author SeongRok.Oh
  * @since 2021/11/08
  */
-public interface UserRepository extends JpaRepository<UpbitUser,String> {
+public interface UpbitUserRepository extends JpaRepository<UpbitUser,String> {
 }
