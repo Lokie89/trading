@@ -120,11 +120,13 @@ public class UpbitOrderRequest implements OrderRequest {
                 price, UpbitOrderState.DONE, market, LocalDateTime.now().toString(), volume);
     }
 
+    @JsonIgnore
     @Override
     public Boolean isBuyOrder() {
         return TradeType.BUY.equals(TradeType.fromString(side));
     }
 
+    @JsonIgnore
     @Override
     public String getCurrency() {
         return market.replace("KRW-","");

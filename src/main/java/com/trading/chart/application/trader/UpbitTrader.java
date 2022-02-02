@@ -14,6 +14,7 @@ import com.trading.chart.repository.user.UpbitUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -45,20 +46,19 @@ public class UpbitTrader implements Trader {
     private AccountResponses getAccounts(String client) {
         String response = callAPI.get(accountUrl, upbitTradeAPIHeader.getHeaders(client));
         UpbitAccount[] accounts = ConvertType.stringToType(response, UpbitAccount[].class);
-        return AccountResponses.of(Arrays.asList(accounts));
+        return AccountResponses.of(new ArrayList<>(Arrays.asList(accounts)));
     }
 
     private void validateAvailableTrade(OrderRequest orderRequest) {
         final String client = orderRequest.getClient();
         AccountResponses accounts = getAccounts(client);
         UpbitUserResponse user = userRepository.findById(client).orElseThrow(RuntimeException::new).toDto(accounts);
-        if (user.isTradeStatus(orderRequest)) {
+        if (!user.isTradeStatus(orderRequest)) {
             throw new RuntimeException(); // TODO : Custom Exception;
         }
-        if (user.isAvailableTrade(orderRequest)) {
+        if (!user.isAvailableTrade(orderRequest)) {
             throw new RuntimeException(); // TODO : Custom Exception;
         }
     }
-
 
 }

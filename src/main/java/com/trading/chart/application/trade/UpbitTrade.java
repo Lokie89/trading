@@ -20,7 +20,7 @@ public class UpbitTrade implements Trade {
 
     @Override
     public OrderResponse trade(TradeRequest request) {
-        boolean isMatched = upbitMatch.match(request.toMatchRequest());
+        boolean isMatched = upbitMatch.match(request.toMatchRequests());
         if (isMatched) {
             return upbitTrader.order(request.toOrderRequest());
         }

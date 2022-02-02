@@ -5,35 +5,38 @@ import com.trading.chart.domain.user.response.UpbitUserResponse;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
  * @since 2021/11/07
  */
-@Getter
 @Entity
 public class UpbitUser {
     @Id
     private String id;
     private String password;
+    @Getter
     private String upbitAccessKey;
+    @Getter
     private String upbitSecretKey;
 
-    @ColumnDefault(value = "false")
+    @ColumnDefault(value = "true")
     @Column(name = "buying")
     private Boolean isBuying;
-    // 계정마다 매수 한도 ( 0 -> 최대 )
-    @ColumnDefault(value = "0")
+    @ColumnDefault(value = "0x7fffffff")
     private Integer buyLimit;
 
     @ColumnDefault(value = "5000")
     private Integer cashAtOnce;
-    @ColumnDefault(value = "false")
+    @ColumnDefault(value = "true")
     @Column(name = "selling")
     private Boolean isSelling;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UpbitTradeResource> tradeResources;
 
     public UpbitUserResponse toDto(AccountResponses upbitAccounts) {
         return UpbitUserResponse.builder()
@@ -43,6 +46,10 @@ public class UpbitUser {
                 .buyLimit(buyLimit)
                 .cashAtOnce(cashAtOnce)
                 .accounts(upbitAccounts)
+                .tradeResources(
+                        tradeResources.stream()
+                                .map(UpbitTradeResource::toDto)
+                                .collect(Collectors.toList()))
                 .build();
     }
 }

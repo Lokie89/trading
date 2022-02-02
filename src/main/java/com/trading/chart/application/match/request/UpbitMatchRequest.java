@@ -19,8 +19,8 @@ public class UpbitMatchRequest implements MatchRequest {
     private final String market;
     private final UpbitUnit unit;
     private final LocalDateTime date;
-    private final Integer standard;
-    private final Integer range;
+    private final Integer matchStandard;
+    private final Integer matchRange;
     private final TradeStrategy tradeStrategy;
     private final Integer matchMin;
     private final Integer matchMax;
@@ -28,16 +28,16 @@ public class UpbitMatchRequest implements MatchRequest {
     private UpbitMatchRequest(String market,
                               UpbitUnit unit,
                               LocalDateTime date,
-                              Integer standard,
-                              Integer range,
+                              Integer matchStandard,
+                              Integer matchRange,
                               TradeStrategy tradeStrategy,
                               Integer matchMin,
                               Integer matchMax) {
         this.market = market;
         this.unit = unit;
         this.date = date;
-        this.standard = standard;
-        this.range = range;
+        this.matchStandard = matchStandard;
+        this.matchRange = matchRange;
         this.tradeStrategy = tradeStrategy;
         this.matchMin = matchMin;
         this.matchMax = matchMax;
@@ -49,7 +49,7 @@ public class UpbitMatchRequest implements MatchRequest {
 
     @Override
     public ChartRequest toChartRequest() {
-        return SimpleUpbitChartRequest.builder(market, unit).count(standard + range).to(date).build();
+        return SimpleUpbitChartRequest.builder(market, unit).count(matchStandard + matchRange).to(date).build();
     }
 
     @Override
@@ -64,8 +64,8 @@ public class UpbitMatchRequest implements MatchRequest {
         private final UpbitUnit unit;
         private final TradeStrategy tradeStrategy;
         private LocalDateTime date = LocalDateTime.now();
-        private Integer standard = 0;
-        private Integer range = 0;
+        private Integer matchStandard = 0;
+        private Integer matchRange = 1;
         private Integer matchMin = 1;
         private Integer matchMax = 1;
 
@@ -82,16 +82,16 @@ public class UpbitMatchRequest implements MatchRequest {
             return this;
         }
 
-        public Builder standard(Integer standard) {
-            if (Objects.nonNull(standard)) {
-                this.standard = standard;
+        public Builder matchStandard(Integer matchStandard) {
+            if (Objects.nonNull(matchStandard)) {
+                this.matchStandard = matchStandard;
             }
             return this;
         }
 
-        public Builder range(Integer range) {
-            if (Objects.nonNull(range)) {
-                this.range = range;
+        public Builder matchRange(Integer matchRange) {
+            if (Objects.nonNull(matchRange)) {
+                this.matchRange = matchRange;
             }
             return this;
         }
@@ -111,7 +111,7 @@ public class UpbitMatchRequest implements MatchRequest {
         }
 
         public UpbitMatchRequest build() {
-            return new UpbitMatchRequest(market, unit, date, standard, range, tradeStrategy, matchMin, matchMax);
+            return new UpbitMatchRequest(market, unit, date, matchStandard, matchRange, tradeStrategy, matchMin, matchMax);
         }
     }
 }

@@ -2,12 +2,16 @@ package com.trading.chart.application.trade;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
-import com.trading.chart.application.chart.request.*;
+import com.trading.chart.application.chart.request.ChartRequest;
+import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
+import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
+import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
+import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +41,7 @@ public class UpbitTradeTest {
         final UpbitUnit unit = UpbitUnit.DAY;
         final TradeStrategy strategy = TradeStrategy.LOWER_BOLLINGERBANDS;
         final String client = "tjdfhrdk10@naver.com";
-        final TradeType side = TradeType.BUY;
+        final TradeType tradeType = TradeType.BUY;
         final LocalDateTime date = LocalDateTime.of(2021, 12, 4, 9, 0, 1);
         final int count = 1;
 
@@ -50,8 +54,12 @@ public class UpbitTradeTest {
                 .build();
 
         upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
-        TradeRequest tradeRequest = UpbitTradeRequest.builder(market, unit, strategy, client, side)
+        TradeRequest tradeRequest = UpbitTradeRequest.builder(client, tradeType, market)
+                .tradeResources(UpbitTradeResourceResponse.builder(tradeType, strategy, unit)
+                        .build())
                 .date(date)
+                .price(5000.0)
+                .volume(1.0)
                 .build();
 
         OrderResponse orderResponse = upbitTrade.trade(tradeRequest);

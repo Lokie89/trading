@@ -1,8 +1,13 @@
 package com.trading.chart.domain.user.response;
 
 import com.trading.chart.application.order.request.OrderRequest;
+import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.application.trade.request.TradeRequest;
+import com.trading.chart.application.trade.request.UpbitTradeRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,15 +21,19 @@ public class UpbitUserResponse {
     private final Integer buyLimit;
     private final Integer cashAtOnce;
     private final Boolean isSelling;
+    private final List<UpbitTradeResourceResponse> tradeResources;
     private final AccountResponses upbitAccounts;
 
     private UpbitUserResponse(String id, Boolean isBuying, Integer buyLimit,
-                              Integer cashAtOnce, Boolean isSelling, AccountResponses upbitAccounts) {
+                              Integer cashAtOnce, Boolean isSelling,
+                              List<UpbitTradeResourceResponse> tradeResources,
+                              AccountResponses upbitAccounts) {
         this.id = id;
         this.isBuying = isBuying;
         this.buyLimit = buyLimit;
         this.cashAtOnce = cashAtOnce;
         this.isSelling = isSelling;
+        this.tradeResources = tradeResources;
         this.upbitAccounts = upbitAccounts;
     }
 
@@ -40,6 +49,14 @@ public class UpbitUserResponse {
         return upbitAccounts.usedCash() <= buyLimit && remainCash;
     }
 
+    public TradeRequest toTradeRequest(String market, LocalDateTime date) {
+        return UpbitTradeRequest.builder(id, TradeType.BUY, market)
+                .date(date)
+                .tradeResources(tradeResources)
+                .price(Double.valueOf(buyLimit))
+                .build();
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -50,6 +67,7 @@ public class UpbitUserResponse {
         private Boolean isBuying = true;
         private Boolean isSelling = true;
         private Integer buyLimit = Integer.MAX_VALUE;
+        private List<UpbitTradeResourceResponse> tradeResources;
         private AccountResponses upbitAccounts;
 
         public Builder id(String id) {
@@ -94,9 +112,16 @@ public class UpbitUserResponse {
             return this;
         }
 
+        public Builder tradeResources(List<UpbitTradeResourceResponse> resources) {
+            if (Objects.nonNull(resources) && resources.size() > 0) {
+                this.tradeResources = resources;
+            }
+            return this;
+        }
+
         public UpbitUserResponse build() {
-            return new UpbitUserResponse(this.id, this.isBuying, this.buyLimit,
-                    this.cashAtOnce, this.isSelling, this.upbitAccounts);
+            return new UpbitUserResponse(this.id, this.isBuying, this.buyLimit, this.cashAtOnce,
+                    this.isSelling, this.tradeResources, this.upbitAccounts);
         }
     }
 

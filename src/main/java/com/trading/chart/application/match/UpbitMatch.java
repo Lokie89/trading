@@ -6,6 +6,8 @@ import com.trading.chart.application.match.request.MatchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author SeongRok.Oh
  * @since 2021/12/04
@@ -17,8 +19,10 @@ public class UpbitMatch implements Match {
     private final Chart upbitChart;
 
     @Override
-    public boolean match(MatchRequest request) {
-        ChartRequest chartRequest = request.toChartRequest();
-        return request.test(upbitChart.getChart(chartRequest));
+    public boolean match(List<MatchRequest> request) {
+        return request.stream().allMatch(matchRequest -> {
+            ChartRequest chartRequest = matchRequest.toChartRequest();
+            return matchRequest.test(upbitChart.getChart(chartRequest));
+        });
     }
 }

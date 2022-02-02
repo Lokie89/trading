@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * @author SeongRok.Oh
@@ -42,24 +43,24 @@ public class UpbitMatchTest {
         upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         MatchRequest bollingerBandsMatchRequest
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
-                .standard(0)
-                .range(2)
+                .matchStandard(0)
+                .matchRange(2)
                 .matchMin(1)
                 .matchMax(30)
                 .date(lastTime)
                 .build();
-        boolean matchTest = upbitMatch.match(bollingerBandsMatchRequest);
+        boolean matchTest = upbitMatch.match(Collections.singletonList(bollingerBandsMatchRequest));
         Assertions.assertTrue(matchTest);
 
         MatchRequest bollingerBandsMatchRequest2
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
-                .standard(0)
-                .range(3)
+                .matchStandard(0)
+                .matchRange(3)
                 .matchMin(3)
                 .matchMax(30)
                 .date(lastTime)
                 .build();
-        boolean matchTest2 = upbitMatch.match(bollingerBandsMatchRequest2);
+        boolean matchTest2 = upbitMatch.match(Collections.singletonList(bollingerBandsMatchRequest2));
         Assertions.assertFalse(matchTest2);
     }
 
@@ -74,24 +75,24 @@ public class UpbitMatchTest {
         upbitChart.drawRsi(drawRsiRequest);
         MatchRequest rsiMatchRequest
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_RSI30)
-                .standard(0)
-                .range(2)
+                .matchStandard(0)
+                .matchRange(2)
                 .matchMin(1)
                 .matchMax(30)
                 .date(lastTime)
                 .build();
-        boolean matchTest = upbitMatch.match(rsiMatchRequest);
+        boolean matchTest = upbitMatch.match(Collections.singletonList(rsiMatchRequest));
         Assertions.assertTrue(matchTest);
 
         MatchRequest rsiMatchRequest2
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_RSI30)
-                .standard(0)
-                .range(5)
+                .matchStandard(0)
+                .matchRange(5)
                 .matchMin(5)
                 .matchMax(30)
                 .date(lastTime)
                 .build();
-        boolean matchTest2 = upbitMatch.match(rsiMatchRequest2);
+        boolean matchTest2 = upbitMatch.match(Collections.singletonList(rsiMatchRequest2));
         Assertions.assertFalse(matchTest2);
     }
 
