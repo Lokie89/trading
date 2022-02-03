@@ -36,7 +36,7 @@ public class UpbitOrderTest {
         final String market = "KRW-BTC";
         final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
-        final Double price = 1.5;
+        final Double price = 5100.0;
         OrderRequest request = UpbitOrderRequest
                 .builder("tjdfhrdk10@naver.com", market, tradeType)
                 .cash(cash)
@@ -62,7 +62,7 @@ public class UpbitOrderTest {
         final String market = "KRW-BTC";
         final TradeType tradeType = TradeType.BUY;
         final Integer cash = 5100;
-        final Double buyPrice = 1.5;
+        final Double buyPrice = 510.0;
 
         final String client = "million";
         OrderRequest buyRequest = UpbitOrderRequest.builder(client, market, tradeType)
@@ -77,7 +77,7 @@ public class UpbitOrderTest {
         assertEquals(2, accountResponses.size());
 
         final TradeType sellTradeType = TradeType.SELL;
-        final Double sellPrice = 1.7;
+        final Double sellPrice = 530.0;
 
         OrderRequest sellRequest = UpbitOrderRequest.builder(client, market, sellTradeType)
                 .price(sellPrice)

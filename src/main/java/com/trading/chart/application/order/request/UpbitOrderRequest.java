@@ -36,11 +36,11 @@ public class UpbitOrderRequest implements OrderRequest {
         this.side = tradeType.getSide();
         this.price = TradeType.BUY.equals(tradeType) ?
                 (Objects.isNull(price) ? Double.valueOf(cash) : price) :
-                (Objects.isNull(cash) ? null : cash / volume);
+                (Objects.isNull(price) ? null : price);
         this.volume = TradeType.BUY.equals(tradeType) ?
                 (Objects.isNull(price) ? null : cash / price)
                 : volume;
-        this.ord_type = Objects.nonNull(price) && Objects.nonNull(volume) ? "limit" : tradeType.getUpbitOrderType();
+        this.ord_type = Objects.nonNull(this.price) && Objects.nonNull(this.volume) ? "limit" : tradeType.getUpbitOrderType();
         validateTradeResources(tradeType);
     }
 

@@ -7,7 +7,10 @@ import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartR
 import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
 import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.application.match.request.TradeStrategy;
+import com.trading.chart.application.order.Order;
+import com.trading.chart.application.order.request.OrderCancelRequest;
 import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.application.order.request.UpbitOrderCancelRequest;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
@@ -19,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author SeongRok.Oh
@@ -33,6 +38,9 @@ public class UpbitTradeTest {
 
     @Autowired
     Trade upbitTrade;
+
+    @Autowired
+    Order upbitOrder;
 
     @DisplayName("자동 트레이드 하기 테스트")
     @Test
@@ -62,7 +70,16 @@ public class UpbitTradeTest {
                 .volume(1.0)
                 .build();
 
-        OrderResponse orderResponse = upbitTrade.trade(tradeRequest);
-        Assertions.assertEquals(market, orderResponse.getMarket());
+        OrderResponse response = upbitTrade.trade(tradeRequest);
+        Assertions.assertEquals(market, response.getMarket());
+
+        String uuid = response.getUuid();
+        OrderCancelRequest cancelRequest = UpbitOrderCancelRequest.builder()
+                .client("tjdfhrdk10@naver.com")
+                .uuid(uuid)
+                .build();
+
+        OrderResponse cancelResponse = upbitOrder.cancelOrder(cancelRequest);
+        assertEquals(uuid, cancelResponse.getUuid());
     }
 }
