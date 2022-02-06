@@ -25,6 +25,16 @@ public enum TradeStrategy {
                     ;
         }
     },
+
+    HIGHER_BOLLINGERBANDS() {
+        @Override
+        public Boolean[] test(ChartResponses charts) {
+            return charts.stream()
+                    .map((chart) -> chart.getUpperBollingerBand() <= chart.getTradePrice())
+                    .toArray(Boolean[]::new)
+                    ;
+        }
+    },
     ;
 
     public abstract Boolean[] test(ChartResponses charts);

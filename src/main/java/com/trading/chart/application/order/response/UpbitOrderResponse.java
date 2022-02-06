@@ -1,5 +1,6 @@
 package com.trading.chart.application.order.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderState;
@@ -63,12 +64,15 @@ public class UpbitOrderResponse implements OrderResponse {
         this.volume = volume;
     }
 
-    public boolean equalsOnMarketAndSide(OrderResponse orderResponse) {
-        if (!(orderResponse instanceof UpbitOrderResponse)) {
-            return false;
-        }
-        UpbitOrderResponse other = (UpbitOrderResponse) orderResponse;
-        return this.side.equals(other.side) && this.market.equals(other.market);
+    @JsonIgnore
+    @Override
+    public Boolean isBuyOrder() {
+        return TradeType.BUY.equals(side);
+    }
 
+    @JsonIgnore
+    @Override
+    public String getCurrency() {
+        return market.replace("KRW-","");
     }
 }

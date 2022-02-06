@@ -3,6 +3,8 @@ package com.trading.chart.application.trader.response;
 import com.trading.chart.application.order.request.OrderRequest;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderRequest;
+import com.trading.chart.application.order.response.OrderResponse;
+import com.trading.chart.application.trade.request.TradeRequest;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -32,33 +34,33 @@ public class AccountResponses {
         return accounts.stream();
     }
 
-    public void apply(OrderRequest request) {
-        if (request.isBuyOrder()) {
-            add(request);
+    public void apply(OrderResponse response) {
+        if (response.isBuyOrder()) {
+            add(response);
         }
-        if (!request.isBuyOrder()) {
-            remove(request);
+        if (!response.isBuyOrder()) {
+            remove(response);
         }
     }
 
-    private void remove(OrderRequest request) {
-        final String currency = request.getCurrency();
+    private void remove(OrderResponse response) {
+        final String currency = response.getCurrency();
         Optional<AccountResponse> optExisting = getAccount(currency);
         if (optExisting.isPresent()) {
             AccountResponse existing = optExisting.get();
-            existing.sellBalance(request.getVolume());
+            existing.sellBalance(response.getVolume());
             if (!existing.isOwn()) {
                 accounts.remove(existing);
             }
-            Double total = request.getPrice() * request.getVolume();
+            Double total = response.getPrice() * response.getVolume();
             earnCash(total);
         }
     }
 
-    private void add(OrderRequest request) {
-        final String currency = request.getCurrency();
-        final Double volume = Objects.isNull(request.getVolume()) ? 1 : request.getVolume();
-        final Double price = Objects.isNull(request.getPrice()) ? 1 : request.getPrice();
+    private void add(OrderResponse response) {
+        final String currency = response.getCurrency();
+        final Double volume = Objects.isNull(response.getVolume()) ? 1 : response.getVolume();
+        final Double price = Objects.isNull(response.getPrice()) ? 1 : response.getPrice();
         AccountResponse accountResponse = UpbitAccount.of(currency, volume, price);
         Optional<AccountResponse> optExisting = getAccount(currency);
         Double total = price * volume;
@@ -109,5 +111,9 @@ public class AccountResponses {
                 .mapToDouble(account -> account.getBalance() * account.getAvgBuyPrice())
                 .sum()
                 ;
+    }
+
+    public boolean isAffordable(TradeRequest tradeRequest) {
+        return tradeRequest.isLessPrice(getCash());
     }
 }

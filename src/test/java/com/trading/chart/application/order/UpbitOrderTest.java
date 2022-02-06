@@ -69,7 +69,7 @@ public class UpbitOrderTest {
                 .cash(cash)
                 .price(buyPrice)
                 .build();
-        OrderResponse buyResponse = simulateUpbitTrader.order(buyRequest);
+        OrderResponse buyResponse = simulateUpbitOrder.order(buyRequest);
         AccountRequest accountRequest = UpbitAccountRequest.builder(client)
                 .build();
         AccountResponses accountResponses = simulateUpbitTrader.getAccounts(accountRequest);
@@ -83,7 +83,7 @@ public class UpbitOrderTest {
                 .price(sellPrice)
                 .volume(cash / buyPrice).build();
 
-        simulateUpbitTrader.order(sellRequest);
+        simulateUpbitOrder.order(sellRequest);
         OrderListRequest listRequest = sellRequest.toOrderListRequest();
         assertEquals(2, simulateUpbitOrder.orderList(listRequest).size());
         assertEquals(1, accountResponses.size());

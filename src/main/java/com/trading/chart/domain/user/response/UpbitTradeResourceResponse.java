@@ -44,6 +44,10 @@ public class UpbitTradeResourceResponse {
                 .build();
     }
 
+    public boolean isEqualsTradeType(TradeType tradeType){
+        return this.tradeType.equals(tradeType);
+    }
+
     public static Builder builder(TradeType tradeType, TradeStrategy strategy, UpbitUnit unit) {
         return new Builder(tradeType, strategy, unit);
     }
@@ -86,7 +90,7 @@ public class UpbitTradeResourceResponse {
 
         public Builder matchMax(Integer matchMax) {
             if (Objects.nonNull(matchMax)) {
-                this.matchStandard = matchMax;
+                this.matchMax = matchMax;
             }
             return this;
         }

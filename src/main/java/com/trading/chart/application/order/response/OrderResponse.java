@@ -6,4 +6,8 @@ public interface OrderResponse {
     String getUuid();
     String getMarket();
     OrderState getState();
+    Boolean isBuyOrder();
+    String getCurrency();
+    Double getVolume();
+    Double getPrice();
 }

@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author SeongRok.Oh
@@ -21,11 +23,16 @@ public class UpbitTradeItem implements TradeItem {
 
     private final String url = "https://api.upbit.com/v1/market/all?isDetails=true";
     private final CallAPI callAPI;
+    private List<ItemResponse> cache;
 
     @Override
     public List<ItemResponse> getItems() {
+        if(Objects.nonNull(cache) && cache.size() > 0){
+            return cache;
+        }
         String response = callAPI.get(url, HttpHeaders.EMPTY);
         UpbitItem[] candles = ConvertType.stringToType(response, UpbitItem[].class);
-        return Arrays.asList(candles);
+        cache = Arrays.asList(candles);
+        return cache;
     }
 }

@@ -7,4 +7,5 @@ package com.trading.chart.application.item.response;
 public interface ItemResponse {
     String getName();
     ItemStatus getStatus();
+    boolean isKrwMarket();
 }

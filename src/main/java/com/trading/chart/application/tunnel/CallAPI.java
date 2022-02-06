@@ -10,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 /**
  * @author SeongRok.Oh
  * @since 2021/11/04
@@ -36,10 +38,11 @@ public class CallAPI {
     }
 
     private String callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body) {
-        log.info("CallAPI.callApiEndpoint url : " + url);
+//        log.info("CallAPI.callApiEndpoint url : " + url);
         String response = null;
         try {
-            String jsonValue = objectMapper.writeValueAsString(body);
+            String jsonValue = Objects.nonNull(body) ? objectMapper.writeValueAsString(body) : null;
+            log.info("CallAPI.callApiEndpoint url : " + url + (Objects.nonNull(jsonValue) ? " body : " + jsonValue : ""));
             response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(jsonValue, httpHeaders), String.class).getBody();
         } catch (RuntimeException | JsonProcessingException e) {
             e.printStackTrace();

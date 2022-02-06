@@ -2,11 +2,7 @@ package com.trading.chart.application.order.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.chart.application.order.response.UpbitOrderResponse;
-import com.trading.chart.application.trade.Trade;
-import com.trading.chart.application.trader.request.AccountRequest;
-import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import lombok.Getter;
-import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -46,11 +42,6 @@ public class UpbitOrderRequest implements OrderRequest {
 
     public static Builder builder(String client, String item, TradeType tradeType) {
         return new Builder(client, item, tradeType);
-    }
-
-    @Override
-    public AccountRequest toAccountRequest() {
-        return UpbitAccountRequest.of(client);
     }
 
     @Override
@@ -120,15 +111,4 @@ public class UpbitOrderRequest implements OrderRequest {
                 price, UpbitOrderState.DONE, market, LocalDateTime.now().toString(), volume);
     }
 
-    @JsonIgnore
-    @Override
-    public Boolean isBuyOrder() {
-        return TradeType.BUY.equals(TradeType.fromString(side));
-    }
-
-    @JsonIgnore
-    @Override
-    public String getCurrency() {
-        return market.replace("KRW-","");
-    }
 }

@@ -1,60 +1,68 @@
 package com.trading.chart.domain.user.response;
 
-import com.trading.chart.application.order.request.OrderRequest;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
  * @since 2022/01/29
  */
-public class UpbitUserResponse {
+public class UpbitUserResponse implements UserResponse {
 
     private final String id;
     private final Boolean isBuying;
     private final Integer buyLimit;
     private final Integer cashAtOnce;
     private final Boolean isSelling;
+    private final AccountResponses accounts;
     private final List<UpbitTradeResourceResponse> tradeResources;
-    private final AccountResponses upbitAccounts;
 
     private UpbitUserResponse(String id, Boolean isBuying, Integer buyLimit,
                               Integer cashAtOnce, Boolean isSelling,
-                              List<UpbitTradeResourceResponse> tradeResources,
-                              AccountResponses upbitAccounts) {
+                              AccountResponses accounts,
+                              List<UpbitTradeResourceResponse> tradeResources) {
         this.id = id;
         this.isBuying = isBuying;
         this.buyLimit = buyLimit;
         this.cashAtOnce = cashAtOnce;
         this.isSelling = isSelling;
+        this.accounts = accounts;
         this.tradeResources = tradeResources;
-        this.upbitAccounts = upbitAccounts;
     }
 
     // 해당 계정이 isBuying or isSelling 이 false 일 때
-    public boolean isTradeStatus(OrderRequest orderRequest) {
-        return (orderRequest.isBuyOrder() && isBuying) || (!orderRequest.isBuyOrder() && isSelling);
+    @Override
+    public boolean isTradeStatus(TradeRequest tradeRequest) {
+        return (tradeRequest.isBuyOrder() && isBuying) || (!tradeRequest.isSellOrder() && isSelling);
     }
 
-    // 해당 계정의 buyingLimit 가 남았는지, cashAtOnce 이상 여유가 있는지
-    public boolean isAvailableTrade(OrderRequest orderRequest) {
-        boolean remainCash = upbitAccounts.remainCash(cashAtOnce);
-        upbitAccounts.apply(orderRequest);
-        return upbitAccounts.usedCash() <= buyLimit && remainCash;
+    @Override
+    public boolean isLimited() {
+        return buyLimit <= accounts.usedCash() + cashAtOnce;
     }
 
-    public TradeRequest toTradeRequest(String market, LocalDateTime date) {
-        return UpbitTradeRequest.builder(id, TradeType.BUY, market)
+    @Override
+    public TradeRequest toTradeRequest(String market, LocalDateTime date, TradeType tradeType) {
+        return UpbitTradeRequest.builder(id, tradeType, market)
                 .date(date)
-                .tradeResources(tradeResources)
-                .price(Double.valueOf(buyLimit))
+                .tradeResources(tradeResources.stream()
+                        .filter(tradeResource -> tradeResource.isEqualsTradeType(tradeType))
+                        .collect(Collectors.toList()))
+                .cash(cashAtOnce)
                 .build();
+    }
+
+    @Override
+    public boolean isAvailableTrade() {
+        return accounts.isAffordable(toTradeRequest(null, null, TradeType.BUY));
     }
 
     public static Builder builder() {
@@ -67,8 +75,8 @@ public class UpbitUserResponse {
         private Boolean isBuying = true;
         private Boolean isSelling = true;
         private Integer buyLimit = Integer.MAX_VALUE;
+        private AccountResponses accounts;
         private List<UpbitTradeResourceResponse> tradeResources;
-        private AccountResponses upbitAccounts;
 
         public Builder id(String id) {
             if (Objects.nonNull(id)) {
@@ -105,9 +113,16 @@ public class UpbitUserResponse {
             return this;
         }
 
-        public Builder accounts(AccountResponses upbitAccounts) {
-            if (Objects.nonNull(upbitAccounts)) {
-                this.upbitAccounts = upbitAccounts;
+        public Builder accounts(AccountResponses accounts) {
+            if (Objects.nonNull(accounts)) {
+                this.accounts = accounts;
+            }
+            return this;
+        }
+
+        public Builder tradeResources(UpbitTradeResourceResponse... resources) {
+            if (Objects.nonNull(resources) && resources.length > 0) {
+                this.tradeResources = Arrays.asList(resources);
             }
             return this;
         }
@@ -121,7 +136,7 @@ public class UpbitUserResponse {
 
         public UpbitUserResponse build() {
             return new UpbitUserResponse(this.id, this.isBuying, this.buyLimit, this.cashAtOnce,
-                    this.isSelling, this.tradeResources, this.upbitAccounts);
+                    this.isSelling, this.accounts, this.tradeResources);
         }
     }
 

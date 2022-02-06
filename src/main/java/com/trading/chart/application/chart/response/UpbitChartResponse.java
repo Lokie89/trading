@@ -32,11 +32,11 @@ public class UpbitChartResponse implements ChartResponse {
 
     private Set<ChartPriceLine> priceLines;
 
-    private Double upperBollingerBand;
-    private Double downBollingerBand;
+    private double upperBollingerBand;
+    private double downBollingerBand;
 
-    private Double rsi;
-    private Double rsiSignal;
+    private double rsi;
+    private double rsiSignal;
 
 
     public UpbitChartResponse(String market, LocalDateTime time, UpbitUnit unit) {

@@ -1,10 +1,17 @@
 package com.trading.chart.application.trade.request;
 
+import com.trading.chart.application.candle.request.UpbitUnit;
+import com.trading.chart.application.chart.request.ChartRequest;
+import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
 import com.trading.chart.application.match.request.MatchRequest;
 import com.trading.chart.application.order.request.OrderRequest;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderRequest;
+import com.trading.chart.application.trader.request.AccountRequest;
+import com.trading.chart.application.trader.request.UpbitAccountRequest;
+import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,22 +26,26 @@ import java.util.stream.Collectors;
  */
 public class UpbitTradeRequest implements TradeRequest {
 
+    @Getter
     private final String client;
     private final TradeType side;
+    private final Integer cash;
     private final Double price;
     private final Double volume;
 
+    @Getter
     private final String market;
     private final LocalDateTime date;
     private final List<UpbitTradeResourceResponse> tradeResources;
 
 
     private UpbitTradeRequest(String client, TradeType side,
-                              Double price, Double volume,
+                              Integer cash, Double price, Double volume,
                               String market, LocalDateTime date,
                               List<UpbitTradeResourceResponse> tradeResources) {
         this.client = client;
         this.side = side;
+        this.cash = cash;
         this.price = price;
         this.volume = volume;
         this.market = market;
@@ -54,16 +65,52 @@ public class UpbitTradeRequest implements TradeRequest {
     }
 
     @Override
-    public OrderRequest toOrderRequest() {
+    public OrderRequest toOrderRequest(Double marketPrice) {
         return UpbitOrderRequest.builder(client, market, side)
-                .price(price)
+                .cash(cash)
+                .price(marketPrice)
                 .volume(volume)
                 .build();
+    }
+
+    @Override
+    public ChartRequest toOrderChartRequest() {
+        return SimpleUpbitChartRequest.builder(market, UpbitUnit.MINUTE_ONE)
+                .to(date)
+                .build();
+    }
+
+    @Override
+    public ChartRequest toOrderRecentChartRequest() {
+        return SimpleUpbitChartRequest.builder(market, UpbitUnit.MINUTE_ONE)
+                .to(LocalDateTime.now())
+                .build();
+    }
+
+    @Override
+    public AccountRequest toAccountRequest() {
+        return UpbitAccountRequest.of(client);
+    }
+
+    @Override
+    public boolean isBuyOrder() {
+        return TradeType.BUY.equals(side);
+    }
+
+    @Override
+    public boolean isSellOrder() {
+        return TradeType.SELL.equals(side);
+    }
+
+    @Override
+    public boolean isLessPrice(AccountResponse account) {
+        return this.cash < account.getBalance();
     }
 
     public static class Builder {
         private final String client;
         private final TradeType side;
+        private Integer cash;
         private Double price;
         private Double volume;
 
@@ -82,6 +129,13 @@ public class UpbitTradeRequest implements TradeRequest {
         public Builder date(LocalDateTime date) {
             if (Objects.nonNull(date)) {
                 this.date = date;
+            }
+            return this;
+        }
+
+        public Builder cash(Integer cash) {
+            if (Objects.nonNull(cash)) {
+                this.cash = cash;
             }
             return this;
         }
@@ -115,8 +169,8 @@ public class UpbitTradeRequest implements TradeRequest {
         }
 
         public UpbitTradeRequest build() {
-            return new UpbitTradeRequest(this.client, this.side, this.price, this.volume,
-                    this.market, this.date, this.tradeResources);
+            return new UpbitTradeRequest(this.client, this.side, this.cash, this.price,
+                    this.volume, this.market, this.date, this.tradeResources);
         }
     }
 }

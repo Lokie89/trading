@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class UpbitUser {
     @Id
     private String id;
+    @Column(nullable = false)
     private String password;
     @Getter
     private String upbitAccessKey;

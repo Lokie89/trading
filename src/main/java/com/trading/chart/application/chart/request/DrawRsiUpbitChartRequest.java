@@ -55,7 +55,7 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
         }
 
         public DrawRsiUpbitChartRequest build() {
-            return new DrawRsiUpbitChartRequest(this.market, this.unit, this.count, this.to, this.period);
+            return new DrawRsiUpbitChartRequest(this.market, this.unit, this.count + period.getPeriod() - 1, this.to, this.period);
         }
     }
 }

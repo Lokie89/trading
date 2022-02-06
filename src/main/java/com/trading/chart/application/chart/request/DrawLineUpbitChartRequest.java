@@ -45,7 +45,7 @@ public class DrawLineUpbitChartRequest extends UpbitChartRequest {
         }
 
         public DrawLineUpbitChartRequest build() {
-            return new DrawLineUpbitChartRequest(this.market, this.unit, this.count, this.to, this.period);
+            return new DrawLineUpbitChartRequest(this.market, this.unit, this.count + this.period.getPeriod() - 1, this.to, this.period);
         }
     }
 }

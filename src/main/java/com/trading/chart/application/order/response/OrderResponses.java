@@ -34,7 +34,11 @@ public class OrderResponses {
         return orderResponse;
     }
 
-    public Stream<OrderResponse> stream() {
-        return this.orderResponseList.stream();
+    public void addAll(OrderResponses other){
+        this.orderResponseList.addAll(other.orderResponseList);
+    }
+
+    public void log(){
+
     }
 }

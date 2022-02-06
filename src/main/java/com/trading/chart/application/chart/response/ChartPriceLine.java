@@ -12,14 +12,14 @@ import lombok.Getter;
 @Getter
 public class ChartPriceLine {
     private LinePeriod period;
-    private Double value;
+    private double value;
 
-    private ChartPriceLine(LinePeriod period, Double value) {
+    private ChartPriceLine(LinePeriod period, double value) {
         this.period = period;
         this.value = value;
     }
 
-    public static ChartPriceLine of(LinePeriod period, Double value) {
+    public static ChartPriceLine of(LinePeriod period, double value) {
         return new ChartPriceLine(period, value);
     }
 }

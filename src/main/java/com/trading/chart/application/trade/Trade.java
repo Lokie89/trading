@@ -8,5 +8,6 @@ import com.trading.chart.application.trade.request.TradeRequest;
  * @since 2022/01/25
  */
 public interface Trade {
+    //TODO : Optional 로 변경
     OrderResponse trade(TradeRequest request);
 }

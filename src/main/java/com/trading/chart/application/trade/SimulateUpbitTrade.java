@@ -14,18 +14,24 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @Component
-public class UpbitTrade implements Trade {
+public class SimulateUpbitTrade implements Trade {
 
     private final Match upbitMatch;
-    private final Order upbitOrder;
     private final Chart upbitChart;
+    private final Order simulateUpbitOrder;
 
     @Override
     public OrderResponse trade(TradeRequest request) {
         boolean isMatched = upbitMatch.match(request.toMatchRequests());
         if (isMatched) {
-            Double marketPrice = upbitChart. getChart(request.toOrderRecentChartRequest()).getLast().getTradePrice();
-            return upbitOrder.order(request.toOrderRequest(marketPrice));
+            try {
+
+                Thread.sleep(200);
+            }catch (InterruptedException e){
+
+            }
+            Double marketPrice = upbitChart.getChart(request.toOrderChartRequest()).getLast().getTradePrice();
+            return simulateUpbitOrder.order(request.toOrderRequest(marketPrice));
         }
         return null;
     }

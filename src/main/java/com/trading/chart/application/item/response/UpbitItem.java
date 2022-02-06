@@ -32,4 +32,8 @@ public class UpbitItem implements ItemResponse {
     @Getter
     private ItemStatus status;
 
+    @Override
+    public boolean isKrwMarket() {
+        return name.contains("KRW-");
+    }
 }

@@ -14,6 +14,8 @@ import com.trading.chart.application.order.request.UpbitOrderCancelRequest;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
+import com.trading.chart.application.trader.Trader;
+import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +44,13 @@ public class UpbitTradeTest {
     @Autowired
     Order upbitOrder;
 
-    @DisplayName("자동 트레이드 하기 테스트")
+    @Autowired
+    Trade simulateUpbitTrade;
+
+    @Autowired
+    Trader simulateUpbitTrader;
+
+    @DisplayName("자동 트레이드 테스트")
     @Test
     void tradeTest() {
         final String market = "KRW-BTC";
@@ -75,11 +83,46 @@ public class UpbitTradeTest {
 
         String uuid = response.getUuid();
         OrderCancelRequest cancelRequest = UpbitOrderCancelRequest.builder()
-                .client("tjdfhrdk10@naver.com")
+                .client(client)
                 .uuid(uuid)
                 .build();
 
         OrderResponse cancelResponse = upbitOrder.cancelOrder(cancelRequest);
         assertEquals(uuid, cancelResponse.getUuid());
+    }
+
+    @DisplayName("가상 트레이드 테스트")
+    @Test
+    void simulateTradeTest() {
+        final String market = "KRW-BTC";
+        final UpbitUnit unit = UpbitUnit.DAY;
+        final TradeStrategy strategy = TradeStrategy.LOWER_BOLLINGERBANDS;
+        final String client = "million";
+        final TradeType tradeType = TradeType.BUY;
+        final LocalDateTime date = LocalDateTime.of(2021, 12, 4, 9, 0, 1);
+        final int count = 1;
+
+        ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
+
+        upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
+        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
+                .lastTime(date)
+                .count(count)
+                .build();
+
+        upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+        TradeRequest tradeRequest = UpbitTradeRequest.builder(client, tradeType, market)
+                .tradeResources(UpbitTradeResourceResponse.builder(tradeType, strategy, unit)
+                        .build())
+                .date(date)
+                .price(5000.0)
+                .volume(1.0)
+                .build();
+
+        simulateUpbitTrade.trade(tradeRequest);
+
+        AccountResponses accountResponses = simulateUpbitTrader.getAccounts(tradeRequest.toAccountRequest());
+        Assertions.assertEquals(2, accountResponses.size());
+
     }
 }
