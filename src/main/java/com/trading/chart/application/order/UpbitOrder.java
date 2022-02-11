@@ -12,6 +12,7 @@ import com.trading.chart.common.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class UpbitOrder implements Order {
         String response = callAPI.get(URL + "?" + ConvertType.ObjectToQueryString(request, "client"),
                 header.getHeaders(request.getClient(), request));
         UpbitOrderResponse[] upbitOrderResponses = ConvertType.stringToType(response, UpbitOrderResponse[].class);
-        return OrderResponses.of(Arrays.asList(upbitOrderResponses));
+        return OrderResponses.of(new ArrayList<>(Arrays.asList(upbitOrderResponses)));
     }
 
     @Override

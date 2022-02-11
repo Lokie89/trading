@@ -17,19 +17,14 @@ import org.springframework.stereotype.Component;
 public class SimulateUpbitTrade implements Trade {
 
     private final Match upbitMatch;
-    private final Chart upbitChart;
     private final Order simulateUpbitOrder;
+    private final Chart upbitChart;
+
 
     @Override
     public OrderResponse trade(TradeRequest request) {
         boolean isMatched = upbitMatch.match(request.toMatchRequests());
         if (isMatched) {
-            try {
-
-                Thread.sleep(200);
-            }catch (InterruptedException e){
-
-            }
             Double marketPrice = upbitChart.getChart(request.toOrderChartRequest()).getLast().getTradePrice();
             return simulateUpbitOrder.order(request.toOrderRequest(marketPrice));
         }

@@ -12,20 +12,20 @@ import java.util.Objects;
  * @since 2022/01/08
  */
 public class SimulateOrderResponses {
-    private final Map<String, OrderResponses> simulateOrderedList = new HashMap<>();
+    private static final Map<String, OrderResponses> SIMULATE_ORDERED_LIST = new HashMap<>();
 
     public OrderResponse add(OrderRequest orderRequest) {
         final String client = orderRequest.getClient();
-        OrderResponses orderedList = simulateOrderedList.get(client);
+        OrderResponses orderedList = SIMULATE_ORDERED_LIST.get(client);
         if (Objects.isNull(orderedList)) {
             orderedList = OrderResponses.of(new ArrayList<>());
-            simulateOrderedList.put(client, orderedList);
+            SIMULATE_ORDERED_LIST.put(client, orderedList);
         }
         return orderedList.add(orderRequest);
     }
 
     public OrderResponses get(String client) {
-        return simulateOrderedList.get(client);
+        return SIMULATE_ORDERED_LIST.get(client);
     }
 
 }

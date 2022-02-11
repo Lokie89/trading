@@ -10,6 +10,7 @@ import com.trading.chart.application.order.request.UpbitOrderRequest;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponse;
+import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
 import lombok.Getter;
 
@@ -37,12 +38,14 @@ public class UpbitTradeRequest implements TradeRequest {
     private final String market;
     private final LocalDateTime date;
     private final List<UpbitTradeResourceResponse> tradeResources;
+    private final AccountResponses accountResponses;
 
 
     private UpbitTradeRequest(String client, TradeType side,
                               Integer cash, Double price, Double volume,
                               String market, LocalDateTime date,
-                              List<UpbitTradeResourceResponse> tradeResources) {
+                              List<UpbitTradeResourceResponse> tradeResources,
+                              AccountResponses accountResponses) {
         this.client = client;
         this.side = side;
         this.cash = cash;
@@ -51,10 +54,11 @@ public class UpbitTradeRequest implements TradeRequest {
         this.market = market;
         this.date = date;
         this.tradeResources = tradeResources;
+        this.accountResponses = accountResponses;
     }
 
-    public static Builder builder(String client, TradeType side, String market) {
-        return new Builder(client, side, market);
+    public static Builder builder(String client, TradeType side, String market, AccountResponses accounts) {
+        return new Builder(client, side, market, accounts);
     }
 
     @Override
@@ -66,11 +70,12 @@ public class UpbitTradeRequest implements TradeRequest {
 
     @Override
     public OrderRequest toOrderRequest(Double marketPrice) {
-        return UpbitOrderRequest.builder(client, market, side)
-                .cash(cash)
-                .price(marketPrice)
-                .volume(volume)
-                .build();
+        UpbitOrderRequest.Builder builder = UpbitOrderRequest.builder(client, market, side)
+                .cash(cash).price(marketPrice);
+        if (isBuyOrder()) {
+            return builder.volume(cash / marketPrice).build();
+        }
+        return builder.volume(Objects.requireNonNull(accountResponses.getAccount(market).orElse(null)).getBalance()).build();
     }
 
     @Override
@@ -117,13 +122,15 @@ public class UpbitTradeRequest implements TradeRequest {
         private final String market;
         private LocalDateTime date = LocalDateTime.now();
         private List<UpbitTradeResourceResponse> tradeResources = new ArrayList<>();
+        private AccountResponses accounts;
 
 
         private Builder(String client, TradeType side,
-                        String market) {
+                        String market, AccountResponses accounts) {
             this.client = client;
             this.side = side;
             this.market = market;
+            this.accounts = accounts;
         }
 
         public Builder date(LocalDateTime date) {
@@ -170,7 +177,7 @@ public class UpbitTradeRequest implements TradeRequest {
 
         public UpbitTradeRequest build() {
             return new UpbitTradeRequest(this.client, this.side, this.cash, this.price,
-                    this.volume, this.market, this.date, this.tradeResources);
+                    this.volume, this.market, this.date, this.tradeResources, this.accounts);
         }
     }
 }

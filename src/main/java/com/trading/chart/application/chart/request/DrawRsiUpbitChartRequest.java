@@ -6,6 +6,7 @@ import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,7 +29,7 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
     }
 
     @Override
-    public CandleRequest toCandleRequest() {
+    public List<CandleRequest> toCandleRequest() {
         return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod()).lastTime(to).build();
     }
 
@@ -55,7 +56,7 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
         }
 
         public DrawRsiUpbitChartRequest build() {
-            return new DrawRsiUpbitChartRequest(this.market, this.unit, this.count + period.getPeriod() - 1, this.to, this.period);
+            return new DrawRsiUpbitChartRequest(this.market, this.unit, this.count, this.to, this.period);
         }
     }
 }

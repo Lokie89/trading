@@ -1,8 +1,5 @@
 package com.trading.chart.application.trader.response;
 
-import com.trading.chart.application.order.request.OrderRequest;
-import com.trading.chart.application.order.request.TradeType;
-import com.trading.chart.application.order.request.UpbitOrderRequest;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +17,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class AccountResponses {
 
+    // TODO : Map 으로 변경?
     private final List<AccountResponse> accounts;
 
     public static AccountResponses of(UpbitAccount... account) {
@@ -69,6 +67,7 @@ public class AccountResponses {
             AccountResponse existing = optExisting.get();
             Double existingTotal = existing.getBalance() * existing.getAvgBuyPrice();
             double totalVolume = existing.getBalance() + volume;
+            accounts.remove(existing);
             accounts.add(
                     UpbitAccount.of(currency, totalVolume,
                             (existingTotal + total) / totalVolume)
@@ -82,9 +81,9 @@ public class AccountResponses {
         return getAccount("KRW").orElseThrow(RuntimeException::new);
     }
 
-    private Optional<AccountResponse> getAccount(final String currency) {
+    public Optional<AccountResponse> getAccount(final String currency) {
         return accounts.stream()
-                .filter(accountResponse -> currency.equals(accountResponse.getCurrency()))
+                .filter(accountResponse -> currency.replace("KRW-", "").equals(accountResponse.getCurrency()))
                 .findAny()
                 ;
     }
@@ -99,10 +98,6 @@ public class AccountResponses {
 
     public int size() {
         return accounts.size();
-    }
-
-    public boolean remainCash(int compare) {
-        return getCash().getBalance() >= compare;
     }
 
     public double usedCash() {

@@ -2,6 +2,7 @@ package com.trading.chart.application.order;
 
 import com.trading.chart.application.order.request.*;
 import com.trading.chart.application.order.response.OrderResponse;
+import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
@@ -26,9 +27,6 @@ public class UpbitOrderTest {
 
     @Autowired
     Order simulateUpbitOrder;
-
-    @Autowired
-    Trader simulateUpbitTrader;
 
     @DisplayName("업비트 주문하기 하고 취소하기")
     @Test
@@ -70,11 +68,10 @@ public class UpbitOrderTest {
                 .price(buyPrice)
                 .build();
         OrderResponse buyResponse = simulateUpbitOrder.order(buyRequest);
-        AccountRequest accountRequest = UpbitAccountRequest.builder(client)
-                .build();
-        AccountResponses accountResponses = simulateUpbitTrader.getAccounts(accountRequest);
+        OrderListRequest orderListRequest = buyRequest.toOrderListRequest();
+        OrderResponses orderResponses = simulateUpbitOrder.orderList(orderListRequest);
         assertEquals(market, buyResponse.getMarket());
-        assertEquals(2, accountResponses.size());
+        assertEquals(1, orderResponses.size());
 
         final TradeType sellTradeType = TradeType.SELL;
         final Double sellPrice = 530.0;
@@ -86,7 +83,6 @@ public class UpbitOrderTest {
         simulateUpbitOrder.order(sellRequest);
         OrderListRequest listRequest = sellRequest.toOrderListRequest();
         assertEquals(2, simulateUpbitOrder.orderList(listRequest).size());
-        assertEquals(1, accountResponses.size());
     }
 
 

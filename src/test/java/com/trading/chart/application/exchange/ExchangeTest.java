@@ -12,9 +12,9 @@ import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.trader.Trader;
-import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
+import com.trading.chart.application.trader.response.UpbitAccount;
 import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
 import com.trading.chart.domain.user.response.UpbitUserResponse;
 import com.trading.chart.repository.user.UpbitUserRepository;
@@ -58,32 +58,27 @@ public class ExchangeTest {
     @Autowired
     Trader simulateUpbitTrader;
 
+    final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
+    final LocalDateTime date = LocalDateTime.of(2022, 2, 11, 18, 2, 1);
+
     @BeforeEach
     void setUp() {
-        final UpbitUnit unit = UpbitUnit.MINUTE_THREE;
-        final LocalDateTime date = LocalDateTime.of(2022, 2, 7, 18, 36, 1);
         final int count = 5;
 
         List<ItemResponse> items = upbitTradeItem.getItems().stream()
                 .filter(ItemResponse::isKrwMarket)
                 .collect(Collectors.toList());
-        try {
-            for (ItemResponse item : items) {
-                Thread.sleep(200);
-                final String market = item.getName();
-                ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
-                upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
-                ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                        .lastTime(date)
-                        .count(count)
-                        .build();
+        for (ItemResponse item : items) {
+            final String market = item.getName();
+            ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
+            upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
 
-                upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
-            }
-        } catch (InterruptedException e) {
-
+            ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
+                    .lastTime(date)
+                    .count(count)
+                    .build();
+            upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         }
-
     }
 
 //    @DisplayName("거래소 계정으로 거래 테스트")
@@ -104,16 +99,14 @@ public class ExchangeTest {
     @DisplayName("가상 거래소 계정으로 거래 테스트")
     @Test
     void simulateExchangeTest() {
-        final LocalDateTime date = LocalDateTime.of(2022, 2, 7, 18, 36, 1);
+        final LocalDateTime date = LocalDateTime.of(2022, 2, 11, 18, 2, 1);
         final String client = "million";
         UpbitUserResponse user = UpbitUserResponse.builder()
                 .id(client)
-                .accounts(simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(client)))
+                .accounts(AccountResponses.of(UpbitAccount.of("KRW",1000000.0,0.0)))
                 .cashAtOnce(50000)
                 .tradeResources(
-                        UpbitTradeResourceResponse.builder(TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE)
-                                .matchRange(3).matchMin(3).matchMax(3).build(),
-                        UpbitTradeResourceResponse.builder(TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE)
+                        UpbitTradeResourceResponse.builder(TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, unit)
                                 .matchRange(3).matchMin(3).matchMax(3).build()
                 )
                 .build();

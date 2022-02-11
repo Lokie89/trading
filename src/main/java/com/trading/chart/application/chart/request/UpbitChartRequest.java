@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author SeongRok.Oh
@@ -44,7 +45,7 @@ public abstract class UpbitChartRequest implements ChartRequest {
     }
 
     @Override
-    public CandleRequest toCandleRequest() {
+    public List<CandleRequest> toCandleRequest() {
         return UpbitCandleRequest.builder(unit, market).count(count + (period == null ? 0 : period.getPeriod() - 1)).lastTime(to).build();
     }
 

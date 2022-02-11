@@ -1,24 +1,30 @@
 package com.trading.chart.application.candle.request;
 
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * @author SeongRok.Oh
  * @since 2021/11/07
  */
-@RequiredArgsConstructor
 public class UpbitCandleRequest implements CandleRequest {
 
     private final UpbitUnit unit;
     private final Integer count;
     private final String market;
     private final LocalDateTime to;
+
+    private UpbitCandleRequest(UpbitUnit unit, Integer count, String market, LocalDateTime to) {
+        this.unit = unit;
+        this.count = count;
+        this.market = market;
+        this.to = to;
+    }
 
     @Override
     public String getUrl() {
@@ -33,15 +39,17 @@ public class UpbitCandleRequest implements CandleRequest {
         return url;
     }
 
+
     public static Builder builder(UpbitUnit unit, String market) {
         return new Builder(unit, market);
     }
 
     public static class Builder {
         private final UpbitUnit unit;
-        private Integer count;
-        private String market;
+        private final String market;
+        private Integer count = 1;
         private LocalDateTime to;
+        private static final Integer COUNT_LIMIT = 200;
 
         public Builder(final UpbitUnit unit, final String market) {
             this.unit = unit;
@@ -49,7 +57,9 @@ public class UpbitCandleRequest implements CandleRequest {
         }
 
         public Builder count(final Integer count) {
-            this.count = count;
+            if (Objects.nonNull(count)) {
+                this.count = count;
+            }
             return this;
         }
 
@@ -58,8 +68,23 @@ public class UpbitCandleRequest implements CandleRequest {
             return this;
         }
 
-        public UpbitCandleRequest build() {
-            return new UpbitCandleRequest(unit, count, market, to);
+        public List<CandleRequest> build() {
+            List<CandleRequest> requestList = new ArrayList<>();
+
+            do {
+                if (count < COUNT_LIMIT) {
+                    requestList.add(new UpbitCandleRequest(unit, count, market, to));
+                    break;
+                }
+                count -= COUNT_LIMIT;
+                requestList.add(new UpbitCandleRequest(unit, COUNT_LIMIT, market, goBack(count)));
+            } while (count > 0);
+
+            return requestList;
+        }
+
+        private LocalDateTime goBack(int count) {
+            return to.minusMinutes((long) unit.getMinute() * count);
         }
     }
 }

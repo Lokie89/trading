@@ -2,6 +2,7 @@ package com.trading.chart.application.trader.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
  * avg_buy_price_modified : 매수평균가 수정 여부
  * unit_currency : 평단가 기준 화폐
  */
+@EqualsAndHashCode(of = "currency")
 @NoArgsConstructor
 @Getter
 public class UpbitAccount implements AccountResponse {

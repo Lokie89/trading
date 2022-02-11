@@ -4,7 +4,6 @@ import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.Trade;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trader.request.AccountRequest;
-import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.application.trader.response.UpbitAccount;
 import lombok.RequiredArgsConstructor;
@@ -22,25 +21,29 @@ import java.util.Objects;
 @Component
 public class SimulateUpbitTrader implements Trader {
 
-    private static final Map<AccountRequest, AccountResponses> SIMULATE_ACCOUNT = new HashMap<>();
+    private final Map<AccountRequest, AccountResponses> simulateAccounts = new HashMap<>();
     private final Trade simulateUpbitTrade;
 
-    static {
-        SIMULATE_ACCOUNT.put(UpbitAccountRequest.of("million"), AccountResponses.of(UpbitAccount.of("KRW", 1000000.0, 0.0)));
-    }
-
     public AccountResponses getAccounts(AccountRequest request) {
-        return SIMULATE_ACCOUNT.get(request);
+        initSimulateAccounts(request);
+        return simulateAccounts.get(request);
     }
 
     @Override
     public OrderResponse trade(TradeRequest tradeRequest) {
-        AccountResponses accountResponses = SIMULATE_ACCOUNT.get(tradeRequest.toAccountRequest());
+        AccountRequest accountRequest = tradeRequest.toAccountRequest();
+        initSimulateAccounts(accountRequest);
         OrderResponse orderResponse = simulateUpbitTrade.trade(tradeRequest);
         if (Objects.nonNull(orderResponse)) {
-            accountResponses.apply(orderResponse);
+            simulateAccounts.get(accountRequest).apply(orderResponse);
         }
         return orderResponse;
+    }
+
+    private void initSimulateAccounts(AccountRequest request) {
+        if (Objects.isNull(simulateAccounts.get(request))) {
+            simulateAccounts.put(request, AccountResponses.of(UpbitAccount.of("KRW", 0.0, 0.0)));
+        }
     }
 
 }
