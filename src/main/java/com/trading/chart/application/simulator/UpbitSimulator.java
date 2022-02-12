@@ -28,9 +28,10 @@ public class UpbitSimulator implements Simulator {
 
     private OrderResponses repeatSimulate(LocalDateTime start, LocalDateTime end, UserResponse user) {
         OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
+        Integer stepMinutes = user.minimumOfTradeResource();
         for (LocalDateTime simulatingDateTime = start;
              simulatingDateTime.isBefore(end);
-             simulatingDateTime = simulatingDateTime.plusMinutes(1)) {
+             simulatingDateTime = simulatingDateTime.plusMinutes(stepMinutes)) {
             orderResponses.addAll(simulateUpbitExchange.exchange(user, simulatingDateTime));
         }
         return orderResponses;

@@ -5,6 +5,7 @@ import com.trading.chart.application.match.request.MatchRequest;
 import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.match.request.UpbitMatchRequest;
 import com.trading.chart.application.order.request.TradeType;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class UpbitTradeResourceResponse {
     private final TradeType tradeType;
     private final TradeStrategy strategy;
+    @Getter
     private final UpbitUnit unit;
     private final Integer matchStandard;
     private final Integer matchRange;
