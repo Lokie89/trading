@@ -73,6 +73,13 @@ public class UpbitOrderResponse implements OrderResponse {
     @JsonIgnore
     @Override
     public String getCurrency() {
-        return market.replace("KRW-","");
+        return market.replace("KRW-", "");
     }
+
+    @Override
+    public void log() {
+        System.out.format("|\t%16s\t|\t%4s\t|\t%10s\t|\t%,010.04f\t|\t%,010.010f\t|", createdAt.split("\\.")[0], side.toString(), market, price, volume);
+        System.out.println();
+    }
+
 }

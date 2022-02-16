@@ -11,4 +11,6 @@ public interface AccountResponse {
     boolean isOwn();
     void sellBalance(Double balance);
     void buyBalance(Double balance);
+    int toKrw();
+    void log();
 }

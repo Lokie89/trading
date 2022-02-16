@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -64,6 +66,7 @@ public class UpbitOrderTest {
 
         final String client = "million";
         OrderRequest buyRequest = UpbitOrderRequest.builder(client, market, tradeType)
+                .orderDate(LocalDateTime.now())
                 .cash(cash)
                 .price(buyPrice)
                 .build();
@@ -78,6 +81,7 @@ public class UpbitOrderTest {
 
         OrderRequest sellRequest = UpbitOrderRequest.builder(client, market, sellTradeType)
                 .price(sellPrice)
+                .orderDate(LocalDateTime.now())
                 .volume(cash / buyPrice).build();
 
         simulateUpbitOrder.order(sellRequest);

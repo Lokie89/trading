@@ -10,4 +10,5 @@ public interface OrderResponse {
     String getCurrency();
     Double getVolume();
     Double getPrice();
+    void log();
 }

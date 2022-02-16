@@ -19,6 +19,7 @@ import java.util.Objects;
  */
 public class UpbitSimulatorRequest implements SimulatorRequest {
 
+    private final String client;
     private final LocalDate start;
     private final LocalDate end;
     private final Integer seed;
@@ -26,10 +27,11 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
     private final List<UpbitTradeResourceResponse> tradeResources;
 
     private UpbitSimulatorRequest(LocalDate start, LocalDate end,
-                                  Integer seed, Integer cashAtOnce,
+                                  String client, Integer seed, Integer cashAtOnce,
                                   List<UpbitTradeResourceResponse> tradeResources) {
         this.start = start;
         this.end = end;
+        this.client = client;
         this.seed = seed;
         this.cashAtOnce = cashAtOnce;
         this.tradeResources = tradeResources;
@@ -38,6 +40,7 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
     @Override
     public UserResponse toUserResponse() {
         return UpbitUserResponse.builder()
+                .id(client)
                 .cashAtOnce(cashAtOnce)
                 .accounts(AccountResponses.of(UpbitAccount.of("KRW", seed.doubleValue(), (double) 0)))
                 .tradeResources(tradeResources)
@@ -59,8 +62,9 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
     }
 
     public static class Builder {
-        private LocalDate start;
+        private final LocalDate start;
         private LocalDate end;
+        private String client;
         private Integer seed = 1000000;
         private Integer cashAtOnce = 50000;
         private List<UpbitTradeResourceResponse> tradeResources;
@@ -72,6 +76,13 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
         public Builder end(LocalDate end) {
             if (Objects.nonNull(end)) {
                 this.end = end.isAfter(LocalDate.now().minusDays(1)) ? LocalDate.now().minusDays(1) : end;
+            }
+            return this;
+        }
+
+        public Builder client(String client){
+            if (Objects.nonNull(client)) {
+                this.client = client;
             }
             return this;
         }
@@ -105,7 +116,7 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
         }
 
         public SimulatorRequest build() {
-            return new UpbitSimulatorRequest(start, end, seed, cashAtOnce, tradeResources);
+            return new UpbitSimulatorRequest(start, end, client, seed, cashAtOnce, tradeResources);
 
         }
 

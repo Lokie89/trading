@@ -1,6 +1,5 @@
 package com.trading.chart.domain.user.response;
 
-import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
@@ -8,7 +7,10 @@ import com.trading.chart.application.trader.response.AccountResponses;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

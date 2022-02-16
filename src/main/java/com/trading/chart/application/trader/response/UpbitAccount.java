@@ -74,4 +74,16 @@ public class UpbitAccount implements AccountResponse {
         this.balance += balance;
     }
 
+    @Override
+    public void log() {
+        double total = avgBuyPrice > 0 ? balance * avgBuyPrice : balance;
+        System.out.format("|\t%5s\t|\t%,d\t|", currency, (int) total);
+        System.out.println();
+    }
+
+    @Override
+    public int toKrw() {
+        double total = avgBuyPrice > 0 ? balance * avgBuyPrice : balance;
+        return (int) total;
+    }
 }

@@ -111,4 +111,13 @@ public class AccountResponses {
     public boolean isAffordable(TradeRequest tradeRequest) {
         return tradeRequest.isLessPrice(getCash());
     }
+
+    public void logKrw() {
+        System.out.format("|\t%5s\t|\t%,d\t|", "KRW", accounts.stream().mapToInt(AccountResponse::toKrw).sum());
+        System.out.println();
+    }
+
+    public void logAll() {
+        accounts.forEach(AccountResponse::log);
+    }
 }

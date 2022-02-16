@@ -3,7 +3,6 @@ package com.trading.chart.application.order.response;
 import com.trading.chart.application.order.request.OrderRequest;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author SeongRok.Oh
@@ -34,11 +33,13 @@ public class OrderResponses {
         return orderResponse;
     }
 
-    public void addAll(OrderResponses other){
+    public void addAll(OrderResponses other) {
         this.orderResponseList.addAll(other.orderResponseList);
     }
 
-    public void log(){
-
+    public void log() {
+        orderResponseList.forEach(OrderResponse::log);
+        System.out.println("BUY : " + orderResponseList.stream().filter(OrderResponse::isBuyOrder).count() + " 건 "
+                + "SELL : " + orderResponseList.stream().filter(orderResponse -> !orderResponse.isBuyOrder()).count() + " 건 ");
     }
 }

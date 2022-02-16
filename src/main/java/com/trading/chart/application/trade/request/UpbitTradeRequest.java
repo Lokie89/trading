@@ -71,6 +71,7 @@ public class UpbitTradeRequest implements TradeRequest {
     @Override
     public OrderRequest toOrderRequest(Double marketPrice) {
         UpbitOrderRequest.Builder builder = UpbitOrderRequest.builder(client, market, side)
+                .orderDate(date)
                 .cash(cash).price(marketPrice);
         if (isBuyOrder()) {
             return builder.volume(cash / marketPrice).build();

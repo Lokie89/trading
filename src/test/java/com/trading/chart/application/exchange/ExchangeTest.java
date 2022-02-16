@@ -99,7 +99,6 @@ public class ExchangeTest {
     @DisplayName("가상 거래소 계정으로 거래 테스트")
     @Test
     void simulateExchangeTest() {
-        final LocalDateTime date = LocalDateTime.of(2022, 2, 11, 18, 2, 1);
         final String client = "million";
         UpbitUserResponse user = UpbitUserResponse.builder()
                 .id(client)

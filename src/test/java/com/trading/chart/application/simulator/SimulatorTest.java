@@ -14,6 +14,7 @@ import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.simulator.request.SimulatorRequest;
 import com.trading.chart.application.simulator.request.UpbitSimulatorRequest;
 import com.trading.chart.application.trader.Trader;
+import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
 import org.junit.jupiter.api.Assertions;
@@ -90,6 +91,7 @@ public class SimulatorTest {
     @DisplayName("업비트 시뮬레이팅 테스트")
     @Test
     void simulateTest() {
+        final String client = "million";
 
         final Integer seedMoney = 1000000;
         final Integer cashAtOnce = 50000;
@@ -99,6 +101,7 @@ public class SimulatorTest {
         tradeResourceList.add(buyTradeResource);
         tradeResourceList.add(sellTradeResource);
         SimulatorRequest request = UpbitSimulatorRequest.builder(start)
+                .client(client)
                 .end(end)
                 .seed(seedMoney)
                 .cashAtOnce(cashAtOnce)
@@ -107,7 +110,9 @@ public class SimulatorTest {
 
         OrderResponses orderResponses = upbitSimulator.simulate(request);
         orderResponses.log();
-        AccountResponses accountResponses = simulateUpbitTrader.getAccounts(null);
+        AccountResponses accountResponses = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(client));
+        accountResponses.logKrw();
+        accountResponses.logAll();
         Assertions.assertTrue(orderResponses.size() > 0);
     }
 }

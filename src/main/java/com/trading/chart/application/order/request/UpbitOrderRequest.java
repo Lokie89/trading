@@ -15,6 +15,8 @@ import java.util.Objects;
 public class UpbitOrderRequest implements OrderRequest {
     @JsonIgnore
     private final String client;
+    @JsonIgnore
+    private final LocalDateTime orderDate;
     private final String market;
     private final String side;
     private final Double price;
@@ -22,12 +24,14 @@ public class UpbitOrderRequest implements OrderRequest {
     private final String ord_type;
 
     private UpbitOrderRequest(final String client,
+                              final LocalDateTime orderDate,
                               final String item,
                               final TradeType tradeType,
                               final Integer cash,
                               final Double price,
                               final Double volume) {
         this.client = client;
+        this.orderDate = orderDate;
         this.market = item;
         this.side = tradeType.getSide();
         this.price = TradeType.BUY.equals(tradeType) ?
@@ -63,6 +67,7 @@ public class UpbitOrderRequest implements OrderRequest {
 
     public static class Builder {
         private final String client;
+        private LocalDateTime orderDate;
         private final String item;
         private final TradeType tradeType;
 
@@ -77,6 +82,13 @@ public class UpbitOrderRequest implements OrderRequest {
             if (TradeType.BUY.equals(tradeType)) {
                 this.cash = 5000;
             }
+        }
+
+        public Builder orderDate(LocalDateTime orderDate) {
+            if (Objects.nonNull(orderDate)) {
+                this.orderDate = orderDate;
+            }
+            return this;
         }
 
         public Builder cash(Integer cash) {
@@ -101,14 +113,14 @@ public class UpbitOrderRequest implements OrderRequest {
         }
 
         public UpbitOrderRequest build() {
-            return new UpbitOrderRequest(client, item, tradeType, cash, price, volume);
+            return new UpbitOrderRequest(client, orderDate, item, tradeType, cash, price, volume);
         }
     }
 
     @Override
     public UpbitOrderResponse toOrderResponse() {
         return new UpbitOrderResponse("", TradeType.fromString(side), ord_type,
-                price, UpbitOrderState.DONE, market, LocalDateTime.now().toString(), volume);
+                price, UpbitOrderState.DONE, market, orderDate.toString(), volume);
     }
 
 }

@@ -20,7 +20,7 @@ public class UpbitMatch implements Match {
 
     @Override
     public boolean match(List<MatchRequest> request) {
-        return request.stream().allMatch(matchRequest -> {
+        return !request.isEmpty() && request.stream().allMatch(matchRequest -> {
             ChartRequest chartRequest = matchRequest.toChartRequest();
             return matchRequest.test(upbitChart.getChart(chartRequest));
         });
