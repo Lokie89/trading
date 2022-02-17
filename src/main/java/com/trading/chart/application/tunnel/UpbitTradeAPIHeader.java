@@ -31,14 +31,14 @@ public class UpbitTradeAPIHeader implements TradeAPIHeader {
 
     @Override
     public HttpHeaders getHeaders(String id) {
-        UpbitUser upbitUser = upbitUserRepository.findById(id).orElseThrow(RuntimeException::new);
+        UpbitUser upbitUser = upbitUserRepository.findByClient(id).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());
     }
 
     @Override
     public HttpHeaders getHeaders(String id, Object data) {
-        UpbitUser upbitUser = upbitUserRepository.findById(id).orElseThrow(RuntimeException::new);
+        UpbitUser upbitUser = upbitUserRepository.findByClient(id).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         includeToken(tokenCreatorBuilder, data);
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());

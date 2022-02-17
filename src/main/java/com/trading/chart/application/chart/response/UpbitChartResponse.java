@@ -3,6 +3,8 @@ package com.trading.chart.application.chart.response;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.candle.response.UpbitCandleResponse;
 import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.domain.chart.ChartEntity;
+import com.trading.chart.domain.chart.UpbitChart;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -11,6 +13,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -56,6 +59,29 @@ public class UpbitChartResponse implements ChartResponse {
         this.unit = UpbitUnit.get(upbitCandleResponse.getUnit());
         this.changePrice = upbitCandleResponse.getChangePrice();
         this.changeRate = upbitCandleResponse.getChangeRate();
+    }
+
+    @Override
+    public ChartEntity toEntity() {
+        return UpbitChart.builder()
+                .market(market)
+                .time(time)
+                .lowPrice(lowPrice)
+                .openingPrice(openingPrice)
+                .tradePrice(tradePrice)
+                .highPrice(highPrice)
+                .volume(volume)
+                .unit(unit)
+                .changePrice(changePrice)
+                .changeRate(changeRate)
+                .priceLines(priceLines.stream()
+                        .map(ChartPriceLine::toUpbitChartPriceLine)
+                        .collect(Collectors.toSet()))
+                .upperBollingerBand(upperBollingerBand)
+                .downBollingerBand(downBollingerBand)
+                .rsi(rsi)
+                .rsiSignal(rsiSignal)
+                .build();
     }
 
     @Override

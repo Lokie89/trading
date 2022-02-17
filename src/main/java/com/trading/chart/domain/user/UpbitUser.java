@@ -15,8 +15,17 @@ import java.util.stream.Collectors;
  */
 @Entity
 public class UpbitUser {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private String id;
+    private Long id;
+
+    @Getter
+    @Column(unique = true)
+    private String client;
+    @Column(unique = true)
+    private String upbitClient;
+    private String namuClient;
     @Column(nullable = false)
     private String password;
     @Getter
@@ -41,7 +50,6 @@ public class UpbitUser {
 
     public UpbitUserResponse toDto(AccountResponses upbitAccounts) {
         return UpbitUserResponse.builder()
-                .id(id)
                 .buying(isBuying)
                 .selling(isSelling)
                 .buyLimit(buyLimit)

@@ -40,7 +40,7 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
     @Override
     public UserResponse toUserResponse() {
         return UpbitUserResponse.builder()
-                .id(client)
+                .upbitClient(client)
                 .cashAtOnce(cashAtOnce)
                 .accounts(AccountResponses.of(UpbitAccount.of("KRW", seed.doubleValue(), (double) 0)))
                 .tradeResources(tradeResources)

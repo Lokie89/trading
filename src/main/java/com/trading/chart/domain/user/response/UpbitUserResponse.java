@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class UpbitUserResponse implements UserResponse {
 
     @Getter
-    private final String id;
+    private final String upbitClient;
     private final Boolean isBuying;
     private final Integer buyLimit;
     private final Integer cashAtOnce;
@@ -28,11 +28,11 @@ public class UpbitUserResponse implements UserResponse {
     private final AccountResponses accounts;
     private final List<UpbitTradeResourceResponse> tradeResources;
 
-    private UpbitUserResponse(String id, Boolean isBuying, Integer buyLimit,
+    private UpbitUserResponse(String upbitClient, Boolean isBuying, Integer buyLimit,
                               Integer cashAtOnce, Boolean isSelling,
                               AccountResponses accounts,
                               List<UpbitTradeResourceResponse> tradeResources) {
-        this.id = id;
+        this.upbitClient = upbitClient;
         this.isBuying = isBuying;
         this.buyLimit = buyLimit;
         this.cashAtOnce = cashAtOnce;
@@ -54,7 +54,7 @@ public class UpbitUserResponse implements UserResponse {
 
     @Override
     public TradeRequest toTradeRequest(String market, LocalDateTime date, TradeType tradeType, AccountResponses accounts) {
-        return UpbitTradeRequest.builder(id, tradeType, market, accounts)
+        return UpbitTradeRequest.builder(upbitClient, tradeType, market, accounts)
                 .date(date)
                 .tradeResources(tradeResources.stream()
                         .filter(tradeResource -> tradeResource.isEqualsTradeType(tradeType))
@@ -78,7 +78,7 @@ public class UpbitUserResponse implements UserResponse {
     }
 
     public static class Builder {
-        private String id;
+        private String upbitClient;
         private Integer cashAtOnce = 5000;
         private Boolean isBuying = true;
         private Boolean isSelling = true;
@@ -86,9 +86,9 @@ public class UpbitUserResponse implements UserResponse {
         private AccountResponses accounts;
         private final List<UpbitTradeResourceResponse> tradeResources = new ArrayList<>();
 
-        public Builder id(String id) {
-            if (Objects.nonNull(id)) {
-                this.id = id;
+        public Builder upbitClient(String upbitClient) {
+            if (Objects.nonNull(upbitClient)) {
+                this.upbitClient = upbitClient;
             }
             return this;
         }
@@ -143,7 +143,7 @@ public class UpbitUserResponse implements UserResponse {
         }
 
         public UpbitUserResponse build() {
-            return new UpbitUserResponse(this.id, this.isBuying, this.buyLimit, this.cashAtOnce,
+            return new UpbitUserResponse(this.upbitClient, this.isBuying, this.buyLimit, this.cashAtOnce,
                     this.isSelling, this.accounts, this.tradeResources);
         }
     }

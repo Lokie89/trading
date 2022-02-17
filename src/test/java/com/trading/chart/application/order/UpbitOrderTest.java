@@ -38,7 +38,7 @@ public class UpbitOrderTest {
         final Integer cash = 5100;
         final Double price = 5100.0;
         OrderRequest request = UpbitOrderRequest
-                .builder("tjdfhrdk10@naver.com", market, tradeType)
+                .builder("Traeuman", market, tradeType)
                 .cash(cash)
                 .price(price)
                 .build();
@@ -48,7 +48,7 @@ public class UpbitOrderTest {
         // 취소하기
         String uuid = response.getUuid();
         OrderCancelRequest cancelRequest = UpbitOrderCancelRequest.builder()
-                .client("tjdfhrdk10@naver.com")
+                .client("Traeuman")
                 .uuid(uuid)
                 .build();
 

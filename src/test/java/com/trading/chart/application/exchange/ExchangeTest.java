@@ -84,11 +84,11 @@ public class ExchangeTest {
 //    @DisplayName("거래소 계정으로 거래 테스트")
 //    @Test
 //    void exchangeTest() {
-//        final String client = "tjdfhrdk10@naver.com";
+//        final String client = "Traeuman";
 //        final LocalDateTime date = LocalDateTime.of(2021, 12, 4, 9, 0, 1);
 //
 //        UpbitUserResponse user = userRepository
-//                .findById(client)
+//                .findByClient(client)
 //                .orElseThrow(RuntimeException::new)
 //                .toDto(upbitTrader.getAccounts(UpbitAccountRequest.of(client)));
 //
@@ -101,7 +101,7 @@ public class ExchangeTest {
     void simulateExchangeTest() {
         final String client = "million";
         UpbitUserResponse user = UpbitUserResponse.builder()
-                .id(client)
+                .upbitClient(client)
                 .accounts(AccountResponses.of(UpbitAccount.of("KRW",1000000.0,0.0)))
                 .cashAtOnce(50000)
                 .tradeResources(

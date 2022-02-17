@@ -33,7 +33,7 @@ public class UpbitExchange implements Exchange {
     @Override
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
         List<OrderResponse> orderResponseList = new ArrayList<>();
-        AccountResponses accounts = upbitTrader.getAccounts(UpbitAccountRequest.of(user.getId()));
+        AccountResponses accounts = upbitTrader.getAccounts(UpbitAccountRequest.of(user.getUpbitClient()));
         List<ItemResponse> items = upbitTradeItem.getItems().stream()
                 .filter(ItemResponse::isKrwMarket)
                 .collect(Collectors.toList());

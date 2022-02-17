@@ -51,7 +51,7 @@ public class UpbitTradeTest {
 //        final String market = "KRW-BTC";
 //        final UpbitUnit unit = UpbitUnit.DAY;
 //        final TradeStrategy strategy = TradeStrategy.LOWER_BOLLINGERBANDS;
-//        final String client = "tjdfhrdk10@naver.com";
+//        final String client = "Traeuman";
 //        final TradeType tradeType = TradeType.BUY;
 //        final LocalDateTime date = LocalDateTime.of(2021, 12, 4, 9, 0, 1);
 //        final int count = 1;

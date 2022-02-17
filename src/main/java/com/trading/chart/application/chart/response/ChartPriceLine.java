@@ -1,6 +1,7 @@
 package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.domain.chart.UpbitChartPriceLine;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -21,5 +22,12 @@ public class ChartPriceLine {
 
     public static ChartPriceLine of(LinePeriod period, double value) {
         return new ChartPriceLine(period, value);
+    }
+
+    public UpbitChartPriceLine toUpbitChartPriceLine(){
+        return UpbitChartPriceLine.builder()
+                .period(period)
+                .value(value)
+                .build();
     }
 }

@@ -21,7 +21,7 @@ public class UpbitUserResponseTest {
     void tradeStatusTest() {
         final String client = "anonymous";
         final String market = "COIN";
-        UpbitUserResponse notSellingUser = UpbitUserResponse.builder().id(client).buying(true).selling(false).build();
+        UpbitUserResponse notSellingUser = UpbitUserResponse.builder().upbitClient(client).buying(true).selling(false).build();
 
         assertTrue(notSellingUser.isTradeStatus(notSellingUser.toTradeRequest(market, null, TradeType.BUY, null)));
 
