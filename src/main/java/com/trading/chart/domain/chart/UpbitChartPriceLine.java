@@ -1,6 +1,8 @@
 package com.trading.chart.domain.chart;
 
 import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.application.chart.response.ChartPriceLine;
+import com.trading.chart.application.chart.response.UpbitChartResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -27,4 +29,11 @@ public class UpbitChartPriceLine {
     @Enumerated(EnumType.STRING)
     private LinePeriod period;
     private double value;
+
+    public ChartPriceLine toDto() {
+        return ChartPriceLine.builder()
+                .period(period)
+                .value(value)
+                .build();
+    }
 }

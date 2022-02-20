@@ -1,6 +1,7 @@
 package com.trading.chart.application.chart.request;
 
 import com.trading.chart.application.candle.request.CandleRequest;
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.common.ChartKey;
 
@@ -18,4 +19,6 @@ public interface ChartRequest {
     int getMandatoryCount();
     ChartResponse[] forWorkIndex();
     ChartResponse[] forRequestIndex();
+    String getMarket();
+    UpbitUnit getUnit();
 }

@@ -1,6 +1,5 @@
 package com.trading.chart.application.chart;
 
-import com.trading.chart.application.candle.Candle;
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.application.chart.response.ChartPriceLine;
@@ -24,27 +23,18 @@ import java.util.Spliterator;
 @Component
 public class CacheUpbitChart implements Chart {
 
-    private final Candle apiUpbitCandle;
-    public final CacheChart cache = new CacheChart();
+    private final CacheChart cache = new CacheChart();
+    private final ChartStorage upbitChartStorage;
 
     private void verifyExistCache(ChartRequest request) {
         // 실제 데이터 검증 ( 키 값에 따른 데이터가 있는지, 그 데이터에 lastTime 의 데이터가 있는지, 그 전 데이터가 count 개수 만큼 있는지 )
         // 데이터가 없으면 (나중에는 DB를 한번 조회 후 뒤에 일들을 DBUpbitChart 한테 시킬거임) apiUpbitCandle getCandles 호출 하여 cache 등록
         ChartKey chartKey = request.getRequestKey();
         ChartResponses charts = cache.get(chartKey);
-        if (Objects.isNull(charts)) {
-            cache.put(chartKey, getChartWithApi(request));
-            return;
+        if (Objects.isNull(charts) || !charts.isSatisfied(request)) {
+            ChartResponses stored = upbitChartStorage.getCharts(request);
+            cache.add(chartKey, stored);
         }
-        final int mandatoryCount = request.getMandatoryCount();
-        ChartResponse[] fromTo = request.forWorkIndex();
-        if (charts.substitute(fromTo[0], fromTo[1]).size() < mandatoryCount) {
-            cache.get(chartKey).add(getChartWithApi(request));
-        }
-    }
-
-    private ChartResponses getChartWithApi(ChartRequest request) {
-        return apiUpbitCandle.getCandles(request.toCandleRequest()).toChart();
     }
 
     private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {

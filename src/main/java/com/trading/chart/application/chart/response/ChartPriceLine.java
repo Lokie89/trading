@@ -2,6 +2,7 @@ package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.domain.chart.UpbitChartPriceLine;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -9,6 +10,7 @@ import lombok.Getter;
  * @author SeongRok.Oh
  * @since 2021/11/25
  */
+@Builder
 @EqualsAndHashCode(of = "period")
 @Getter
 public class ChartPriceLine {

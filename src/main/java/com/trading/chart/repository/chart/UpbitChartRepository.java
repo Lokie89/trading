@@ -1,4 +1,4 @@
-package com.trading.chart.repository.user;
+package com.trading.chart.repository.chart;
 
 import com.trading.chart.domain.chart.UpbitChart;
 import org.springframework.data.jpa.repository.JpaRepository;

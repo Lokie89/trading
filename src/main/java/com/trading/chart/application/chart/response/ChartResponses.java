@@ -1,5 +1,7 @@
 package com.trading.chart.application.chart.response;
 
+import com.trading.chart.application.chart.request.ChartRequest;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -42,5 +44,11 @@ public class ChartResponses {
 
     public Stream<ChartResponse> stream() {
         return chartResponses.stream();
+    }
+
+    public boolean isSatisfied(ChartRequest request){
+        final int mandatoryCount = request.getMandatoryCount();
+        ChartResponse[] fromTo = request.forWorkIndex();
+        return substitute(fromTo[0], fromTo[1]).size() >= mandatoryCount;
     }
 }

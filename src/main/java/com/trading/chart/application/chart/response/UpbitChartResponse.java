@@ -5,6 +5,8 @@ import com.trading.chart.application.candle.response.UpbitCandleResponse;
 import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.domain.chart.ChartEntity;
 import com.trading.chart.domain.chart.UpbitChart;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  * @author SeongRok.Oh
  * @since 2021/11/19
  */
+@Builder
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"market", "unit", "time"})
 @Getter
 public class UpbitChartResponse implements ChartResponse {
