@@ -43,7 +43,8 @@ public class UpbitCandleTest {
         final UpbitUnit unit = UpbitUnit.DAY;
         final String market = "KRW-BTC";
         List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).build();
-        assertTrue(time.isAfter(upbitCandle.getCandles(threeMinLastTimeCandleRequest).getReverse(0).getCandleDateTimeKST()));
+        CandleResponses candleResponses = upbitCandle.getCandles(threeMinLastTimeCandleRequest);
+        assertTrue(time.isAfter(candleResponses.get(candleResponses.size() - 1).getCandleDateTimeKST()));
     }
 
     @DisplayName("마지막 시간, 개수로 캔들 호출하기")
@@ -55,7 +56,7 @@ public class UpbitCandleTest {
         final Integer count = 3;
         List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).count(count).build();
         CandleResponses candleList = upbitCandle.getCandles(threeMinLastTimeCandleRequest);
-        assertTrue(time.isAfter(candleList.getReverse(0).getCandleDateTimeKST()));
+        assertTrue(time.isAfter(candleList.get(candleList.size() - 1).getCandleDateTimeKST()));
         assertEquals(count, candleList.size());
     }
 
