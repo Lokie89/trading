@@ -31,7 +31,11 @@ public class ChartResponses {
     }
 
     public void add(ChartResponses chartResponses) {
-        this.chartResponses.addAll(chartResponses.chartResponses);
+        if (Objects.nonNull(chartResponses) && chartResponses.isNotEmpty()) {
+            // TODO : 기존에 있는 로우들을 리턴 값에 합쳐 보내기 위함 - Set 에는 대체 하는 로직이 메서드가 없나?
+            this.chartResponses.removeAll(chartResponses.chartResponses);
+            this.chartResponses.addAll(chartResponses.chartResponses);
+        }
     }
 
     public ChartResponses substitute(ChartResponse includeFrom, ChartResponse excludeTo) {
@@ -46,9 +50,13 @@ public class ChartResponses {
         return chartResponses.stream();
     }
 
-    public boolean isSatisfied(ChartRequest request){
+    public boolean isNotSatisfied(ChartRequest request) {
         final int mandatoryCount = request.getMandatoryCount();
         ChartResponse[] fromTo = request.forWorkIndex();
-        return substitute(fromTo[0], fromTo[1]).size() >= mandatoryCount;
+        return substitute(fromTo[0], fromTo[1]).size() < mandatoryCount;
+    }
+
+    private boolean isNotEmpty() {
+        return !this.chartResponses.isEmpty();
     }
 }

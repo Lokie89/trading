@@ -1,6 +1,6 @@
 package com.trading.chart.application.chart.response;
 
-import com.trading.chart.domain.chart.ChartEntity;
+import com.trading.chart.domain.chart.UpbitChart;
 
 import java.time.LocalDateTime;
 
@@ -17,5 +17,5 @@ public interface ChartResponse {
     void drawPriceLine(ChartPriceLine line);
     void drawBollingerBands(Double standardDeviation);
     void drawRsi(Double rsi);
-    ChartEntity toEntity();
+    UpbitChart toEntity();
 }

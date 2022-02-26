@@ -37,14 +37,9 @@ public class UpbitExchange implements Exchange {
         List<ItemResponse> items = upbitTradeItem.getItems().stream()
                 .filter(ItemResponse::isKrwMarket)
                 .collect(Collectors.toList());
-        int i = 0;
         for (ItemResponse item : items) {
-            if (i > 0) {
-                break;
-            }
             final String market = item.getName();
             orderResponseList.addAll(exchangeMarket(user, market, date, accounts));
-            i++;
         }
         return OrderResponses.of(orderResponseList);
     }

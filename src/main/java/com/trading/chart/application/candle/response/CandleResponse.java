@@ -1,5 +1,6 @@
 package com.trading.chart.application.candle.response;
 
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,5 @@ public interface CandleResponse {
     Integer getUnit();
     String getMarket();
     LocalDateTime getCandleDateTimeKST();
-    Double getTradePrice();
-    ChartResponse toChart();
+    ChartResponse toChart(UpbitUnit unit);
 }

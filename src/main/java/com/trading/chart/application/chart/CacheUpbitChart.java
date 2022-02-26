@@ -31,7 +31,7 @@ public class CacheUpbitChart implements Chart {
         // 데이터가 없으면 (나중에는 DB를 한번 조회 후 뒤에 일들을 DBUpbitChart 한테 시킬거임) apiUpbitCandle getCandles 호출 하여 cache 등록
         ChartKey chartKey = request.getRequestKey();
         ChartResponses charts = cache.get(chartKey);
-        if (Objects.isNull(charts) || !charts.isSatisfied(request)) {
+        if (Objects.isNull(charts) || charts.isNotSatisfied(request)) {
             ChartResponses stored = upbitChartStorage.getCharts(request);
             cache.add(chartKey, stored);
         }

@@ -8,6 +8,7 @@ package com.trading.chart.application.candle.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.UpbitChartResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -101,7 +102,18 @@ public class UpbitCandleResponse implements CandleResponse {
     private String firstDayOfPeriod;
 
     @Override
-    public UpbitChartResponse toChart() {
-        return new UpbitChartResponse(this);
+    public UpbitChartResponse toChart(UpbitUnit unit) {
+        return UpbitChartResponse.builder()
+                .market(market)
+                .time(candleDateTimeKST)
+                .lowPrice(lowPrice)
+                .openingPrice(openingPrice)
+                .tradePrice(tradePrice)
+                .highPrice(highPrice)
+                .volume(accTradeVolume)
+                .unit(unit)
+                .changePrice(changePrice)
+                .changeRate(changeRate)
+                .build();
     }
 }

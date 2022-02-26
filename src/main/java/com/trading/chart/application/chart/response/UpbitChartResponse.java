@@ -1,9 +1,7 @@
 package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
-import com.trading.chart.application.candle.response.UpbitCandleResponse;
 import com.trading.chart.application.chart.request.LinePeriod;
-import com.trading.chart.domain.chart.ChartEntity;
 import com.trading.chart.domain.chart.UpbitChart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +10,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -26,6 +22,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(of = {"market", "unit", "time"})
 @Getter
 public class UpbitChartResponse implements ChartResponse {
+    private Long id;
     private String market;
     private LocalDateTime time;
     private Double lowPrice;
@@ -37,7 +34,8 @@ public class UpbitChartResponse implements ChartResponse {
     private Double changePrice;
     private Double changeRate;
 
-    private Set<ChartPriceLine> priceLines;
+    @Builder.Default
+    private Set<ChartPriceLine> priceLines = new HashSet<>();
 
     private double upperBollingerBand;
     private double downBollingerBand;
@@ -52,22 +50,10 @@ public class UpbitChartResponse implements ChartResponse {
         this.unit = unit;
     }
 
-    public UpbitChartResponse(UpbitCandleResponse upbitCandleResponse) {
-        this.market = upbitCandleResponse.getMarket();
-        this.time = upbitCandleResponse.getCandleDateTimeKST();
-        this.lowPrice = upbitCandleResponse.getLowPrice();
-        this.openingPrice = upbitCandleResponse.getOpeningPrice();
-        this.tradePrice = upbitCandleResponse.getTradePrice();
-        this.highPrice = upbitCandleResponse.getHighPrice();
-        this.volume = upbitCandleResponse.getAccTradeVolume();
-        this.unit = UpbitUnit.get(upbitCandleResponse.getUnit());
-        this.changePrice = upbitCandleResponse.getChangePrice();
-        this.changeRate = upbitCandleResponse.getChangeRate();
-    }
-
     @Override
-    public ChartEntity toEntity() {
+    public UpbitChart toEntity() {
         return UpbitChart.builder()
+                .id(id)
                 .market(market)
                 .time(time)
                 .lowPrice(lowPrice)
@@ -78,9 +64,7 @@ public class UpbitChartResponse implements ChartResponse {
                 .unit(unit)
                 .changePrice(changePrice)
                 .changeRate(changeRate)
-                .priceLines(priceLines.stream()
-                        .map(ChartPriceLine::toUpbitChartPriceLine)
-                        .collect(Collectors.toSet()))
+                .priceLines(priceLines)
                 .upperBollingerBand(upperBollingerBand)
                 .downBollingerBand(downBollingerBand)
                 .rsi(rsi)
@@ -90,9 +74,7 @@ public class UpbitChartResponse implements ChartResponse {
 
     @Override
     public void drawPriceLine(ChartPriceLine line) {
-        if (Objects.isNull(priceLines)) {
-            priceLines = new HashSet<>();
-        }
+        this.priceLines.remove(line);
         this.priceLines.add(line);
     }
 

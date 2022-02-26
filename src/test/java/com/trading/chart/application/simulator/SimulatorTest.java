@@ -70,11 +70,7 @@ public class SimulatorTest {
         List<ItemResponse> items = upbitTradeItem.getItems().stream()
                 .filter(ItemResponse::isKrwMarket)
                 .collect(Collectors.toList());
-        int i = 0;
         for (ItemResponse item : items) {
-            if (i > 0) {
-                break;
-            }
             final String market = item.getName();
             ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
             upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
@@ -84,7 +80,6 @@ public class SimulatorTest {
                     .build();
 
             upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
-            i++;
         }
     }
 

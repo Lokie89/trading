@@ -1,5 +1,6 @@
 package com.trading.chart.application.candle.response;
 
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponses;
 
 import java.util.List;
@@ -20,10 +21,10 @@ public class CandleResponses {
         return new CandleResponses(candleResponses);
     }
 
-    public ChartResponses toChart() {
+    public ChartResponses toChart(UpbitUnit unit) {
         return ChartResponses.of(
                 this.candleResponses.stream()
-                        .map(CandleResponse::toChart)
+                        .map(candle -> candle.toChart(unit))
                         .collect(Collectors.toSet())
         );
     }

@@ -8,6 +8,7 @@ import com.trading.chart.application.chart.response.ChartResponses;
  * @since 2021/11/21
  */
 public interface Chart {
+    // TODO : draw 분리
     void drawPriceLine(ChartRequest request);
     void drawBollingerBands(ChartRequest request);
     ChartResponses getChart(ChartRequest request);
