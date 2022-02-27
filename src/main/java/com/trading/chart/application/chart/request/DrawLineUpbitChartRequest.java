@@ -10,7 +10,6 @@ import java.util.Objects;
  * @author SeongRok.Oh
  * @since 2021-11-18
  */
-@Getter
 public class DrawLineUpbitChartRequest extends UpbitChartRequest {
 
     private DrawLineUpbitChartRequest(String market, UpbitUnit unit, Integer count, LocalDateTime to, LinePeriod period) {

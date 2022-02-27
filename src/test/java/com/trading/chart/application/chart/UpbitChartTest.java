@@ -24,6 +24,9 @@ public class UpbitChartTest {
     @Autowired
     Chart upbitChart;
 
+    @Autowired
+    ChartIndicator upbitChartIndicator;
+
     @DisplayName("라인 생성")
     @Test
     void drawLineTest() {
@@ -33,7 +36,7 @@ public class UpbitChartTest {
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
         ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
-        upbitChart.drawPriceLine(drawLineRequest);
+        upbitChartIndicator.drawPriceLine(drawLineRequest);
         ChartResponses chartResponses = upbitChart.getChart(drawLineRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
@@ -48,9 +51,9 @@ public class UpbitChartTest {
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
         ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
-        upbitChart.drawPriceLine(drawLineRequest);
+        upbitChartIndicator.drawPriceLine(drawLineRequest);
         ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
-        upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+        upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         ChartResponses chartResponses = upbitChart.getChart(drawBollingerBandsUpbitChartRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
@@ -64,7 +67,7 @@ public class UpbitChartTest {
         final int count = 3;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
         ChartRequest drawRsiUpbitChartRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
-        upbitChart.drawRsi(drawRsiUpbitChartRequest);
+        upbitChartIndicator.drawRsi(drawRsiUpbitChartRequest);
         ChartResponses chartResponses = upbitChart.getChart(drawRsiUpbitChartRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));

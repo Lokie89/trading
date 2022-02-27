@@ -4,7 +4,10 @@ import com.trading.chart.application.candle.request.UpbitUnit;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+/**
+ * @author SeongRok.Oh
+ * @since 2021-11-26
+ */
 public class DrawBollingerBandsUpbitChartRequest extends UpbitChartRequest {
 
     private DrawBollingerBandsUpbitChartRequest(String market, UpbitUnit unit, int count, LocalDateTime to, LinePeriod period) {

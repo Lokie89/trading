@@ -27,6 +27,9 @@ public class UpbitChartStorageTest {
     @Autowired
     Chart cacheUpbitChart;
 
+    @Autowired
+    ChartIndicator upbitChartIndicator;
+
     @Transactional
     @DisplayName("업비트 차트 저장 테스트")
     @Test
@@ -78,8 +81,8 @@ public class UpbitChartStorageTest {
                 .lastTime(LocalDateTime.now().minusDays(3))
                 .count(3)
                 .build();
-        cacheUpbitChart.drawPriceLine(chartRequest);
-        cacheUpbitChart.drawBollingerBands(chartRequest);
+        upbitChartIndicator.drawPriceLine(chartRequest);
+        upbitChartIndicator.drawBollingerBands(chartRequest);
 
         ChartResponses chartResponses = cacheUpbitChart.getChart(chartRequest);
         ChartResponses chartResponses2 = upbitChartStorage.saveChart(chartResponses);
@@ -98,7 +101,7 @@ public class UpbitChartStorageTest {
                 .count(5)
                 .build();
 
-        cacheUpbitChart.drawPriceLine(drawLineChartRequest);
+        upbitChartIndicator.drawPriceLine(drawLineChartRequest);
 
         ChartResponses chartResponses = cacheUpbitChart.getChart(drawLineChartRequest);
         upbitChartStorage.saveChart(chartResponses);
@@ -108,7 +111,7 @@ public class UpbitChartStorageTest {
                 .count(5)
                 .build();
 
-        cacheUpbitChart.drawPriceLine(drawLineChartRequest2);
+        upbitChartIndicator.drawPriceLine(drawLineChartRequest2);
 
         ChartResponses chartResponses2 = cacheUpbitChart.getChart(drawLineChartRequest2);
         upbitChartStorage.saveChart(chartResponses2);

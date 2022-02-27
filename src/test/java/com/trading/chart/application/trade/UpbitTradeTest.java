@@ -2,6 +2,7 @@ package com.trading.chart.application.trade;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
+import com.trading.chart.application.chart.ChartIndicator;
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
 import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
@@ -45,6 +46,9 @@ public class UpbitTradeTest {
     @Autowired
     Trader simulateUpbitTrader;
 
+    @Autowired
+    ChartIndicator upbitChartIndicator;
+
 //    @DisplayName("자동 트레이드 테스트")
 //    @Test
 //    void tradeTest() {
@@ -58,13 +62,13 @@ public class UpbitTradeTest {
 //
 //        ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
 //
-//        upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
+//        upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
 //        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
 //                .lastTime(date)
 //                .count(count)
 //                .build();
 //
-//        upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+//        upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
 //        TradeRequest tradeRequest = UpbitTradeRequest.builder(client, tradeType, market, null)
 //                .tradeResources(UpbitTradeResourceResponse.builder(tradeType, strategy, unit)
 //                        .build())
@@ -99,13 +103,13 @@ public class UpbitTradeTest {
 
         ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
 
-        upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
+        upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
         ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
                 .lastTime(date)
                 .count(count)
                 .build();
 
-        upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+        upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         TradeRequest tradeRequest = UpbitTradeRequest.builder(client, tradeType, market, null)
                 .tradeResources(UpbitTradeResourceResponse.builder(tradeType, strategy, unit)
                         .build())

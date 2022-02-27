@@ -2,6 +2,7 @@ package com.trading.chart.application.exchange;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
+import com.trading.chart.application.chart.ChartIndicator;
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
 import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
@@ -58,6 +59,9 @@ public class ExchangeTest {
     @Autowired
     Trader simulateUpbitTrader;
 
+    @Autowired
+    ChartIndicator upbitChartIndicator;
+
     final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
     final LocalDateTime date = LocalDateTime.of(2022, 2, 11, 18, 2, 1);
 
@@ -71,13 +75,13 @@ public class ExchangeTest {
         for (ItemResponse item : items) {
             final String market = item.getName();
             ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
-            upbitChart.drawPriceLine(drawPriceLinesUpbitChartRequest);
+            upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
 
             ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
                     .lastTime(date)
                     .count(count)
                     .build();
-            upbitChart.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+            upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         }
     }
 
