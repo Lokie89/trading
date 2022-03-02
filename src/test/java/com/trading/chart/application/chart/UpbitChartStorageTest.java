@@ -117,4 +117,28 @@ public class UpbitChartStorageTest {
         upbitChartStorage.saveChart(chartResponses2);
     }
 
+    @DisplayName("차트 그려 저장2")
+    @Test
+    void drawChartAndSave() {
+        final String market = "KRW-BTC";
+        final UpbitUnit unit = UpbitUnit.DAY;
+        final LinePeriod period = LinePeriod.TWENTY;
+
+        ChartRequest drawLineChartRequest = DrawLineUpbitChartRequest.builder(market, period, unit)
+                .lastTime(LocalDateTime.now().minusDays(24))
+                .count(5)
+                .build();
+
+        upbitChartIndicator.drawPriceLine(drawLineChartRequest);
+        cacheUpbitChart.archive();
+
+        ChartRequest drawBollingerChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
+                .lastTime(LocalDateTime.now().minusDays(24))
+                .count(5)
+                .build();
+        upbitChartIndicator.drawBollingerBands(drawBollingerChartRequest);
+        cacheUpbitChart.archive();
+
+    }
+
 }
