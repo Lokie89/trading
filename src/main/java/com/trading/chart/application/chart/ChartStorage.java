@@ -9,5 +9,5 @@ import com.trading.chart.application.chart.response.ChartResponses;
  */
 public interface ChartStorage {
     ChartResponses getCharts(ChartRequest request);
-    ChartResponses saveChart(ChartResponses responses);
+    void saveChart(ChartResponses responses);
 }

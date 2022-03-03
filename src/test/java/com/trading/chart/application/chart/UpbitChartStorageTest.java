@@ -40,8 +40,8 @@ public class UpbitChartStorageTest {
                 .count(50)
                 .build();
         ChartResponses charts = cacheUpbitChart.getChart(chartRequest);
-        ChartResponses chartResponses = upbitChartStorage.saveChart(charts);
-        assertEquals(50, chartResponses.size());
+        upbitChartStorage.saveChart(charts);
+        assertEquals(50, charts.size());
     }
 
 
@@ -85,7 +85,7 @@ public class UpbitChartStorageTest {
         upbitChartIndicator.drawBollingerBands(chartRequest);
 
         ChartResponses chartResponses = cacheUpbitChart.getChart(chartRequest);
-        ChartResponses chartResponses2 = upbitChartStorage.saveChart(chartResponses);
+        upbitChartStorage.saveChart(chartResponses);
         assertEquals(3, chartResponses.size());
     }
 
@@ -133,7 +133,7 @@ public class UpbitChartStorageTest {
         cacheUpbitChart.archive();
 
         ChartRequest drawBollingerChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                .lastTime(LocalDateTime.now().minusDays(24))
+                .lastTime(LocalDateTime.now().minusDays(22))
                 .count(5)
                 .build();
         upbitChartIndicator.drawBollingerBands(drawBollingerChartRequest);

@@ -2,7 +2,7 @@ package com.trading.chart.application.chart;
 
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.LinePeriod;
-import com.trading.chart.application.chart.response.ChartPriceLine;
+import com.trading.chart.domain.chart.ChartPriceLine;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.application.chart.response.ChartResponses;
 import lombok.RequiredArgsConstructor;

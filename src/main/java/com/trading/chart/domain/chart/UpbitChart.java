@@ -2,11 +2,9 @@ package com.trading.chart.domain.chart;
 
 
 import com.trading.chart.application.candle.request.UpbitUnit;
-import com.trading.chart.application.chart.response.ChartPriceLine;
 import com.trading.chart.application.chart.response.UpbitChartResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -27,8 +25,7 @@ import java.util.Set;
         }
 )
 @Entity
-public class UpbitChart extends ChartEntity {
-    @Getter
+public class UpbitChart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -47,10 +44,10 @@ public class UpbitChart extends ChartEntity {
     private Double changePrice;
     private Double changeRate;
 
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "upbit_chart_price_line",
-            uniqueConstraints = @UniqueConstraint(columnNames = {"upbit_chart_id","period"}))
+            joinColumns = @JoinColumn(name = "upbit_chart_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"upbit_chart_id", "period"}))
     private Set<ChartPriceLine> priceLines;
 
     private Double upperBollingerBand;

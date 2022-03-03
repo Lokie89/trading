@@ -2,6 +2,7 @@ package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.domain.chart.ChartPriceLine;
 import com.trading.chart.domain.chart.UpbitChart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -70,6 +72,11 @@ public class UpbitChartResponse implements ChartResponse {
                 .rsi(rsi)
                 .rsiSignal(rsiSignal)
                 .build();
+    }
+
+    @Override
+    public boolean isCreated() {
+        return Objects.nonNull(id);
     }
 
     @Override

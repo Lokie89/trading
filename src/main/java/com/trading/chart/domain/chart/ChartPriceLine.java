@@ -1,6 +1,8 @@
-package com.trading.chart.application.chart.response;
+package com.trading.chart.domain.chart;
 
 import com.trading.chart.application.chart.request.LinePeriod;
+import com.trading.chart.application.chart.response.ChartPriceLineResponse;
+import com.trading.chart.application.chart.response.UpbitChartPriceLineResponse;
 import lombok.*;
 
 import javax.persistence.Embeddable;
@@ -18,11 +20,20 @@ import javax.persistence.Enumerated;
 @NoArgsConstructor
 @Embeddable
 public class ChartPriceLine {
+
     @Enumerated(EnumType.STRING)
     private LinePeriod period;
     private double value;
 
     public static ChartPriceLine of(LinePeriod period, double value) {
         return new ChartPriceLine(period, value);
+    }
+
+    public ChartPriceLineResponse toDto(Long chartId){
+        return UpbitChartPriceLineResponse.builder()
+                .upbitChartId(chartId)
+                .period(period.toString())
+                .value(value)
+                .build();
     }
 }

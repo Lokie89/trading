@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.trading.chart.domain.chart.QChartPriceLine.chartPriceLine;
 import static com.trading.chart.domain.chart.QUpbitChart.upbitChart;
 
 /**
@@ -28,16 +29,15 @@ public class UpbitChartRepositorySupport implements ChartRepositorySupport {
     @Override
     public ChartResponses getChart(ChartRequest request) {
         ChartResponse[] chartResponses = request.forWorkIndex();
-        List<UpbitChart> charts = queryFactory.select(upbitChart)
-                .from(upbitChart)
+        List<UpbitChart> charts = queryFactory.selectFrom(upbitChart)
+                .leftJoin(upbitChart.priceLines, chartPriceLine)
                 .where(
                         between(chartResponses[0].getTime(), chartResponses[1].getTime()),
                         eqMarket(request),
                         eqUnit(request)
                 )
                 .orderBy(upbitChart.time.asc())
-                .fetch()
-        ;
+                .fetchJoin().distinct().fetch();
         return ChartResponses.of(charts.stream().map(UpbitChart::toDto).collect(Collectors.toList()));
     }
 
