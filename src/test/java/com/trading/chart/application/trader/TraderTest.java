@@ -29,7 +29,7 @@ public class TraderTest {
     @DisplayName("남아있는 금액 조회")
     @Test
     void getBalanceTest() {
-        final String client = "Traeuman";
+        final String client = "tjdfhrdk10@naver.com";
         AccountRequest accountRequest = UpbitAccountRequest.builder(client)
                 .build();
         AccountResponses responses = upbitTrader.getAccounts(accountRequest);

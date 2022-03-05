@@ -11,7 +11,7 @@ import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.application.trader.response.AccountResponses;
-import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
+import com.trading.chart.domain.user.response.TradeResourceResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -37,14 +37,14 @@ public class UpbitTradeRequest implements TradeRequest {
     @Getter
     private final String market;
     private final LocalDateTime date;
-    private final List<UpbitTradeResourceResponse> tradeResources;
+    private final List<TradeResourceResponse> tradeResources;
     private final AccountResponses accountResponses;
 
 
     private UpbitTradeRequest(String client, TradeType side,
                               Integer cash, Double price, Double volume,
                               String market, LocalDateTime date,
-                              List<UpbitTradeResourceResponse> tradeResources,
+                              List<TradeResourceResponse> tradeResources,
                               AccountResponses accountResponses) {
         this.client = client;
         this.side = side;
@@ -122,7 +122,7 @@ public class UpbitTradeRequest implements TradeRequest {
 
         private final String market;
         private LocalDateTime date = LocalDateTime.now();
-        private List<UpbitTradeResourceResponse> tradeResources = new ArrayList<>();
+        private List<TradeResourceResponse> tradeResources = new ArrayList<>();
         private AccountResponses accounts;
 
 
@@ -162,14 +162,14 @@ public class UpbitTradeRequest implements TradeRequest {
             return this;
         }
 
-        public Builder tradeResources(List<UpbitTradeResourceResponse> tradeResources) {
+        public Builder tradeResources(List<TradeResourceResponse> tradeResources) {
             if (Objects.nonNull(tradeResources)) {
                 this.tradeResources = tradeResources;
             }
             return this;
         }
 
-        public Builder tradeResources(UpbitTradeResourceResponse... tradeResources) {
+        public Builder tradeResources(TradeResourceResponse... tradeResources) {
             if (Objects.nonNull(tradeResources)) {
                 this.tradeResources = Arrays.asList(tradeResources);
             }

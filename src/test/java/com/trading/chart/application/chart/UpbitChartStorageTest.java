@@ -133,7 +133,7 @@ public class UpbitChartStorageTest {
         cacheUpbitChart.archive();
 
         ChartRequest drawBollingerChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                .lastTime(LocalDateTime.now().minusDays(22))
+                .lastTime(LocalDateTime.now().minusDays(24))
                 .count(5)
                 .build();
         upbitChartIndicator.drawBollingerBands(drawBollingerChartRequest);

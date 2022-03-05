@@ -26,12 +26,12 @@ public class UpbitUserResponse implements UserResponse {
     private final Integer cashAtOnce;
     private final Boolean isSelling;
     private final AccountResponses accounts;
-    private final List<UpbitTradeResourceResponse> tradeResources;
+    private final List<TradeResourceResponse> tradeResources;
 
     private UpbitUserResponse(String upbitClient, Boolean isBuying, Integer buyLimit,
                               Integer cashAtOnce, Boolean isSelling,
                               AccountResponses accounts,
-                              List<UpbitTradeResourceResponse> tradeResources) {
+                              List<TradeResourceResponse> tradeResources) {
         this.upbitClient = upbitClient;
         this.isBuying = isBuying;
         this.buyLimit = buyLimit;
@@ -84,7 +84,7 @@ public class UpbitUserResponse implements UserResponse {
         private Boolean isSelling = true;
         private Integer buyLimit = Integer.MAX_VALUE;
         private AccountResponses accounts;
-        private final List<UpbitTradeResourceResponse> tradeResources = new ArrayList<>();
+        private final List<TradeResourceResponse> tradeResources = new ArrayList<>();
 
         public Builder upbitClient(String upbitClient) {
             if (Objects.nonNull(upbitClient)) {
@@ -128,14 +128,14 @@ public class UpbitUserResponse implements UserResponse {
             return this;
         }
 
-        public Builder tradeResources(UpbitTradeResourceResponse... resources) {
+        public Builder tradeResources(TradeResourceResponse... resources) {
             if (Objects.nonNull(resources) && resources.length > 0) {
                 this.tradeResources.addAll(Arrays.asList(resources));
             }
             return this;
         }
 
-        public Builder tradeResources(List<UpbitTradeResourceResponse> resources) {
+        public Builder tradeResources(List<TradeResourceResponse> resources) {
             if (Objects.nonNull(resources) && resources.size() > 0) {
                 this.tradeResources.addAll(resources);
             }

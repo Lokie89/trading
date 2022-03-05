@@ -1,18 +1,21 @@
 package com.trading.chart.domain.user;
 
-import com.trading.chart.application.trader.response.AccountResponses;
-import com.trading.chart.domain.user.response.UpbitUserResponse;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
  * @since 2021/11/07
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 public class UpbitUser {
 
@@ -21,44 +24,35 @@ public class UpbitUser {
     private Long id;
 
     @Getter
-    @Column(unique = true)
-    private String client;
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private User user;
+
+    @Getter
     @Column(unique = true)
     private String upbitClient;
-    private String namuClient;
-    @Column(nullable = false)
-    private String password;
     @Getter
     private String upbitAccessKey;
     @Getter
     private String upbitSecretKey;
 
     @ColumnDefault(value = "true")
-    @Column(name = "buying")
+    @Column(name = "buying", nullable = false)
     private Boolean isBuying;
+    @Column(nullable = false)
     @ColumnDefault(value = "0x7fffffff")
     private Integer buyLimit;
 
+    @Column(nullable = false)
     @ColumnDefault(value = "5000")
     private Integer cashAtOnce;
     @ColumnDefault(value = "true")
-    @Column(name = "selling")
+    @Column(name = "selling", nullable = false)
     private Boolean isSelling;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<UpbitTradeResource> tradeResources;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "trade_resource",
+            joinColumns = @JoinColumn(name = "upbit_user_id"))
+    private List<TradeResource> tradeResources;
 
-    public UpbitUserResponse toDto(AccountResponses upbitAccounts) {
-        return UpbitUserResponse.builder()
-                .buying(isBuying)
-                .selling(isSelling)
-                .buyLimit(buyLimit)
-                .cashAtOnce(cashAtOnce)
-                .accounts(upbitAccounts)
-                .tradeResources(
-                        tradeResources.stream()
-                                .map(UpbitTradeResource::toDto)
-                                .collect(Collectors.toList()))
-                .build();
-    }
 }

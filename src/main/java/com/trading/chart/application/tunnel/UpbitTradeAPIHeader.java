@@ -30,15 +30,15 @@ public class UpbitTradeAPIHeader implements TradeAPIHeader {
     private final UpbitUserRepository upbitUserRepository;
 
     @Override
-    public HttpHeaders getHeaders(String id) {
-        UpbitUser upbitUser = upbitUserRepository.findByClient(id).orElseThrow(RuntimeException::new);
+    public HttpHeaders getHeaders(String client) {
+        UpbitUser upbitUser = upbitUserRepository.findByUpbitClient(client).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());
     }
 
     @Override
-    public HttpHeaders getHeaders(String id, Object data) {
-        UpbitUser upbitUser = upbitUserRepository.findByClient(id).orElseThrow(RuntimeException::new);
+    public HttpHeaders getHeaders(String client, Object data) {
+        UpbitUser upbitUser = upbitUserRepository.findByUpbitClient(client).orElseThrow(RuntimeException::new);
         JWTCreator.Builder tokenCreatorBuilder = accessKeyBuild(upbitUser.getUpbitAccessKey());
         includeToken(tokenCreatorBuilder, data);
         return signJwtToken(tokenCreatorBuilder, upbitUser.getUpbitSecretKey());

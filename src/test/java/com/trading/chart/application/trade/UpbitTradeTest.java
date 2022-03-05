@@ -14,7 +14,8 @@ import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
 import com.trading.chart.application.trader.Trader;
-import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
+import com.trading.chart.domain.user.ExchangePlatform;
+import com.trading.chart.domain.user.response.TradeResourceResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -111,7 +112,7 @@ public class UpbitTradeTest {
 
         upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         TradeRequest tradeRequest = UpbitTradeRequest.builder(client, tradeType, market, null)
-                .tradeResources(UpbitTradeResourceResponse.builder(tradeType, strategy, unit)
+                .tradeResources(TradeResourceResponse.builder(ExchangePlatform.UPBIT, tradeType, strategy, unit)
                         .build())
                 .date(date)
                 .cash(5000)

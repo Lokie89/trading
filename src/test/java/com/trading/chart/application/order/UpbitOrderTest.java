@@ -7,6 +7,10 @@ import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
+import com.trading.chart.domain.user.User;
+import com.trading.chart.repository.UpbitUserRepositoryTest;
+import com.trading.chart.repository.user.UpbitUserRepository;
+import com.trading.chart.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,9 @@ public class UpbitOrderTest {
     @Autowired
     Order simulateUpbitOrder;
 
+    @Autowired
+    UpbitUserRepository userRepository;
+
     @DisplayName("업비트 주문하기 하고 취소하기")
     @Test
     void upbitOrderTest() {
@@ -38,7 +45,7 @@ public class UpbitOrderTest {
         final Integer cash = 5100;
         final Double price = 5100.0;
         OrderRequest request = UpbitOrderRequest
-                .builder("Traeuman", market, tradeType)
+                .builder("tjdfhrdk10@naver.com", market, tradeType)
                 .cash(cash)
                 .price(price)
                 .build();
@@ -48,7 +55,7 @@ public class UpbitOrderTest {
         // 취소하기
         String uuid = response.getUuid();
         OrderCancelRequest cancelRequest = UpbitOrderCancelRequest.builder()
-                .client("Traeuman")
+                .client("tjdfhrdk10@naver.com")
                 .uuid(uuid)
                 .build();
 

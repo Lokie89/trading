@@ -5,6 +5,8 @@ import com.trading.chart.application.match.request.MatchRequest;
 import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.match.request.UpbitMatchRequest;
 import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.domain.user.ExchangePlatform;
+import com.trading.chart.domain.user.TradeResource;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,8 @@ import java.util.Objects;
  * @author SeongRok.Oh
  * @since 2022/02/02
  */
-public class UpbitTradeResourceResponse {
+public class TradeResourceResponse {
+    private final ExchangePlatform platform;
     private final TradeType tradeType;
     private final TradeStrategy strategy;
     @Getter
@@ -24,9 +27,10 @@ public class UpbitTradeResourceResponse {
     private final Integer matchMin;
     private final Integer matchMax;
 
-    private UpbitTradeResourceResponse(TradeType tradeType, TradeStrategy strategy,
-                                       UpbitUnit unit, Integer matchStandard, Integer matchRange,
-                                       Integer matchMin, Integer matchMax) {
+    private TradeResourceResponse(ExchangePlatform platform, TradeType tradeType, TradeStrategy strategy,
+                                  UpbitUnit unit, Integer matchStandard, Integer matchRange,
+                                  Integer matchMin, Integer matchMax) {
+        this.platform = platform;
         this.tradeType = tradeType;
         this.strategy = strategy;
         this.unit = unit;
@@ -46,15 +50,30 @@ public class UpbitTradeResourceResponse {
                 .build();
     }
 
-    public boolean isEqualsTradeType(TradeType tradeType){
+    public boolean isEqualsTradeType(TradeType tradeType) {
         return this.tradeType.equals(tradeType);
     }
 
-    public static Builder builder(TradeType tradeType, TradeStrategy strategy, UpbitUnit unit) {
-        return new Builder(tradeType, strategy, unit);
+    public static Builder builder(ExchangePlatform platform, TradeType tradeType,
+                                  TradeStrategy strategy, UpbitUnit unit) {
+        return new Builder(platform, tradeType, strategy, unit);
+    }
+
+    public TradeResource toEntity(){
+        return TradeResource.builder()
+                .platform(platform)
+                .tradeType(tradeType)
+                .strategy(strategy)
+                .unit(unit)
+                .matchStandard(matchStandard)
+                .matchRange(matchRange)
+                .matchMin(matchMin)
+                .matchMax(matchMax)
+                .build();
     }
 
     public static class Builder {
+        private final ExchangePlatform platform;
         private final TradeType tradeType;
         private final TradeStrategy strategy;
         private final UpbitUnit unit;
@@ -63,7 +82,8 @@ public class UpbitTradeResourceResponse {
         private Integer matchMin = 1;
         private Integer matchMax = 1;
 
-        private Builder(TradeType tradeType, TradeStrategy strategy, UpbitUnit unit) {
+        private Builder(ExchangePlatform platform, TradeType tradeType, TradeStrategy strategy, UpbitUnit unit) {
+            this.platform = platform;
             this.tradeType = tradeType;
             this.strategy = strategy;
             this.unit = unit;
@@ -97,8 +117,8 @@ public class UpbitTradeResourceResponse {
             return this;
         }
 
-        public UpbitTradeResourceResponse build() {
-            return new UpbitTradeResourceResponse(tradeType, strategy, unit,
+        public TradeResourceResponse build() {
+            return new TradeResourceResponse(platform, tradeType, strategy, unit,
                     matchStandard, matchRange, matchMin, matchMax);
         }
 

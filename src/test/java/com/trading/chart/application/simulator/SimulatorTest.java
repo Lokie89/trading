@@ -17,11 +17,9 @@ import com.trading.chart.application.simulator.request.UpbitSimulatorRequest;
 import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
-import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.trading.chart.domain.user.ExchangePlatform;
+import com.trading.chart.domain.user.response.TradeResourceResponse;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -38,6 +36,7 @@ import java.util.stream.Collectors;
  * @since 2022/02/08
  */
 
+@Disabled
 @DisplayName("시뮬레이터 테스트")
 @SpringBootTest
 public class SimulatorTest {
@@ -94,9 +93,10 @@ public class SimulatorTest {
 
         final Integer seedMoney = 1000000;
         final Integer cashAtOnce = 50000;
-        final UpbitTradeResourceResponse buyTradeResource = UpbitTradeResourceResponse.builder(TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE).matchMin(2).matchMax(2).build();
-        final UpbitTradeResourceResponse sellTradeResource = UpbitTradeResourceResponse.builder(TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE).matchMin(2).matchMax(2).build();
-        final List<UpbitTradeResourceResponse> tradeResourceList = new ArrayList<>();
+        final ExchangePlatform platform = ExchangePlatform.UPBIT;
+        final TradeResourceResponse buyTradeResource = TradeResourceResponse.builder(platform, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE).matchMin(2).matchMax(2).build();
+        final TradeResourceResponse sellTradeResource = TradeResourceResponse.builder(platform, TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.MINUTE_THREE).matchMin(2).matchMax(2).build();
+        final List<TradeResourceResponse> tradeResourceList = new ArrayList<>();
         tradeResourceList.add(buyTradeResource);
         tradeResourceList.add(sellTradeResource);
         SimulatorRequest request = UpbitSimulatorRequest.builder(start)

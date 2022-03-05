@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class UpbitMatch implements Match {
 
-    private final Chart upbitChart;
+    private final Chart cacheUpbitChart;
 
     @Override
     public boolean match(List<MatchRequest> request) {
         return !request.isEmpty() && request.stream().allMatch(matchRequest -> {
             ChartRequest chartRequest = matchRequest.toChartRequest();
-            return matchRequest.test(upbitChart.getChart(chartRequest));
+            return matchRequest.test(cacheUpbitChart.getChart(chartRequest));
         });
     }
 }

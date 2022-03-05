@@ -10,5 +10,5 @@ import java.util.Optional;
  * @since 2021/11/08
  */
 public interface UpbitUserRepository extends JpaRepository<UpbitUser, String> {
-    Optional<UpbitUser> findByClient(String client);
+    Optional<UpbitUser> findByUpbitClient(String upbitClient);
 }

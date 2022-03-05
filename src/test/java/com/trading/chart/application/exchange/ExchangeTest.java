@@ -16,7 +16,8 @@ import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.application.trader.response.UpbitAccount;
-import com.trading.chart.domain.user.response.UpbitTradeResourceResponse;
+import com.trading.chart.domain.user.ExchangePlatform;
+import com.trading.chart.domain.user.response.TradeResourceResponse;
 import com.trading.chart.domain.user.response.UpbitUserResponse;
 import com.trading.chart.repository.user.UpbitUserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -109,7 +110,7 @@ public class ExchangeTest {
                 .accounts(AccountResponses.of(UpbitAccount.of("KRW",1000000.0,0.0)))
                 .cashAtOnce(50000)
                 .tradeResources(
-                        UpbitTradeResourceResponse.builder(TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, unit)
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, unit)
                                 .matchRange(3).matchMin(3).matchMax(3).build()
                 )
                 .build();
