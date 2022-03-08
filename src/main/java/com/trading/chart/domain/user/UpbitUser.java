@@ -1,5 +1,7 @@
 package com.trading.chart.domain.user;
 
+import com.trading.chart.domain.user.response.UpbitUserResponse;
+import com.trading.chart.domain.user.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -54,5 +57,20 @@ public class UpbitUser {
     @CollectionTable(name = "trade_resource",
             joinColumns = @JoinColumn(name = "upbit_user_id"))
     private List<TradeResource> tradeResources;
+
+    public UserResponse toUserResponse() {
+        return UpbitUserResponse.builder()
+                .upbitClient(upbitClient)
+                .buying(isBuying)
+                .buyLimit(buyLimit)
+                .cashAtOnce(cashAtOnce)
+                .selling(isSelling)
+                .tradeResources(
+                        tradeResources.stream()
+                                .map(TradeResource::toDto)
+                                .collect(Collectors.toList())
+                )
+                .build();
+    }
 
 }

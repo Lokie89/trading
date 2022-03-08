@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ChartBatch {
+public class UpbitChartBatch {
 
     private final Chart cacheUpbitChart;
     private final ChartIndicator upbitChartIndicator;
@@ -34,7 +34,7 @@ public class ChartBatch {
 
     private List<ItemResponse> items;
 
-    @PostConstruct
+//    @PostConstruct
     void setUp() {
         updateItems();
         final int dayToMinutes = 1440;
@@ -52,11 +52,7 @@ public class ChartBatch {
     }
 
     private void updateItems() {
-        items = upbitTradeItem.getItems()
-                .stream()
-                .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList())
-        ;
+        items = upbitTradeItem.getKrwItems();
     }
 
     private void operate(final UpbitUnit unit, final int count) {

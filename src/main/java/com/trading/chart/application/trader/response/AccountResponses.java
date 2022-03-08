@@ -1,5 +1,7 @@
 package com.trading.chart.application.trader.response;
 
+import com.trading.chart.application.chart.response.ChartResponse;
+import com.trading.chart.application.chart.response.ChartResponses;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import lombok.RequiredArgsConstructor;
@@ -112,8 +114,8 @@ public class AccountResponses {
         return tradeRequest.isLessPrice(getCash());
     }
 
-    public void logKrw() {
-        System.out.format("|\t%5s\t|\t%,d\t|", "KRW", accounts.stream().mapToInt(AccountResponse::toKrw).sum());
+    public void logKrw(List<ChartResponse> chartResponses) {
+        System.out.format("|\t%5s\t|\t%,d\t|", "KRW", accounts.stream().mapToInt(account->account.toKrw(chartResponses)).sum());
         System.out.println();
     }
 

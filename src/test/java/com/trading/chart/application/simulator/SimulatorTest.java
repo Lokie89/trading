@@ -70,9 +70,7 @@ public class SimulatorTest {
     }
 
     void drawLineBollingerRsi(UpbitUnit unit, LocalDateTime date, Integer count) {
-        List<ItemResponse> items = upbitTradeItem.getItems().stream()
-                .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList());
+        List<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
             ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
@@ -110,7 +108,7 @@ public class SimulatorTest {
         OrderResponses orderResponses = upbitSimulator.simulate(request);
         orderResponses.log();
         AccountResponses accountResponses = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(client));
-        accountResponses.logKrw();
+        accountResponses.logKrw(upbitChart.recent(LocalDateTime.of(end, LocalTime.MAX)));
         accountResponses.logAll();
         Assertions.assertTrue(orderResponses.size() > 0);
     }

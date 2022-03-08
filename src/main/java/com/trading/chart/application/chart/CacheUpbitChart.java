@@ -1,14 +1,23 @@
 package com.trading.chart.application.chart;
 
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.request.ChartRequest;
+import com.trading.chart.application.chart.request.UpbitKeyPoint;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.application.chart.response.ChartResponses;
+import com.trading.chart.application.chart.response.UpbitChartResponse;
+import com.trading.chart.application.item.TradeItem;
+import com.trading.chart.application.item.response.ItemResponse;
 import com.trading.chart.common.CacheChart;
 import com.trading.chart.common.ChartKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -20,6 +29,7 @@ public class CacheUpbitChart implements Chart {
 
     private final CacheChart cache = new CacheChart();
     private final ChartStorage upbitChartStorage;
+    private final TradeItem upbitTradeItem;
 
     private void verifyExistCache(ChartRequest request) {
         // 실제 데이터 검증 ( 키 값에 따른 데이터가 있는지, 그 데이터에 lastTime 의 데이터가 있는지, 그 전 데이터가 count 개수 만큼 있는지 )
@@ -65,4 +75,19 @@ public class CacheUpbitChart implements Chart {
         }
     }
 
+    @Override
+    public List<ChartResponse> recent(LocalDateTime to) {
+        List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        List<ChartResponse> chartResponses = new ArrayList<>();
+        for (ItemResponse item : items) {
+            final String market = item.getName();
+            final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
+            ChartKey key = UpbitKeyPoint.builder().market(market).unit(unit).build();
+            ChartResponses charts = cache.get(key);
+            if (Objects.nonNull(charts) && charts.isNotEmpty()) {
+                chartResponses.add(charts.substituteTo(UpbitChartResponse.builder().market(market).unit(unit).time(to).build()).getLast());
+            }
+        }
+        return chartResponses;
+    }
 }

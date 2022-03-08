@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -34,5 +35,13 @@ public class UpbitTradeItem implements TradeItem {
         UpbitItem[] candles = ConvertType.stringToType(response, UpbitItem[].class);
         cache = Arrays.asList(candles);
         return cache;
+    }
+
+    @Override
+    public List<ItemResponse> getKrwItems() {
+        return getItems().stream()
+                .filter(ItemResponse::isKrwMarket)
+                .collect(Collectors.toList())
+                ;
     }
 }

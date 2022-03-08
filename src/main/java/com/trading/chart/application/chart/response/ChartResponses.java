@@ -30,7 +30,7 @@ public class ChartResponses {
         return this.chartResponses.last();
     }
 
-    public void add(ChartResponses chartResponses) {
+    public void addAll(ChartResponses chartResponses) {
         if (Objects.nonNull(chartResponses) && chartResponses.isNotEmpty()) {
             // TODO : 기존에 있는 로우들을 리턴 값에 합쳐 보내기 위함 - Set 에는 대체 하는 로직이 메서드가 없나?
             this.chartResponses.removeAll(chartResponses.chartResponses);
@@ -40,6 +40,14 @@ public class ChartResponses {
 
     public ChartResponses substitute(ChartResponse includeFrom, ChartResponse excludeTo) {
         return new ChartResponses(this.chartResponses.subSet(includeFrom, excludeTo));
+    }
+
+    public ChartResponses substituteTo(ChartResponse includeTo) {
+        return new ChartResponses(this.chartResponses.headSet(includeTo));
+    }
+
+    public ChartResponses substituteFrom(ChartResponse includeFrom) {
+        return new ChartResponses(this.chartResponses.tailSet(includeFrom));
     }
 
     public Spliterator<ChartResponse> spliterator() {
@@ -56,7 +64,7 @@ public class ChartResponses {
         return substitute(fromTo[0], fromTo[1]).size() < mandatoryCount;
     }
 
-    private boolean isNotEmpty() {
+    public boolean isNotEmpty() {
         return !this.chartResponses.isEmpty();
     }
 }

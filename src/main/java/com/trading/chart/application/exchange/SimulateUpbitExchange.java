@@ -2,6 +2,7 @@ package com.trading.chart.application.exchange;
 
 import com.trading.chart.application.item.TradeItem;
 import com.trading.chart.application.item.response.ItemResponse;
+import com.trading.chart.application.order.Order;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.order.response.OrderResponses;
@@ -32,27 +33,27 @@ public class SimulateUpbitExchange implements Exchange {
     private final Trader simulateUpbitTrader;
     private final TradeItem upbitTradeItem;
 
+//    @Async
     @Override
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
-        List<OrderResponse> orderResponseList = new ArrayList<>();
+        OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
         AccountResponses accounts = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(user.getUpbitClient()));
-        List<ItemResponse> items = upbitTradeItem.getItems().stream()
-                .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList());
+        List<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
-            orderResponseList.addAll(exchangeMarket(user, market, date, accounts));
+            OrderResponses orderResponse = exchangeMarket(user, market, date, accounts);
+            orderResponses.addAll(orderResponse);
         }
-        return OrderResponses.of(orderResponseList);
+        return orderResponses;
     }
 
-    private List<OrderResponse> exchangeMarket(UserResponse user, String market, LocalDateTime date, AccountResponses accounts) {
-        List<OrderResponse> orderResponseList = new ArrayList<>();
+    private OrderResponses exchangeMarket(UserResponse user, String market, LocalDateTime date, AccountResponses accounts) {
+        OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
         TradeRequest buyTradeRequest = user.toTradeRequest(market, date, TradeType.BUY, accounts);
         if (user.isTradeStatus(buyTradeRequest) && user.isAvailableTrade() && user.isLimited()) {
             OrderResponse orderResponse = simulateUpbitTrader.trade(buyTradeRequest);
             if (Objects.nonNull(orderResponse)) {
-                orderResponseList.add(orderResponse);
+                orderResponses.add(orderResponse);
             }
         }
 
@@ -63,9 +64,9 @@ public class SimulateUpbitExchange implements Exchange {
                 .anyMatch(AccountResponse::isOwn)) {
             OrderResponse orderResponse = simulateUpbitTrader.trade(sellTradeRequest);
             if (Objects.nonNull(orderResponse)) {
-                orderResponseList.add(orderResponse);
+                orderResponses.add(orderResponse);
             }
         }
-        return orderResponseList;
+        return orderResponses;
     }
 }

@@ -30,13 +30,12 @@ public class UpbitExchange implements Exchange {
     private final Trader upbitTrader;
     private final TradeItem upbitTradeItem;
 
+    @Async
     @Override
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
         List<OrderResponse> orderResponseList = new ArrayList<>();
         AccountResponses accounts = upbitTrader.getAccounts(UpbitAccountRequest.of(user.getUpbitClient()));
-        List<ItemResponse> items = upbitTradeItem.getItems().stream()
-                .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList());
+        List<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
             orderResponseList.addAll(exchangeMarket(user, market, date, accounts));

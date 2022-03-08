@@ -54,6 +54,10 @@ public class UpbitMatchRequest implements MatchRequest {
 
     @Override
     public boolean test(ChartResponses chart) {
+        // 거래 정지 일경우 market 정보는 주지만 차트를 안줌
+        if (Objects.isNull(chart)) {
+            return false;
+        }
         Boolean[] result = tradeStrategy.test(chart);
         final long count = Arrays.stream(result).filter(Boolean::booleanValue).count();
         return count >= matchMin && count <= matchMax;

@@ -16,6 +16,6 @@ public class CacheChart extends ConcurrentHashMap<ChartKey, ChartResponses> {
             this.put(key, value);
             return;
         }
-        this.get(key).add(value);
+        this.get(key).addAll(value);
     }
 }

@@ -1,10 +1,16 @@
 package com.trading.chart.application.trader.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.trading.chart.application.candle.request.UpbitUnit;
+import com.trading.chart.application.chart.response.ChartResponse;
+import com.trading.chart.application.chart.response.ChartResponses;
+import com.trading.chart.application.chart.response.UpbitChartResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author SeongRok.Oh
@@ -82,8 +88,20 @@ public class UpbitAccount implements AccountResponse {
     }
 
     @Override
-    public int toKrw() {
-        double total = avgBuyPrice > 0 ? balance * avgBuyPrice : balance;
+    public int toKrw(List<ChartResponse> charts) {
+        double recentPrice = charts.stream()
+                .filter(chart -> chart.equals(
+                                UpbitChartResponse.builder()
+                                        .unit(UpbitUnit.MINUTE_ONE)
+                                        .market("KRW-" + currency)
+                                        .time(chart.getTime())
+                                        .build()
+                        )
+                )
+                .findAny()
+                .map(ChartResponse::getTradePrice)
+                .orElseGet(() -> this.avgBuyPrice);
+        double total = recentPrice > 0 ? balance * recentPrice : balance;
         return (int) total;
     }
 }

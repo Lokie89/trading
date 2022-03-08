@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public interface ChartResponse {
     Long getId();
+    String getMarket();
     Double getLowPrice();
     Double getOpeningPrice();
     Double getTradePrice();

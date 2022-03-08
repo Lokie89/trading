@@ -26,7 +26,7 @@ public class UpbitChartStorage implements ChartStorage {
         ChartResponses charts = customRepository.getChart(request);
         if (Objects.isNull(charts) || charts.isNotSatisfied(request)) {
             ChartResponses apiCharts = upbitCandle.getCandles(request.toCandleRequest()).toChart(request.getUnit());
-            apiCharts.add(charts);
+            apiCharts.addAll(charts);
             return apiCharts;
         }
         return charts;
