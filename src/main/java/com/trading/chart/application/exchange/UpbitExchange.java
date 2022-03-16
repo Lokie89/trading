@@ -12,6 +12,7 @@ import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

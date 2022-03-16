@@ -14,6 +14,8 @@ import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UserResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  * @author SeongRok.Oh
  * @since 2022/02/07
  */
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class SimulateUpbitExchange implements Exchange {
@@ -33,7 +36,7 @@ public class SimulateUpbitExchange implements Exchange {
     private final Trader simulateUpbitTrader;
     private final TradeItem upbitTradeItem;
 
-//    @Async
+    @Async
     @Override
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
         OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
