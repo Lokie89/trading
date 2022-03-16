@@ -31,13 +31,14 @@ public class UpbitChartRepositorySupport implements ChartRepositorySupport {
         ChartResponse[] chartResponses = request.forWorkIndex();
         List<UpbitChart> charts = queryFactory.selectFrom(upbitChart)
                 .leftJoin(upbitChart.priceLines, chartPriceLine)
+                .fetchJoin()
                 .where(
                         between(chartResponses[0].getTime(), chartResponses[1].getTime()),
                         eqMarket(request),
                         eqUnit(request)
                 )
                 .orderBy(upbitChart.time.asc())
-                .fetchJoin().distinct().fetch();
+                .fetch();
         return ChartResponses.of(charts.stream().map(UpbitChart::toDto).collect(Collectors.toList()));
     }
 

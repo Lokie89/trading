@@ -33,6 +33,9 @@ public class UpbitMatchTest {
     @Autowired
     ChartIndicator upbitChartIndicator;
 
+    @Autowired
+    Chart cacheUpbitChart;
+
     @DisplayName("Bollinger 전략 확인 테스트")
     @Test
     void matchTest() {
@@ -41,9 +44,10 @@ public class UpbitMatchTest {
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 9, 21, 22, 5);
-        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).to(lastTime).build();
+        cacheUpbitChart.caching(drawLineRequest);
         upbitChartIndicator.drawPriceLine(drawLineRequest);
-        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).to(lastTime).build();
         upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
         MatchRequest bollingerBandsMatchRequest
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_BOLLINGERBANDS)
@@ -75,7 +79,8 @@ public class UpbitMatchTest {
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 6, 22, 22, 5);
-        ChartRequest drawRsiRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawRsiRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).to(lastTime).build();
+        cacheUpbitChart.caching(drawRsiRequest);
         upbitChartIndicator.drawRsi(drawRsiRequest);
         MatchRequest rsiMatchRequest
                 = UpbitMatchRequest.builder(market, UpbitUnit.DAY, TradeStrategy.LOWER_RSI30)

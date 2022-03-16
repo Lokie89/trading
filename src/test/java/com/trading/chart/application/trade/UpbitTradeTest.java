@@ -50,6 +50,9 @@ public class UpbitTradeTest {
     @Autowired
     ChartIndicator upbitChartIndicator;
 
+    @Autowired
+    Chart cacheUpbitChart;
+
 //    @DisplayName("자동 트레이드 테스트")
 //    @Test
 //    void tradeTest() {
@@ -102,11 +105,12 @@ public class UpbitTradeTest {
         final LocalDateTime date = LocalDateTime.of(2021, 12, 4, 9, 0, 1);
         final int count = 1;
 
-        ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
+        ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).to(date).count(count).build();
 
+        cacheUpbitChart.caching(drawPriceLinesUpbitChartRequest);
         upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
         ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                .lastTime(date)
+                .to(date)
                 .count(count)
                 .build();
 

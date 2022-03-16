@@ -1,8 +1,11 @@
 package com.trading.chart.application.order.response;
 
 import com.trading.chart.application.order.request.OrderRequest;
+import com.trading.chart.domain.simulation.SimulatedOrder;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -41,5 +44,9 @@ public class OrderResponses {
         orderResponseList.forEach(OrderResponse::log);
         System.out.println("BUY : " + orderResponseList.stream().filter(OrderResponse::isBuyOrder).count() + " 건 "
                 + "SELL : " + orderResponseList.stream().filter(orderResponse -> !orderResponse.isBuyOrder()).count() + " 건 ");
+    }
+
+    public List<SimulatedOrder> toEntity() {
+        return orderResponseList.stream().map(OrderResponse::toSimulatedOrder).collect(Collectors.toList());
     }
 }

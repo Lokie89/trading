@@ -54,7 +54,7 @@ public class UpbitUser {
     private Boolean isSelling;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "trade_resource",
+    @CollectionTable(name = "user_trade_resource",
             joinColumns = @JoinColumn(name = "upbit_user_id"))
     private List<TradeResource> tradeResources;
 

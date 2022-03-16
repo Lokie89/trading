@@ -38,14 +38,12 @@ public class CallAPI {
     }
 
     private String callApiEndpoint(String url, HttpMethod httpMethod, HttpHeaders httpHeaders, Object body) {
-//        log.info("CallAPI.callApiEndpoint url : " + url);
         String response = null;
         try {
             String jsonValue = Objects.nonNull(body) ? objectMapper.writeValueAsString(body) : null;
-            log.info("CallAPI.callApiEndpoint url : " + url + (Objects.nonNull(jsonValue) ? " body : " + jsonValue : ""));
-            Thread.sleep(100);
+            log.info("url : " + url + (Objects.nonNull(jsonValue) ? " body : " + jsonValue : ""));
             response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(jsonValue, httpHeaders), String.class).getBody();
-        } catch (RuntimeException | JsonProcessingException | InterruptedException e) {
+        } catch (RuntimeException | JsonProcessingException e) {
             e.printStackTrace();
         }
         return response;

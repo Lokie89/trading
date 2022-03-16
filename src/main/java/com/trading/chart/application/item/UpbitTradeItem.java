@@ -44,4 +44,10 @@ public class UpbitTradeItem implements TradeItem {
                 .collect(Collectors.toList())
                 ;
     }
+
+    @Override
+    public void update() {
+        cache = new ArrayList<>();
+        getItems();
+    }
 }

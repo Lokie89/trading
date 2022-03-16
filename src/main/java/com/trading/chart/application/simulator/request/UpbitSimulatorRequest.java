@@ -1,10 +1,16 @@
 package com.trading.chart.application.simulator.request;
 
+import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.application.trader.response.UpbitAccount;
+import com.trading.chart.domain.simulation.SimulateStatus;
+import com.trading.chart.domain.simulation.UpbitSimulation;
+import com.trading.chart.domain.user.UpbitUser;
+import com.trading.chart.domain.user.User;
 import com.trading.chart.domain.user.response.TradeResourceResponse;
 import com.trading.chart.domain.user.response.UpbitUserResponse;
 import com.trading.chart.domain.user.response.UserResponse;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +18,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -19,19 +27,20 @@ import java.util.Objects;
  */
 public class UpbitSimulatorRequest implements SimulatorRequest {
 
-    private final String client;
+    private final UpbitUser user;
     private final LocalDate start;
     private final LocalDate end;
     private final Integer seed;
     private final Integer cashAtOnce;
+    @Getter
     private final List<TradeResourceResponse> tradeResources;
 
     private UpbitSimulatorRequest(LocalDate start, LocalDate end,
-                                  String client, Integer seed, Integer cashAtOnce,
+                                  UpbitUser user, Integer seed, Integer cashAtOnce,
                                   List<TradeResourceResponse> tradeResources) {
         this.start = start;
         this.end = end;
-        this.client = client;
+        this.user = user;
         this.seed = seed;
         this.cashAtOnce = cashAtOnce;
         this.tradeResources = tradeResources;
@@ -40,7 +49,7 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
     @Override
     public UserResponse toUserResponse() {
         return UpbitUserResponse.builder()
-                .upbitClient(client)
+                .upbitClient(user.getUpbitClient())
                 .cashAtOnce(cashAtOnce)
                 .accounts(AccountResponses.of(UpbitAccount.of("KRW", seed.doubleValue(), (double) 0)))
                 .tradeResources(tradeResources)
@@ -57,32 +66,45 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
         return LocalDateTime.of(end, LocalTime.MAX);
     }
 
-    public static Builder builder(LocalDate start) {
-        return new Builder(start);
+    @Override
+    public UpbitSimulation toEntity(SimulateStatus status) {
+        return UpbitSimulation.builder()
+                .user(user)
+                .start(start)
+                .end(end)
+                .tradeResources(tradeResources.stream().map(TradeResourceResponse::toEntity).collect(Collectors.toSet()))
+                .requestDate(LocalDateTime.now())
+                .cashAtOnce(cashAtOnce)
+                .seed(seed)
+                .status(status)
+                .build();
+    }
+
+    @Override
+    public Set<UpbitUnit> mandatoryUnits() {
+        return tradeResources.stream().map(TradeResourceResponse::getUnit).collect(Collectors.toSet());
+    }
+
+    public static Builder builder(LocalDate start, LocalDate end) {
+        return new Builder(start, end);
     }
 
     public static class Builder {
         private final LocalDate start;
-        private LocalDate end;
-        private String client;
+        private final LocalDate end;
+        private UpbitUser user;
         private Integer seed = 1000000;
         private Integer cashAtOnce = 50000;
         private List<TradeResourceResponse> tradeResources;
 
-        private Builder(LocalDate start) {
+        private Builder(LocalDate start, LocalDate end) {
             this.start = start;
+            this.end = Objects.isNull(end) || end.isAfter(LocalDate.now().minusDays(1)) ? LocalDate.now().minusDays(1) : end;
         }
 
-        public Builder end(LocalDate end) {
-            if (Objects.nonNull(end)) {
-                this.end = end.isAfter(LocalDate.now().minusDays(1)) ? LocalDate.now().minusDays(1) : end;
-            }
-            return this;
-        }
-
-        public Builder client(String client){
-            if (Objects.nonNull(client)) {
-                this.client = client;
+        public Builder client(UpbitUser user) {
+            if (Objects.nonNull(user)) {
+                this.user = user;
             }
             return this;
         }
@@ -116,7 +138,7 @@ public class UpbitSimulatorRequest implements SimulatorRequest {
         }
 
         public SimulatorRequest build() {
-            return new UpbitSimulatorRequest(start, end, client, seed, cashAtOnce, tradeResources);
+            return new UpbitSimulatorRequest(start, end, user, seed, cashAtOnce, tradeResources);
 
         }
 

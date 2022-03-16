@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.request.UpbitOrderState;
+import com.trading.chart.domain.simulation.SimulatedOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * uuid : 주문의 고유 아이디
@@ -81,5 +85,17 @@ public class UpbitOrderResponse implements OrderResponse {
         System.out.format("|\t%16s\t|\t%4s\t|\t%10s\t|\t%,010.04f\t|\t%,010.010f\t|", createdAt.split("\\.")[0], side.toString(), market, price, volume);
         System.out.println();
     }
+
+    @Override
+    public SimulatedOrder toSimulatedOrder() {
+        return SimulatedOrder.builder()
+                .market(market)
+                .price(price)
+                .side(side)
+                .volume(volume)
+                .orderTime(LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME))
+                .build();
+    }
+
 
 }

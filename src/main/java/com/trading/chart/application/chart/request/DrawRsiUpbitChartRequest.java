@@ -30,7 +30,7 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
 
     @Override
     public List<CandleRequest> toCandleRequest() {
-        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod()).lastTime(to).build();
+        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod()).to(to).build();
     }
 
     public static class Builder {
@@ -50,7 +50,7 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
             return this;
         }
 
-        public Builder lastTime(LocalDateTime to) {
+        public Builder to(LocalDateTime to) {
             this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }

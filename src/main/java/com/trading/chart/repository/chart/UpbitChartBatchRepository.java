@@ -23,7 +23,9 @@ public class UpbitChartBatchRepository {
     private final UpbitChartRepository repository;
 
     public void saveAll(ChartResponses charts) {
-        List<ChartResponse> updateCharts = charts.stream().filter(ChartResponse::isCreated).collect(Collectors.toList());
+        List<ChartResponse> savableCharts = charts.stream().filter(ChartResponse::isSavable).collect(Collectors.toList());
+
+        List<ChartResponse> updateCharts = savableCharts.stream().filter(ChartResponse::isCreated).collect(Collectors.toList());
         final String updateSql
                 = "UPDATE upbit_chart set low_price = :lowPrice, opening_price = :openingPrice, trade_price = :tradePrice," +
                 " high_price = :highPrice, volume = :volume, change_price = :changePrice, change_rate = :changeRate," +
@@ -42,7 +44,8 @@ public class UpbitChartBatchRepository {
                     = "UPDATE upbit_chart_price_line set value = :value where upbit_chart_id = :upbitChartId and period = :period";
             namedParameterJdbcTemplate.batchUpdate(updatePriceLineSql, SqlParameterSourceUtils.createBatch(priceLine));
         }
-        List<ChartResponse> createCharts = charts.stream().filter(chart -> !chart.isCreated()).collect(Collectors.toList());
+        List<ChartResponse> createCharts = savableCharts.stream().filter(chart -> !chart.isCreated()).collect(Collectors.toList());
+        // Insert Batch 는 PriceLine 의 키값을 받아다 사용할수 없어서 안씀
         repository.saveAll(createCharts.stream().map(ChartResponse::toEntity).collect(Collectors.toList()));
     }
 

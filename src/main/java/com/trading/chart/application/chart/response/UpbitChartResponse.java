@@ -4,10 +4,7 @@ import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.domain.chart.ChartPriceLine;
 import com.trading.chart.domain.chart.UpbitChart;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -19,6 +16,7 @@ import java.util.Set;
  * @author SeongRok.Oh
  * @since 2021/11/19
  */
+@ToString
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"market", "unit", "time"})
@@ -39,11 +37,11 @@ public class UpbitChartResponse implements ChartResponse {
     @Builder.Default
     private Set<ChartPriceLine> priceLines = new HashSet<>();
 
-    private double upperBollingerBand;
-    private double downBollingerBand;
+    private Double upperBollingerBand;
+    private Double downBollingerBand;
 
-    private double rsi;
-    private double rsiSignal;
+    private Double rsi;
+    private Double rsiSignal;
 
 
     public UpbitChartResponse(String market, LocalDateTime time, UpbitUnit unit) {
@@ -77,6 +75,28 @@ public class UpbitChartResponse implements ChartResponse {
     @Override
     public boolean isCreated() {
         return Objects.nonNull(id);
+    }
+
+    @Override
+    public void updateExcludeId(ChartResponse chartResponse) {
+        UpbitChartResponse toUpdate = (UpbitChartResponse) chartResponse;
+        this.market = toUpdate.market;
+        this.time = toUpdate.time;
+        this.lowPrice = toUpdate.lowPrice;
+        this.openingPrice = toUpdate.openingPrice;
+        this.tradePrice = toUpdate.tradePrice;
+        this.highPrice = toUpdate.highPrice;
+        this.volume = toUpdate.volume;
+        this.unit = toUpdate.unit;
+        this.changePrice = toUpdate.changePrice;
+        this.changeRate = toUpdate.changeRate;
+    }
+
+    @Override
+    public boolean isSavable() {
+        return Objects.nonNull(upperBollingerBand)
+                && Objects.nonNull(downBollingerBand)
+                && Objects.nonNull(rsi);
     }
 
     @Override

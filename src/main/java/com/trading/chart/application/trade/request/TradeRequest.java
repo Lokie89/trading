@@ -16,7 +16,6 @@ public interface TradeRequest {
     List<MatchRequest> toMatchRequests();
     OrderRequest toOrderRequest(Double marketPrice);
     ChartRequest toOrderChartRequest();
-    ChartRequest toOrderRecentChartRequest();
     AccountRequest toAccountRequest();
     String getMarket();
     String getClient();

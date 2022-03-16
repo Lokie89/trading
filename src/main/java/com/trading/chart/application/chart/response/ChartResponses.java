@@ -1,6 +1,7 @@
 package com.trading.chart.application.chart.response;
 
 import com.trading.chart.application.chart.request.ChartRequest;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
  * @author SeongRok.Oh
  * @since 2021/11/19
  */
+@ToString
 public class ChartResponses {
 
     private final SortedSet<ChartResponse> chartResponses;
@@ -32,10 +34,13 @@ public class ChartResponses {
 
     public void addAll(ChartResponses chartResponses) {
         if (Objects.nonNull(chartResponses) && chartResponses.isNotEmpty()) {
-            // TODO : 기존에 있는 로우들을 리턴 값에 합쳐 보내기 위함 - Set 에는 대체 하는 로직이 메서드가 없나?
-            this.chartResponses.removeAll(chartResponses.chartResponses);
             this.chartResponses.addAll(chartResponses.chartResponses);
         }
+    }
+
+    public ChartResponses substitute(ChartRequest request) {
+        ChartResponse[] sub = request.forRequestIndex();
+        return substitute(sub[0], sub[1]);
     }
 
     public ChartResponses substitute(ChartResponse includeFrom, ChartResponse excludeTo) {
@@ -66,5 +71,14 @@ public class ChartResponses {
 
     public boolean isNotEmpty() {
         return !this.chartResponses.isEmpty();
+    }
+
+    public void updateLast(ChartResponses apiCharts) {
+        if (this.chartResponses.isEmpty()) {
+            return;
+        }
+        ChartResponse last = chartResponses.last();
+        Optional<ChartResponse> match = apiCharts.stream().filter((chart) -> chart.equals(last)).findFirst();
+        match.ifPresent(last::updateExcludeId);
     }
 }

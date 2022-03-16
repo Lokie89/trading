@@ -66,25 +66,25 @@ public class ExchangeTest {
     final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
     final LocalDateTime date = LocalDateTime.of(2022, 2, 11, 18, 2, 1);
 
-    @BeforeEach
-    void setUp() {
-        final int count = 5;
-
-        List<ItemResponse> items = upbitTradeItem.getItems().stream()
-                .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList());
-        for (ItemResponse item : items) {
-            final String market = item.getName();
-            ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
-            upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
-
-            ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                    .lastTime(date)
-                    .count(count)
-                    .build();
-            upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
-        }
-    }
+//    @BeforeEach
+//    void setUp() {
+//        final int count = 5;
+//
+//        List<ItemResponse> items = upbitTradeItem.getItems().stream()
+//                .filter(ItemResponse::isKrwMarket)
+//                .collect(Collectors.toList());
+//        for (ItemResponse item : items) {
+//            final String market = item.getName();
+//            ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
+//            upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
+//
+//            ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
+//                    .lastTime(date)
+//                    .count(count)
+//                    .build();
+//            upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
+//        }
+//    }
 
 //    @DisplayName("거래소 계정으로 거래 테스트")
 //    @Test
@@ -101,24 +101,24 @@ public class ExchangeTest {
 //        Assertions.assertTrue(orderResponses.size() > 0);
 //    }
 
-    @DisplayName("가상 거래소 계정으로 거래 테스트")
-    @Test
-    void simulateExchangeTest() {
-        final String client = "million";
-        UpbitUserResponse user = UpbitUserResponse.builder()
-                .upbitClient(client)
-                .accounts(AccountResponses.of(UpbitAccount.of("KRW",1000000.0,0.0)))
-                .cashAtOnce(50000)
-                .tradeResources(
-                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, unit)
-                                .matchRange(3).matchMin(3).matchMax(3).build()
-                )
-                .build();
-
-        OrderResponses orderResponses = simulateUpbitExchange.exchange(user, date);
-        AccountResponses accounts = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(client));
-        Assertions.assertTrue(orderResponses.size() > 0);
-    }
+//    @DisplayName("가상 거래소 계정으로 거래 테스트")
+//    @Test
+//    void simulateExchangeTest() {
+//        final String client = "million";
+//        UpbitUserResponse user = UpbitUserResponse.builder()
+//                .upbitClient(client)
+//                .accounts(AccountResponses.of(UpbitAccount.of("KRW",1000000.0,0.0)))
+//                .cashAtOnce(50000)
+//                .tradeResources(
+//                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, unit)
+//                                .matchRange(3).matchMin(3).matchMax(3).build()
+//                )
+//                .build();
+//
+//        OrderResponses orderResponses = simulateUpbitExchange.exchange(user, date);
+//        AccountResponses accounts = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(client));
+//        Assertions.assertTrue(orderResponses.size() > 0);
+//    }
 
 
 }

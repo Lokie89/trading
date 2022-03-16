@@ -13,6 +13,7 @@ import javax.persistence.*;
  * @author SeongRok.Oh
  * @since 2022/02/02
  */
+@EqualsAndHashCode(of = {"strategy", "tradeType"})
 @AllArgsConstructor
 @Builder
 @Getter

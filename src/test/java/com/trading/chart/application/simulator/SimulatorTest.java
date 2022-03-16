@@ -18,7 +18,9 @@ import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.ExchangePlatform;
+import com.trading.chart.domain.user.UpbitUser;
 import com.trading.chart.domain.user.response.TradeResourceResponse;
+import com.trading.chart.repository.user.UpbitUserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +31,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -56,6 +57,9 @@ public class SimulatorTest {
     @Autowired
     ChartIndicator upbitChartIndicator;
 
+    @Autowired
+    UpbitUserRepository userRepository;
+
     final LocalDate start = LocalDate.of(2022, 2, 2);
     final LocalDate end = LocalDate.of(2022, 2, 5);
 
@@ -73,10 +77,10 @@ public class SimulatorTest {
         List<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
-            ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).lastTime(date).count(count).build();
+            ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).to(date).count(count).build();
             upbitChartIndicator.drawPriceLine(drawPriceLinesUpbitChartRequest);
             ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit)
-                    .lastTime(date)
+                    .to(date)
                     .count(count)
                     .build();
 
@@ -87,7 +91,7 @@ public class SimulatorTest {
     @DisplayName("업비트 시뮬레이팅 테스트")
     @Test
     void simulateTest() {
-        final String client = "million";
+        final String client = "tjdfhrdk10@naver.com";
 
         final Integer seedMoney = 1000000;
         final Integer cashAtOnce = 50000;
@@ -97,9 +101,8 @@ public class SimulatorTest {
         final List<TradeResourceResponse> tradeResourceList = new ArrayList<>();
         tradeResourceList.add(buyTradeResource);
         tradeResourceList.add(sellTradeResource);
-        SimulatorRequest request = UpbitSimulatorRequest.builder(start)
-                .client(client)
-                .end(end)
+        SimulatorRequest request = UpbitSimulatorRequest.builder(start, end)
+                .client(userRepository.findByUpbitClient(client).orElseThrow(RuntimeException::new))
                 .seed(seedMoney)
                 .cashAtOnce(cashAtOnce)
                 .tradeResources(tradeResourceList)

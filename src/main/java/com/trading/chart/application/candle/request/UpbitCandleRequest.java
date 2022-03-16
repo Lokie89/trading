@@ -1,5 +1,7 @@
 package com.trading.chart.application.candle.request;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -14,6 +16,7 @@ import java.util.Objects;
  */
 public class UpbitCandleRequest implements CandleRequest {
 
+    @Getter
     private final UpbitUnit unit;
     private final Integer count;
     private final String market;
@@ -39,7 +42,6 @@ public class UpbitCandleRequest implements CandleRequest {
         return url;
     }
 
-
     public static Builder builder(UpbitUnit unit, String market) {
         return new Builder(unit, market);
     }
@@ -63,8 +65,8 @@ public class UpbitCandleRequest implements CandleRequest {
             return this;
         }
 
-        public Builder lastTime(LocalDateTime lastTime) {
-            this.to = Objects.nonNull(lastTime) ? lastTime : LocalDateTime.now();
+        public Builder to(LocalDateTime to) {
+            this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }
 

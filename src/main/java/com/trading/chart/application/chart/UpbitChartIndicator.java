@@ -6,9 +6,11 @@ import com.trading.chart.domain.chart.ChartPriceLine;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.application.chart.response.ChartResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Spliterator;
 
@@ -25,6 +27,9 @@ public class UpbitChartIndicator implements ChartIndicator {
 
     private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {
         ChartResponses chartResponses = cacheUpbitChart.getWorkChart(request);
+        if (chartResponses.size() < request.forWorkCount()) {
+            return null;
+        }
         return chartResponses.spliterator();
     }
 
@@ -33,6 +38,9 @@ public class UpbitChartIndicator implements ChartIndicator {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        if(Objects.isNull(spliterator)){
+            return;
+        }
         while (spliterator.tryAdvance(
                 (chart) -> {
                     queue.add(chart);
@@ -51,6 +59,9 @@ public class UpbitChartIndicator implements ChartIndicator {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        if(Objects.isNull(spliterator)){
+            return;
+        }
         while (spliterator.tryAdvance(
                 (chart) -> {
                     queue.add(chart);
@@ -64,11 +75,15 @@ public class UpbitChartIndicator implements ChartIndicator {
                 }
         )) ;
     }
+
     @Override
     public void drawRsi(ChartRequest request) {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
+        if(Objects.isNull(spliterator)){
+            return;
+        }
         while (spliterator.tryAdvance(
                 (chart) -> {
                     queue.add(chart);

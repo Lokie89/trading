@@ -2,6 +2,7 @@ package com.trading.chart.application.chart.request;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @author SeongRok.Oh
  * @since 2021/12/05
  */
+@ToString
 public class SimpleUpbitChartRequest extends UpbitChartRequest {
     private SimpleUpbitChartRequest(String market, UpbitUnit unit, int count, LocalDateTime to) {
         super(market, unit, count, to, null);
@@ -56,6 +58,11 @@ public class SimpleUpbitChartRequest extends UpbitChartRequest {
 
     @Override
     public int getMandatoryCount() {
+        return count;
+    }
+
+    @Override
+    public int forWorkCount() {
         return count;
     }
 }
