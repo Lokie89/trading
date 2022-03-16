@@ -56,4 +56,8 @@ public enum UpbitUnit {
         return unitMap.get(minute);
     }
 
+    public boolean isNotMinuteUnit() {
+        return this.minute >= 1440;
+    }
+
 }

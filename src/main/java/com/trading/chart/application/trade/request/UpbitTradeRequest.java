@@ -15,10 +15,7 @@ import com.trading.chart.domain.user.response.TradeResourceResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -81,16 +78,10 @@ public class UpbitTradeRequest implements TradeRequest {
 
     @Override
     public ChartRequest toOrderChartRequest() {
-        return SimpleUpbitChartRequest.builder(market, UpbitUnit.MINUTE_ONE)
+        Optional<UpbitUnit> lessUnit = tradeResources.stream().map(TradeResourceResponse::getUnit).sorted().findFirst();
+        return lessUnit.map(unit -> SimpleUpbitChartRequest.builder(market, unit)
                 .to(date)
-                .build();
-    }
-
-    @Override
-    public ChartRequest toOrderRecentChartRequest() {
-        return SimpleUpbitChartRequest.builder(market, UpbitUnit.MINUTE_ONE)
-                .to(LocalDateTime.now())
-                .build();
+                .build()).orElse(null);
     }
 
     @Override

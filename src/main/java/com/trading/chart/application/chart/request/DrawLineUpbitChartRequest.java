@@ -38,7 +38,7 @@ public class DrawLineUpbitChartRequest extends UpbitChartRequest {
             return this;
         }
 
-        public Builder lastTime(LocalDateTime to) {
+        public Builder to(LocalDateTime to) {
             this.to = Objects.nonNull(to) ? to : LocalDateTime.now();
             return this;
         }

@@ -5,6 +5,7 @@ import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.common.ChartKey;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public interface ChartRequest {
     List<CandleRequest> toCandleRequest();
+    LocalDateTime getTime();
     int getPeriod();
     ChartKey getRequestKey();
     int getCount();
@@ -21,4 +23,6 @@ public interface ChartRequest {
     ChartResponse[] forRequestIndex();
     String getMarket();
     UpbitUnit getUnit();
+    int forWorkCount();
+    ChartRequest toSimulateRequest();
 }

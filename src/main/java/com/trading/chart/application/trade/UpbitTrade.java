@@ -24,7 +24,7 @@ public class UpbitTrade implements Trade {
     public OrderResponse trade(TradeRequest request) {
         boolean isMatched = upbitMatch.match(request.toMatchRequests());
         if (isMatched) {
-            Double marketPrice = upbitChart.getChart(request.toOrderRecentChartRequest()).getLast().getTradePrice();
+            Double marketPrice = upbitChart.getChart(request.toOrderChartRequest()).getLast().getTradePrice();
             return upbitOrder.order(request.toOrderRequest(marketPrice));
         }
         return null;

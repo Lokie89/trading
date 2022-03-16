@@ -1,6 +1,7 @@
 package com.trading.chart.application.trade;
 
 import com.trading.chart.application.chart.Chart;
+import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.match.Match;
 import com.trading.chart.application.order.Order;
 import com.trading.chart.application.order.response.OrderResponse;
@@ -25,7 +26,9 @@ public class SimulateUpbitTrade implements Trade {
     public OrderResponse trade(TradeRequest request) {
         boolean isMatched = upbitMatch.match(request.toMatchRequests());
         if (isMatched) {
-            Double marketPrice = cacheUpbitChart.getChart(request.toOrderChartRequest()).getLast().getTradePrice();
+            ChartRequest orderChartRequest = request.toOrderChartRequest();
+            cacheUpbitChart.caching(orderChartRequest);
+            Double marketPrice = cacheUpbitChart.getChart(orderChartRequest).getLast().getTradePrice();
             return simulateUpbitOrder.order(request.toOrderRequest(marketPrice));
         }
         return null;

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class UpbitCandleTest {
         final LocalDateTime time = LocalDateTime.now();
         final UpbitUnit unit = UpbitUnit.DAY;
         final String market = "KRW-BTC";
-        List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).build();
+        List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).to(time).build();
         CandleResponses candleResponses = upbitCandle.getCandles(threeMinLastTimeCandleRequest);
         assertTrue(time.isAfter(candleResponses.get(candleResponses.size() - 1).getCandleDateTimeKST()));
     }
@@ -54,7 +53,7 @@ public class UpbitCandleTest {
         final UpbitUnit unit = UpbitUnit.WEEK;
         final String market = "KRW-BTC";
         final Integer count = 3;
-        List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).lastTime(time).count(count).build();
+        List<CandleRequest> threeMinLastTimeCandleRequest = UpbitCandleRequest.builder(unit, market).to(time).count(count).build();
         CandleResponses candleList = upbitCandle.getCandles(threeMinLastTimeCandleRequest);
         assertTrue(time.isAfter(candleList.get(candleList.size() - 1).getCandleDateTimeKST()));
         assertEquals(count, candleList.size());

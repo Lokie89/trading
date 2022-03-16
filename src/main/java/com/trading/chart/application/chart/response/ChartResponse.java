@@ -13,17 +13,11 @@ import java.util.Set;
 public interface ChartResponse {
     Long getId();
     String getMarket();
-    Double getLowPrice();
-    Double getOpeningPrice();
     Double getTradePrice();
-    Double getHighPrice();
     Double getVolume();
-    double getDownBollingerBand();
-    double getUpperBollingerBand();
-    double getRsi();
-    double getRsiSignal();
-    Double getChangePrice();
-    Double getChangeRate();
+    Double getDownBollingerBand();
+    Double getUpperBollingerBand();
+    Double getRsi();
     LocalDateTime getTime();
     void drawPriceLine(ChartPriceLine line);
     void drawBollingerBands(Double standardDeviation);
@@ -31,4 +25,6 @@ public interface ChartResponse {
     UpbitChart toEntity();
     boolean isCreated();
     Set<ChartPriceLine> getPriceLines();
+    void updateExcludeId(ChartResponse chartResponse);
+    boolean isSavable();
 }

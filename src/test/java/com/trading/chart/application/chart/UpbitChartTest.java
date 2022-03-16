@@ -22,53 +22,59 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UpbitChartTest {
 
     @Autowired
-    Chart upbitChart;
+    Chart cacheUpbitChart;
 
     @Autowired
     ChartIndicator upbitChartIndicator;
 
     @DisplayName("라인 생성")
     @Test
-    void drawLineTest() {
+    void drawLineTest() throws InterruptedException {
         final String market = "KRW-BTC";
         final LinePeriod period = LinePeriod.get(5).orElseThrow(RuntimeException::new);
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
-        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).to(lastTime).build();
+        Thread.sleep(1000);
+        cacheUpbitChart.caching(drawLineRequest);
         upbitChartIndicator.drawPriceLine(drawLineRequest);
-        ChartResponses chartResponses = upbitChart.getChart(drawLineRequest);
+        ChartResponses chartResponses = cacheUpbitChart.getChart(drawLineRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
     }
 
     @DisplayName("볼린저 밴드 생성")
     @Test
-    void drawBollingerBandsTest() {
+    void drawBollingerBandsTest() throws InterruptedException {
         final String market = "KRW-SSX";
         final LinePeriod period = LinePeriod.get(20).orElseThrow(RuntimeException::new);
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 10;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
-        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawLineRequest = DrawLineUpbitChartRequest.builder(market, period, unit).count(count).to(lastTime).build();
+        Thread.sleep(1000);
+        cacheUpbitChart.caching(drawLineRequest);
         upbitChartIndicator.drawPriceLine(drawLineRequest);
-        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawBollingerBandsUpbitChartRequest = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).to(lastTime).build();
         upbitChartIndicator.drawBollingerBands(drawBollingerBandsUpbitChartRequest);
-        ChartResponses chartResponses = upbitChart.getChart(drawBollingerBandsUpbitChartRequest);
+        ChartResponses chartResponses = cacheUpbitChart.getChart(drawBollingerBandsUpbitChartRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
     }
 
     @DisplayName("RSI 지표 생성")
     @Test
-    void drawRsiTest() {
+    void drawRsiTest() throws InterruptedException {
         final String market = "KRW-SSX";
         final UpbitUnit unit = UpbitUnit.DAY;
         final int count = 3;
         final LocalDateTime lastTime = LocalDateTime.of(2021, 11, 23, 22, 5);
-        ChartRequest drawRsiUpbitChartRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).lastTime(lastTime).build();
+        ChartRequest drawRsiUpbitChartRequest = DrawRsiUpbitChartRequest.builder(market, unit).count(count).to(lastTime).build();
+        Thread.sleep(1000);
+        cacheUpbitChart.caching(drawRsiUpbitChartRequest);
         upbitChartIndicator.drawRsi(drawRsiUpbitChartRequest);
-        ChartResponses chartResponses = upbitChart.getChart(drawRsiUpbitChartRequest);
+        ChartResponses chartResponses = cacheUpbitChart.getChart(drawRsiUpbitChartRequest);
         assertEquals(count, chartResponses.size());
         assertTrue(lastTime.isAfter(chartResponses.getLast().getTime()));
     }

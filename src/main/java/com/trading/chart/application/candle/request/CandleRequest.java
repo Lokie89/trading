@@ -6,4 +6,5 @@ package com.trading.chart.application.candle.request;
  */
 public interface CandleRequest {
     String getUrl();
+    UpbitUnit getUnit();
 }

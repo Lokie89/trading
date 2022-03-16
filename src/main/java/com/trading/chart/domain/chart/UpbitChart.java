@@ -50,8 +50,11 @@ public class UpbitChart {
             uniqueConstraints = @UniqueConstraint(columnNames = {"upbit_chart_id", "period"}))
     private Set<ChartPriceLine> priceLines;
 
+    @Column(nullable = false)
     private Double upperBollingerBand;
+    @Column(nullable = false)
     private Double downBollingerBand;
+    @Column(nullable = false)
     private Double rsi;
     private Double rsiSignal;
 

@@ -2,30 +2,29 @@ package com.trading.chart.application.exchange;
 
 import com.trading.chart.application.item.TradeItem;
 import com.trading.chart.application.item.response.ItemResponse;
-import com.trading.chart.application.order.Order;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trader.Trader;
-import com.trading.chart.application.trader.request.AccountRequest;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponse;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.response.UserResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
  * @since 2022/02/07
  */
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class SimulateUpbitExchange implements Exchange {
@@ -33,7 +32,6 @@ public class SimulateUpbitExchange implements Exchange {
     private final Trader simulateUpbitTrader;
     private final TradeItem upbitTradeItem;
 
-//    @Async
     @Override
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
         OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
