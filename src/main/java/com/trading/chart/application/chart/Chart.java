@@ -16,4 +16,6 @@ public interface Chart {
     ChartResponses getWorkChart(ChartRequest request);
     void archive();
     List<ChartResponse> recent(LocalDateTime to);
+    // TODO : API 사용에 대한 boolean return 인데 이름이 마음에 안듦
+    boolean caching(ChartRequest request);
 }

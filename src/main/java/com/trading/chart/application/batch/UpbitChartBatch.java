@@ -2,14 +2,14 @@ package com.trading.chart.application.batch;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
-import com.trading.chart.application.chart.ChartIndicator;
-import com.trading.chart.application.chart.request.*;
+import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
 import com.trading.chart.application.chart.response.ChartResponse;
+import com.trading.chart.application.chart.response.ChartResponses;
 import com.trading.chart.application.item.TradeItem;
 import com.trading.chart.application.item.response.ItemResponse;
+import com.trading.chart.application.message.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +17,6 @@ import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -32,67 +30,35 @@ import java.util.stream.Collectors;
 public class UpbitChartBatch {
 
     private final Chart cacheUpbitChart;
-    private final ChartIndicator upbitChartIndicator;
     private final TradeItem upbitTradeItem;
-    private final Executor exchangeExecutor;
+    private final MessageQueue messageQueue;
 
-    private List<ItemResponse> items;
 
     @PostConstruct
-    void setUp() {
-        updateItems();
-//        final int dayToMinutes = 1440;
-//        operate(UpbitUnit.MINUTE_ONE, dayToMinutes / UpbitUnit.MINUTE_ONE.getMinute());
-//        operate(UpbitUnit.MINUTE_THREE, dayToMinutes / UpbitUnit.MINUTE_THREE.getMinute());
-//        operate(UpbitUnit.MINUTE_FIVE, dayToMinutes / UpbitUnit.MINUTE_FIVE.getMinute());
-//        operate(UpbitUnit.MINUTE_TEN, dayToMinutes / UpbitUnit.MINUTE_TEN.getMinute());
-//        operate(UpbitUnit.MINUTE_FIFTEEN, dayToMinutes / UpbitUnit.MINUTE_FIFTEEN.getMinute());
-//        operate(UpbitUnit.MINUTE_THIRTY, dayToMinutes / UpbitUnit.MINUTE_THIRTY.getMinute());
-//        operate(UpbitUnit.MINUTE_SIXTY, dayToMinutes / UpbitUnit.MINUTE_SIXTY.getMinute());
-//        operate(UpbitUnit.MINUTE_TWOFORTY, dayToMinutes / UpbitUnit.MINUTE_TWOFORTY.getMinute());
-//        operate(UpbitUnit.DAY, 7);
-//        operate(UpbitUnit.WEEK, 7);
-//        operate(UpbitUnit.MONTH, 7);
-    }
-
     private void updateItems() {
-        upbitTradeItem.truncate();
-        items = upbitTradeItem.getKrwItems();
+        log.info("publish : {}", MessageType.CALL_API_MARKET);
+        messageQueue.publish(MessageKey.of(MessageClassification.UPBIT_QUOTATION_API), List.of(MessageRequest.builder().requestType(MessageType.CALL_API_MARKET).build()));
+//        upbitTradeItem.update();
     }
 
     private void operateDepends(final UpbitUnit unit) {
         final int unitMinute = unit.getMinute();
+        final List<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
-            ChartResponse last = cacheUpbitChart.getChart(SimpleUpbitChartRequest.builder(market, unit).count(1).build()).getLast();
-            final int count = (int) (Duration.between(last.getTime().withSecond(0), LocalDateTime.now().withSecond(0)).getSeconds() / 60 / unitMinute) + 1;
-            exchangeExecutor.execute(() -> operateAsync(market, unit, count));
+            int count = 259;
+            ChartResponses charts = cacheUpbitChart.getChart(SimpleUpbitChartRequest.builder(market, unit).count(1).build());
+            if(charts.isNotEmpty()){
+                count = (int) (Duration.between(charts.getLast().getTime().withSecond(0), LocalDateTime.now().withSecond(0)).getSeconds() / 60 / unitMinute) + 1;
+            }
+            messageQueue.publish(
+                    MessageKey.of(MessageClassification.UPBIT_QUOTATION_API),
+                    MessageRequest.builder()
+                            .requestType(MessageType.CALL_API_CHART)
+                            .request(SimpleUpbitChartRequest.builder(market, unit).to(LocalDateTime.now()).count(count).build())
+                            .build()
+            );
         }
-    }
-
-    private void operate(final UpbitUnit unit, final int count) {
-        for (ItemResponse item : items) {
-            final String market = item.getName();
-            exchangeExecutor.execute(() -> operateAsync(market, unit, count));
-        }
-    }
-
-    private void operateAsync(final String market, final UpbitUnit unit, final int count) {
-        log.info("operate {} {} {}", unit, market, count);
-        ChartRequest drawLine240 = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWOFORTY, unit).count(count).build();
-        ChartRequest drawLine120 = DrawLineUpbitChartRequest.builder(market, LinePeriod.ONETWENTY, unit).count(count).build();
-        ChartRequest drawLine60 = DrawLineUpbitChartRequest.builder(market, LinePeriod.SIXTY, unit).count(count).build();
-        ChartRequest drawLine20 = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).count(count).build();
-        ChartRequest drawLine5 = DrawLineUpbitChartRequest.builder(market, LinePeriod.FIVE, unit).count(count).build();
-        upbitChartIndicator.drawPriceLine(drawLine240);
-        upbitChartIndicator.drawPriceLine(drawLine120);
-        upbitChartIndicator.drawPriceLine(drawLine60);
-        upbitChartIndicator.drawPriceLine(drawLine20);
-        upbitChartIndicator.drawPriceLine(drawLine5);
-        ChartRequest drawBollinger = DrawBollingerBandsUpbitChartRequest.builder(market, unit).count(count).build();
-        upbitChartIndicator.drawBollingerBands(drawBollinger);
-        ChartRequest drawRsi = DrawRsiUpbitChartRequest.builder(market, unit).count(count).build();
-        upbitChartIndicator.drawRsi(drawRsi);
     }
 
     @Scheduled(cron = "1 0 9 * * *")
@@ -104,7 +70,6 @@ public class UpbitChartBatch {
     public void operateChartOneMinute() {
         log.info("operate {} minutes", 1);
         final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
-
         operateDepends(unit);
     }
 

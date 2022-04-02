@@ -1,14 +1,11 @@
 package com.trading.chart.application.chart;
 
-import com.trading.chart.application.candle.Candle;
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.response.ChartResponses;
 import com.trading.chart.repository.chart.ChartRepositorySupport;
 import com.trading.chart.repository.chart.UpbitChartBatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * @author SeongRok.Oh
@@ -18,24 +15,16 @@ import java.util.Objects;
 @Component
 public class UpbitChartStorage implements ChartStorage {
     private final ChartRepositorySupport customRepository;
-    private final Candle upbitCandle;
     private final UpbitChartBatchRepository batchRepository;
 
     @Override
     public ChartResponses getCharts(ChartRequest request) {
-        ChartResponses charts = customRepository.getChart(request);
-        if (Objects.isNull(charts) || charts.isNotSatisfied(request)) {
-            ChartResponses apiCharts = upbitCandle.getCandles(request.toCandleRequest()).toChart(request.getUnit());
-            apiCharts.addAll(charts);
-            return apiCharts;
-        }
-        return charts;
+       return customRepository.getChart(request);
     }
 
     @Override
     public void saveChart(ChartResponses responses) {
         batchRepository.saveAll(responses);
     }
-
 
 }

@@ -11,7 +11,6 @@ import java.util.concurrent.Executor;
  * @author SeongRok.Oh
  * @since 2022/03/08
  */
-// TODO : 다시 알아 보고 적용 CallAPI 의 Thread.sleep 이랑 연관이 있는듯
 @Configuration
 public class ThreadConfig {
 

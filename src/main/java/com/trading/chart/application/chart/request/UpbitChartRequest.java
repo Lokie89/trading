@@ -45,6 +45,11 @@ public abstract class UpbitChartRequest implements ChartRequest {
     }
 
     @Override
+    public LocalDateTime getTime() {
+        return to;
+    }
+
+    @Override
     public List<CandleRequest> toCandleRequest() {
         return UpbitCandleRequest.builder(unit, market).count(count + (period == null ? 0 : period.getPeriod() - 1)).lastTime(to).build();
     }
@@ -56,6 +61,11 @@ public abstract class UpbitChartRequest implements ChartRequest {
     @Override
     public ChartResponse[] forWorkIndex() {
         return fromTo((long) unit.getMinute() * (count + period.getPeriod()));
+    }
+
+    @Override
+    public int forWorkCount() {
+        return count + period.getPeriod() - 1;
     }
 
     @Override

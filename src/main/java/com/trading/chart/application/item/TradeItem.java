@@ -11,5 +11,5 @@ import java.util.List;
 public interface TradeItem {
     List<ItemResponse> getItems();
     List<ItemResponse> getKrwItems();
-    void truncate();
+    void update();
 }

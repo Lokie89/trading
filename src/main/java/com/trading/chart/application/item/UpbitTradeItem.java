@@ -46,7 +46,8 @@ public class UpbitTradeItem implements TradeItem {
     }
 
     @Override
-    public void truncate() {
+    public void update() {
         cache = new ArrayList<>();
+        getItems();
     }
 }

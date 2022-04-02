@@ -3,6 +3,7 @@ package com.trading.chart.application.chart.response;
 import com.trading.chart.application.chart.request.ChartRequest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -32,8 +33,6 @@ public class ChartResponses {
 
     public void addAll(ChartResponses chartResponses) {
         if (Objects.nonNull(chartResponses) && chartResponses.isNotEmpty()) {
-            // TODO : 기존에 있는 로우들을 리턴 값에 합쳐 보내기 위함 - Set 에는 대체 하는 로직이 메서드가 없나?
-            this.chartResponses.removeAll(chartResponses.chartResponses);
             this.chartResponses.addAll(chartResponses.chartResponses);
         }
     }

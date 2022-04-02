@@ -26,6 +26,9 @@ public class UpbitChartIndicator implements ChartIndicator {
 
     private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {
         ChartResponses chartResponses = cacheUpbitChart.getWorkChart(request);
+        if (chartResponses.size() < request.forWorkCount()) {
+            return null;
+        }
         return chartResponses.spliterator();
     }
 
@@ -65,6 +68,7 @@ public class UpbitChartIndicator implements ChartIndicator {
                 }
         )) ;
     }
+
     @Override
     public void drawRsi(ChartRequest request) {
         final Queue<ChartResponse> queue = new LinkedList<>();
