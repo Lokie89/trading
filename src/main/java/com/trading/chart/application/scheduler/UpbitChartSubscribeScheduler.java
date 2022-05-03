@@ -36,6 +36,7 @@ public class UpbitChartSubscribeScheduler {
     private final ChartIndicator upbitChartIndicator;
     private final Executor exchangeExecutor;
     private final SimulateStorage upbitSimulateStorage;
+    private final Messenger upbitDrawChartMessenger;
 
 
     @Scheduled(cron = "0/1 * 0-2,3-23 * * *")
@@ -43,40 +44,30 @@ public class UpbitChartSubscribeScheduler {
         final MessageClassification messageClassification = MessageClassification.UPBIT_QUOTATION_API;
         final Queue<MessageRequest> callUpbitCandleQueue = messageQueue.subscribe(MessageKey.of(messageClassification));
         final int limit = messageClassification.getRequestCountPerSecond();
-        for (int i = 0; i < limit && callUpbitCandleQueue.peek() != null; ) {
+        for (int i = 0; i < limit && callUpbitCandleQueue.peek() != null; i++) {
             MessageRequest request = callUpbitCandleQueue.poll();
-            i += callUpbitApiOperate(request);
+            callUpbitApiOperate(request);
         }
     }
 
-    private int callUpbitApiOperate(MessageRequest request) {
-        final MessageClassification messageClassification = MessageClassification.THREAD;
+    private void callUpbitApiOperate(MessageRequest request) {
         MessageType requestType = request.getRequestType();
         if (MessageType.CALL_API_CHART.equals(requestType)) {
             ChartRequest chartRequest = ((UpbitChartRequest) request.getRequest());
             log.info("CALL_API_CHART : {}", chartRequest);
-            int useAPI = cacheUpbitChart.caching(chartRequest);
-            messageQueue.publish(
-                    MessageKey.of(messageClassification),
-                    MessageRequest.builder().requestType(MessageType.DRAW_CHART).request(chartRequest).build()
-            );
-            return useAPI;
+            cacheUpbitChart.caching(chartRequest);
+            upbitDrawChartMessenger.send(chartRequest);
         }
         if (MessageType.SIMULATE_CALL_API_CHART.equals(requestType)) {
             ChartRequest chartRequest = ((UpbitChartRequest) request.getRequest());
             log.info("SIMULATE_CALL_API_CHART : {}", chartRequest);
-            int useAPI = cacheUpbitChart.caching(chartRequest.toSimulateRequest());
-            messageQueue.publish(
-                    MessageKey.of(messageClassification),
-                    MessageRequest.builder().requestType(MessageType.DRAW_CHART).request(chartRequest).build()
-            );
-            return useAPI;
+            cacheUpbitChart.caching(chartRequest.toSimulateRequest());
+            upbitDrawChartMessenger.send(chartRequest);
         }
         if (MessageType.CALL_API_MARKET.equals(requestType)) {
             log.info("CALL_API_MARKET");
             upbitTradeItem.update();
         }
-        return 1;
     }
 
     @Scheduled(cron = "0/1 * 0-2,3-23 * * *")
@@ -85,8 +76,8 @@ public class UpbitChartSubscribeScheduler {
         final Queue<MessageRequest> threadQueue = messageQueue.subscribe(MessageKey.of(messageClassification));
         while (Objects.nonNull(threadQueue) && !threadQueue.isEmpty()) {
             MessageRequest request = threadQueue.poll();
-            asyncOperate(request);
-//            exchangeExecutor.execute(() -> asyncOperate(request));
+//            asyncOperate(request);
+            exchangeExecutor.execute(() -> asyncOperate(request));
         }
     }
 

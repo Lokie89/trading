@@ -33,9 +33,8 @@ public class CacheUpbitChart implements Chart {
     private final Candle upbitCandle;
     private final TradeItem upbitTradeItem;
 
-    // TODO : API 사용에 대한 횟수 return 인데 이름이 마음에 안듦
     @Override
-    public int caching(ChartRequest request) {
+    public void caching(ChartRequest request) {
         // 실제 데이터 검증 ( 키 값에 따른 데이터가 있는지, 그 데이터에 lastTime 의 데이터가 있는지, 그 전 데이터가 count 개수 만큼 있는지 )
         ChartKey chartKey = request.getRequestKey();
         ChartResponses charts = cache.get(chartKey);
@@ -47,16 +46,13 @@ public class CacheUpbitChart implements Chart {
             charts.addAll(upbitChartStorage.getCharts(request));
         }
         // 여기서 제거하면 아이디 값이 없어지기 때문에 (저장할때 duplicate) 맨 뒤에걸 업데이트 쳐야됨
-
         if (charts.isNotSatisfied(request)) {
-            List<CandleRequest> candleRequestList = request.toCandleRequest();
-            ChartResponses apiCharts = upbitCandle.getCandles(candleRequestList).toChart(request.getUnit());
+            CandleRequest candleRequest = request.toCandleRequest();
+            ChartResponses apiCharts = upbitCandle.getCandles(candleRequest).toChart(request.getUnit());
             apiCharts = apiCharts.substitute(request);
             charts.updateLast(apiCharts);
             charts.addAll(apiCharts);
-            return candleRequestList.size();
         }
-        return 0;
     }
 
     @Override

@@ -34,7 +34,7 @@ import java.time.LocalDate;
 @SpringBootTest
 public class MessengerTest {
     @Autowired
-    SimulatorMessenger upbitSimulatorMessenger;
+    Messenger upbitSimulatorMessenger;
 
     @Autowired
     UpbitChartPublishScheduler publishScheduler;

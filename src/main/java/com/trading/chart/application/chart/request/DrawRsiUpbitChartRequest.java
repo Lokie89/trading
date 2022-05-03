@@ -1,12 +1,9 @@
 package com.trading.chart.application.chart.request;
 
-import com.trading.chart.application.candle.request.CandleRequest;
-import com.trading.chart.application.candle.request.UpbitCandleRequest;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,11 +23,6 @@ public class DrawRsiUpbitChartRequest extends UpbitChartRequest {
     @Override
     public ChartResponse[] forWorkIndex() {
         return fromTo((long) unit.getMinute() * (count + period.getPeriod() + 1));
-    }
-
-    @Override
-    public List<CandleRequest> toCandleRequest() {
-        return UpbitCandleRequest.builder(unit, market).count(count + period.getPeriod()).to(to).build();
     }
 
     public static class Builder {

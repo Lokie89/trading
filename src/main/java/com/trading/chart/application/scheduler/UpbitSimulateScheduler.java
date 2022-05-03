@@ -53,9 +53,7 @@ public class UpbitSimulateScheduler {
         Set<UpbitUnit> mandatoryUnits = simulation.mandatoryUnits();
         return mandatoryUnits.stream().allMatch(unit -> {
             int count = (int) Duration.between(LocalDateTime.of(start, LocalTime.MIN), LocalDateTime.of(end, LocalTime.MAX)).getSeconds() / 60 / unit.getMinute();
-            System.out.println("필요 count " + count);
             int size = cacheUpbitChart.getChart(SimpleUpbitChartRequest.builder("KRW-BTC", unit).to(LocalDateTime.of(simulation.getEnd(), LocalTime.MAX)).count(count).build()).size();
-            System.out.println("실제 size " + size);
             return count == size;
         });
     }

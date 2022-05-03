@@ -27,7 +27,7 @@ public class UpbitUser {
     private Long id;
 
     @Getter
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne
     private User user;
 

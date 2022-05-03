@@ -13,7 +13,7 @@ import java.util.List;
  * @since 2021-11-18
  */
 public interface ChartRequest {
-    List<CandleRequest> toCandleRequest();
+    CandleRequest toCandleRequest();
     LocalDateTime getTime();
     int getPeriod();
     ChartKey getRequestKey();
@@ -25,4 +25,5 @@ public interface ChartRequest {
     UpbitUnit getUnit();
     int forWorkCount();
     ChartRequest toSimulateRequest();
+    List<ChartRequest> toMessageRequest();
 }

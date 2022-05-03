@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,8 @@ public abstract class UpbitChartRequest implements ChartRequest {
     protected final int count;
     protected final LocalDateTime to;
     protected final LinePeriod period;
+
+    private final static int COUNT_LIMIT = 200;
 
     @Override
     public ChartKey getRequestKey() {
@@ -58,7 +61,7 @@ public abstract class UpbitChartRequest implements ChartRequest {
     }
 
     @Override
-    public List<CandleRequest> toCandleRequest() {
+    public CandleRequest toCandleRequest() {
         return UpbitCandleRequest.builder(unit, market).count(count + (period == null ? 0 : period.getPeriod() - 1)).to(to).build();
     }
 
@@ -87,5 +90,25 @@ public abstract class UpbitChartRequest implements ChartRequest {
                 .to(to)
                 .count(count + 240)
                 .build();
+    }
+
+    @Override
+    public List<ChartRequest> toMessageRequest() {
+        List<ChartRequest> requestList = new ArrayList<>();
+        int count = this.count;
+        do {
+            if (count < COUNT_LIMIT) {
+                requestList.add(SimpleUpbitChartRequest.builder(market, unit).to(to).count(count).build());
+                break;
+            }
+            count -= COUNT_LIMIT;
+            requestList.add(SimpleUpbitChartRequest.builder(market, unit).to(goBack(count)).count(COUNT_LIMIT).build());
+        } while (count > 0);
+
+        return requestList;
+    }
+
+    private LocalDateTime goBack(int count) {
+        return to.minusMinutes((long) unit.getMinute() * count);
     }
 }

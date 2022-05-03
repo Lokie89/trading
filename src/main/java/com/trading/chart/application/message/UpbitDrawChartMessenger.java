@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author SeongRok.Oh
- * @since 2022/04/09
+ * @since 2022/05/03
  */
 @RequiredArgsConstructor
 @Component
-public class UpbitSimulatorMessenger implements Messenger {
+public class UpbitDrawChartMessenger implements Messenger {
 
     private final MessageQueue messageQueue;
 
@@ -17,7 +17,7 @@ public class UpbitSimulatorMessenger implements Messenger {
     public void send(Object request) {
         messageQueue.publish(
                 MessageKey.of(MessageClassification.THREAD),
-                MessageRequest.builder().requestType(MessageType.SIMULATE).request(request).build()
+                MessageRequest.builder().requestType(MessageType.DRAW_CHART).request(request).build()
         );
     }
 }

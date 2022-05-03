@@ -36,7 +36,7 @@ public class UpbitSimulation {
     @Id
     private Long id;
 
-    @JoinColumn(name = "upbit_user_id")
+    @JoinColumn(name = "upbit_user_id", nullable = false)
     @ManyToOne
     private UpbitUser user;
     private LocalDateTime requestDate;

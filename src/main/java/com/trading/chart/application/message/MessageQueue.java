@@ -3,11 +3,10 @@ package com.trading.chart.application.message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
@@ -18,28 +17,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Component
 public class MessageQueue {
 
-    private static final Map<MessageKey, ConcurrentLinkedQueue<MessageRequest>> publish = new ConcurrentHashMap<>();
+    private static final Map<MessageKey, ConcurrentLinkedQueue<MessageRequest>> MESSAGE_QUEUE = new ConcurrentHashMap<>();
+
+    static {
+        Arrays.stream(MessageClassification.values()).forEach(classification ->
+                MESSAGE_QUEUE.put(MessageKey.of(classification), new ConcurrentLinkedQueue<>())
+        );
+    }
 
     public void publish(MessageKey key, MessageRequest value) {
-
-        ConcurrentLinkedQueue<MessageRequest> pub = publish.get(key);
-        if(Objects.isNull(pub) || pub.isEmpty()){
-            pub = new ConcurrentLinkedQueue<>();
-            publish.put(key, pub);
-        }
+        ConcurrentLinkedQueue<MessageRequest> pub = MESSAGE_QUEUE.get(key);
         pub.add(value);
     }
 
     public void publish(MessageKey key, List<MessageRequest> values) {
-        ConcurrentLinkedQueue<MessageRequest> pub = publish.get(key);
-        if(Objects.isNull(pub) || pub.isEmpty()){
-            pub = new ConcurrentLinkedQueue<>();
-            publish.put(key, pub);
-        }
+        ConcurrentLinkedQueue<MessageRequest> pub = MESSAGE_QUEUE.get(key);
         pub.addAll(values);
     }
 
     public ConcurrentLinkedQueue<MessageRequest> subscribe(MessageKey key) {
-        return publish.get(key);
+        return MESSAGE_QUEUE.get(key);
     }
 }

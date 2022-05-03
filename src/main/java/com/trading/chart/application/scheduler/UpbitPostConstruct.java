@@ -25,10 +25,9 @@ public class UpbitPostConstruct {
 
     private final UpbitTradeItem upbitTradeItem;
     private final Chart cacheUpbitChart;
-    // 2000 을 초과하지못함
     private static final int maxCount = 240;
 
-    @PostConstruct
+//    @PostConstruct
     public void setUp() {
         try {
             baseChart(UpbitUnit.MINUTE_ONE);
@@ -55,7 +54,7 @@ public class UpbitPostConstruct {
             Thread.sleep(sleepTime);
             final String market = item.getName();
             ChartRequest request = SimpleUpbitChartRequest.builder(market, unit).count(maxCount).to(now).build();
-            cacheUpbitChart.caching(request);
+            request.toMessageRequest().forEach(cacheUpbitChart::caching);
         }
     }
 }

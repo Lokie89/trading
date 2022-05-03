@@ -1,5 +1,7 @@
 package com.trading.chart.application.candle.request;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.Objects;
  * @author SeongRok.Oh
  * @since 2021/11/07
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpbitCandleRequest implements CandleRequest {
 
     @Getter
@@ -21,13 +24,6 @@ public class UpbitCandleRequest implements CandleRequest {
     private final Integer count;
     private final String market;
     private final LocalDateTime to;
-
-    private UpbitCandleRequest(UpbitUnit unit, Integer count, String market, LocalDateTime to) {
-        this.unit = unit;
-        this.count = count;
-        this.market = market;
-        this.to = to;
-    }
 
     @Override
     public String getUrl() {
@@ -51,7 +47,6 @@ public class UpbitCandleRequest implements CandleRequest {
         private final String market;
         private Integer count = 1;
         private LocalDateTime to;
-        private static final Integer COUNT_LIMIT = 200;
 
         public Builder(final UpbitUnit unit, final String market) {
             this.unit = unit;
@@ -70,23 +65,9 @@ public class UpbitCandleRequest implements CandleRequest {
             return this;
         }
 
-        public List<CandleRequest> build() {
-            List<CandleRequest> requestList = new ArrayList<>();
-
-            do {
-                if (count < COUNT_LIMIT) {
-                    requestList.add(new UpbitCandleRequest(unit, count, market, to));
-                    break;
-                }
-                count -= COUNT_LIMIT;
-                requestList.add(new UpbitCandleRequest(unit, COUNT_LIMIT, market, goBack(count)));
-            } while (count > 0);
-
-            return requestList;
+        public CandleRequest build() {
+            return new UpbitCandleRequest(unit, count, market, to);
         }
 
-        private LocalDateTime goBack(int count) {
-            return to.minusMinutes((long) unit.getMinute() * count);
-        }
     }
 }

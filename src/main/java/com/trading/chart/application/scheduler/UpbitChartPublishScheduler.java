@@ -28,12 +28,14 @@ public class UpbitChartPublishScheduler {
 
     private final Chart cacheUpbitChart;
     private final TradeItem upbitTradeItem;
-    private final MessageQueue messageQueue;
     private final UpbitPostConstruct postConstruct;
+    private final Messenger upbitChartMessenger;
+    private final Messenger upbitMarketMessenger;
+    private final Messenger upbitSimulatorChartMessenger;
 
     private void updateItems() {
         log.info("publish : {}", MessageType.CALL_API_MARKET);
-        messageQueue.publish(MessageKey.of(MessageClassification.UPBIT_QUOTATION_API), List.of(MessageRequest.builder().requestType(MessageType.CALL_API_MARKET).build()));
+        upbitMarketMessenger.send(null);
     }
 
     public void operate(LocalDateTime start, LocalDateTime end, UpbitUnit unit) {
@@ -41,13 +43,7 @@ public class UpbitChartPublishScheduler {
         final int count = (int) (Duration.between(start, end).getSeconds() / 60 / unit.getMinute()) + 1;
         for (ItemResponse item : items) {
             final String market = item.getName();
-            messageQueue.publish(
-                    MessageKey.of(MessageClassification.UPBIT_QUOTATION_API),
-                    MessageRequest.builder()
-                            .requestType(MessageType.SIMULATE_CALL_API_CHART)
-                            .request(SimpleUpbitChartRequest.builder(market, unit).to(end).count(count + 240).build())
-                            .build()
-            );
+            upbitSimulatorChartMessenger.send(SimpleUpbitChartRequest.builder(market, unit).to(end).count(count + 240).build());
         }
     }
 
@@ -64,13 +60,7 @@ public class UpbitChartPublishScheduler {
             if (count < 2) {
                 count = 2;
             }
-            messageQueue.publish(
-                    MessageKey.of(MessageClassification.UPBIT_QUOTATION_API),
-                    MessageRequest.builder()
-                            .requestType(MessageType.CALL_API_CHART)
-                            .request(SimpleUpbitChartRequest.builder(market, unit).to(LocalDateTime.now()).count(count).build())
-                            .build()
-            );
+            upbitChartMessenger.send(SimpleUpbitChartRequest.builder(market, unit).to(LocalDateTime.now()).count(count).build());
         }
     }
 
