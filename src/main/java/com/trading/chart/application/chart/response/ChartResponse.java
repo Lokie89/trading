@@ -11,13 +11,13 @@ import java.util.Set;
  * @since 2021/11/19
  */
 public interface ChartResponse {
-    Long getId();
+    long getId();
     String getMarket();
-    Double getTradePrice();
-    Double getVolume();
-    Double getDownBollingerBand();
-    Double getUpperBollingerBand();
-    Double getRsi();
+    double getTradePrice();
+    double getVolume();
+    double getDownBollingerBand();
+    double getUpperBollingerBand();
+    double getRsi();
     LocalDateTime getTime();
     void drawPriceLine(ChartPriceLine line);
     void drawBollingerBands(Double standardDeviation);

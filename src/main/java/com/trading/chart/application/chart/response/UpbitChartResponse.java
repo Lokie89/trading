@@ -22,26 +22,26 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"market", "unit", "time"})
 @Getter
 public class UpbitChartResponse implements ChartResponse {
-    private Long id;
+    private long id;
     private String market;
     private LocalDateTime time;
-    private Double lowPrice;
-    private Double openingPrice;
-    private Double tradePrice;
-    private Double highPrice;
-    private Double volume;
+    private double lowPrice;
+    private double openingPrice;
+    private double tradePrice;
+    private double highPrice;
+    private double volume;
     private UpbitUnit unit;
-    private Double changePrice;
-    private Double changeRate;
+    private double changePrice;
+    private double changeRate;
 
     @Builder.Default
     private Set<ChartPriceLine> priceLines = new HashSet<>();
 
-    private Double upperBollingerBand;
-    private Double downBollingerBand;
+    private double upperBollingerBand;
+    private double downBollingerBand;
 
-    private Double rsi;
-    private Double rsiSignal;
+    private double rsi;
+    private double rsiSignal;
 
 
     public UpbitChartResponse(String market, LocalDateTime time, UpbitUnit unit) {
@@ -94,9 +94,10 @@ public class UpbitChartResponse implements ChartResponse {
 
     @Override
     public boolean isSavable() {
-        return Objects.nonNull(upperBollingerBand)
-                && Objects.nonNull(downBollingerBand)
-                && Objects.nonNull(rsi);
+        return Objects.nonNull(priceLines)
+                && priceLines.size() == 5
+                && upperBollingerBand == 0
+                && downBollingerBand == 0;
     }
 
     @Override

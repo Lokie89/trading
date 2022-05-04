@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
 
 /**
  * @author SeongRok.Oh
@@ -36,7 +36,7 @@ public class SimulateUpbitExchange implements Exchange {
     public OrderResponses exchange(UserResponse user, LocalDateTime date) {
         OrderResponses orderResponses = OrderResponses.of(new ArrayList<>());
         AccountResponses accounts = simulateUpbitTrader.getAccounts(UpbitAccountRequest.of(user.getUpbitClient()));
-        List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
             OrderResponses orderResponse = exchangeMarket(user, market, date, accounts);

@@ -24,6 +24,5 @@ public interface ChartRequest {
     String getMarket();
     UpbitUnit getUnit();
     int forWorkCount();
-    ChartRequest toSimulateRequest();
     List<ChartRequest> toMessageRequest();
 }

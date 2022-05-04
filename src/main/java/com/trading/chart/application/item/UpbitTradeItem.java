@@ -1,5 +1,6 @@
 package com.trading.chart.application.item;
 
+import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.common.ConvertType;
 import com.trading.chart.application.item.response.ItemResponse;
 import com.trading.chart.application.item.response.UpbitItem;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,30 +22,31 @@ public class UpbitTradeItem implements TradeItem {
 
     private final String url = "https://api.upbit.com/v1/market/all?isDetails=true";
     private final CallAPI callAPI;
-    private List<ItemResponse> cache;
+    private SortedSet<ItemResponse> cache;
 
     @Override
-    public List<ItemResponse> getItems() {
-        if(Objects.nonNull(cache) && cache.size() > 0){
+    public SortedSet<ItemResponse> getItems() {
+        if (Objects.nonNull(cache) && cache.size() > 0) {
             return cache;
         }
         String response = callAPI.get(url, HttpHeaders.EMPTY);
         UpbitItem[] candles = ConvertType.stringToType(response, UpbitItem[].class);
-        cache = Arrays.asList(candles);
+        cache = new TreeSet<>(Comparator.comparing(ItemResponse::getName));
+        cache.addAll(Arrays.asList(candles));
         return cache;
     }
 
     @Override
-    public List<ItemResponse> getKrwItems() {
+    public SortedSet<ItemResponse> getKrwItems() {
         return getItems().stream()
                 .filter(ItemResponse::isKrwMarket)
-                .collect(Collectors.toList())
+                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(ItemResponse::getName))))
                 ;
     }
 
     @Override
     public void update() {
-        cache = new ArrayList<>();
+        cache = new TreeSet<>(Comparator.comparing(ItemResponse::getName));
         getItems();
     }
 }

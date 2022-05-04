@@ -2,11 +2,10 @@ package com.trading.chart.application.chart;
 
 import com.trading.chart.application.chart.request.ChartRequest;
 import com.trading.chart.application.chart.request.LinePeriod;
-import com.trading.chart.domain.chart.ChartPriceLine;
 import com.trading.chart.application.chart.response.ChartResponse;
 import com.trading.chart.application.chart.response.ChartResponses;
+import com.trading.chart.domain.chart.ChartPriceLine;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -27,10 +26,10 @@ public class UpbitChartIndicator implements ChartIndicator {
 
     private Spliterator<ChartResponse> getChartCanvas(ChartRequest request) {
         ChartResponses chartResponses = cacheUpbitChart.getWorkChart(request);
-        if (chartResponses.size() < request.forWorkCount()) {
-            return null;
+        if (chartResponses.isNotEmpty()) {
+            return chartResponses.spliterator();
         }
-        return chartResponses.spliterator();
+        return null;
     }
 
     @Override
@@ -38,7 +37,7 @@ public class UpbitChartIndicator implements ChartIndicator {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
-        if(Objects.isNull(spliterator)){
+        if (Objects.isNull(spliterator)) {
             return;
         }
         while (spliterator.tryAdvance(
@@ -59,7 +58,7 @@ public class UpbitChartIndicator implements ChartIndicator {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
-        if(Objects.isNull(spliterator)){
+        if (Objects.isNull(spliterator)) {
             return;
         }
         while (spliterator.tryAdvance(
@@ -81,7 +80,7 @@ public class UpbitChartIndicator implements ChartIndicator {
         final Queue<ChartResponse> queue = new LinkedList<>();
         int period = request.getPeriod();
         Spliterator<ChartResponse> spliterator = getChartCanvas(request);
-        if(Objects.isNull(spliterator)){
+        if (Objects.isNull(spliterator)) {
             return;
         }
         while (spliterator.tryAdvance(
@@ -105,7 +104,7 @@ public class UpbitChartIndicator implements ChartIndicator {
                         }
                         double au = ups / period;
                         double ad = downs / period;
-                        double rsi = (au / ad) / (1 + (au / ad)) * 100;
+                        double rsi = ad == 0 ? 1 : (au / ad) / (1 + (au / ad)) * 100;
                         chart.drawRsi(rsi);
                     }
                 }

@@ -10,9 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.SortedSet;
 
 /**
  * @author SeongRok.Oh
@@ -46,7 +45,7 @@ public class UpbitPostConstruct {
     }
 
     private void baseChart(UpbitUnit unit) throws InterruptedException {
-        final List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        final SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         final int sleepTime = ((maxCount / 200) + 1) * 100;
         final LocalDateTime now = LocalDateTime.now();
 

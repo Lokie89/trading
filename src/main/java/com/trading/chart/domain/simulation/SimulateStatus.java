@@ -6,6 +6,7 @@ package com.trading.chart.domain.simulation;
  */
 public enum SimulateStatus {
     WAIT,
+    READY,
     SIMULATING,
     DONE,
     ;

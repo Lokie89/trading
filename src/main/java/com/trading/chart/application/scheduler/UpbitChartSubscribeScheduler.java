@@ -8,11 +8,14 @@ import com.trading.chart.application.item.TradeItem;
 import com.trading.chart.application.message.*;
 import com.trading.chart.application.simulator.SimulateStorage;
 import com.trading.chart.application.simulator.request.SimulatorRequest;
+import com.trading.chart.domain.simulation.UpbitSimulation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Queue;
@@ -34,12 +37,15 @@ public class UpbitChartSubscribeScheduler {
     private final Chart cacheUpbitChart;
     private final TradeItem upbitTradeItem;
     private final ChartIndicator upbitChartIndicator;
-    private final Executor exchangeExecutor;
     private final SimulateStorage upbitSimulateStorage;
     private final Messenger upbitDrawChartMessenger;
+    private final Messenger upbitChartMessenger;
+    private final Messenger upbitSimulatorChartMessenger;
+    private final Messenger upbitSimulatorDrawChartMessenger;
+    private final Executor exchangeExecutor;
 
 
-    @Scheduled(cron = "0/1 * 0-2,3-23 * * *")
+    @Scheduled(cron = "0/1 * 0-2,4-23 * * *")
     public void callUpbitApiRequest() {
         final MessageClassification messageClassification = MessageClassification.UPBIT_QUOTATION_API;
         final Queue<MessageRequest> callUpbitCandleQueue = messageQueue.subscribe(MessageKey.of(messageClassification));
@@ -53,16 +59,26 @@ public class UpbitChartSubscribeScheduler {
     private void callUpbitApiOperate(MessageRequest request) {
         MessageType requestType = request.getRequestType();
         if (MessageType.CALL_API_CHART.equals(requestType)) {
-            ChartRequest chartRequest = ((UpbitChartRequest) request.getRequest());
+            UpbitChartRequest chartRequest = ((UpbitChartRequest) request.getRequest());
             log.info("CALL_API_CHART : {}", chartRequest);
-            cacheUpbitChart.caching(chartRequest);
+            try {
+                cacheUpbitChart.caching(chartRequest);
+            } catch (HttpClientErrorException e) {
+                e.printStackTrace();
+                upbitChartMessenger.send(chartRequest);
+            }
             upbitDrawChartMessenger.send(chartRequest);
         }
         if (MessageType.SIMULATE_CALL_API_CHART.equals(requestType)) {
-            ChartRequest chartRequest = ((UpbitChartRequest) request.getRequest());
-            log.info("SIMULATE_CALL_API_CHART : {}", chartRequest);
-            cacheUpbitChart.caching(chartRequest.toSimulateRequest());
-            upbitDrawChartMessenger.send(chartRequest);
+            UpbitSimulatorChartRequest chartRequest = ((UpbitSimulatorChartRequest) request.getRequest());
+            log.warn("SIMULATE_CALL_API_CHART : {}", chartRequest);
+            try {
+                cacheUpbitChart.caching(chartRequest);
+            } catch (HttpClientErrorException e) {
+                e.printStackTrace();
+                upbitSimulatorChartMessenger.send(request);
+            }
+            upbitSimulatorDrawChartMessenger.send(chartRequest);
         }
         if (MessageType.CALL_API_MARKET.equals(requestType)) {
             log.info("CALL_API_MARKET");
@@ -70,25 +86,38 @@ public class UpbitChartSubscribeScheduler {
         }
     }
 
-    @Scheduled(cron = "0/1 * 0-2,3-23 * * *")
+    @Transactional
+    @Scheduled(cron = "0/1 * 0-2,4-23 * * *")
     public void runWithThread() {
         final MessageClassification messageClassification = MessageClassification.THREAD;
         final Queue<MessageRequest> threadQueue = messageQueue.subscribe(MessageKey.of(messageClassification));
+        MessageRequest request = null;
         while (Objects.nonNull(threadQueue) && !threadQueue.isEmpty()) {
-            MessageRequest request = threadQueue.poll();
+            request = threadQueue.poll();
 //            asyncOperate(request);
-            exchangeExecutor.execute(() -> asyncOperate(request));
+            MessageRequest finalRequest = request;
+            exchangeExecutor.execute(() -> asyncOperate(finalRequest));
+        }
+        if (Objects.nonNull(request) && MessageType.SIMULATE_DRAW_CHART.equals(request.getRequestType())) {
+            final UpbitSimulatorChartRequest simulatorChartRequest = (UpbitSimulatorChartRequest) request.getRequest();
+            Long simulationId = simulatorChartRequest.getUpbitSimulationId();
+            if (upbitTradeItem.getKrwItems().last().getName().equals(simulatorChartRequest.getMarket())) {
+                log.warn("SIMULATE : READY");
+                upbitSimulateStorage.getSimulationById(simulationId).ready();
+            }
         }
     }
 
     private void asyncOperate(MessageRequest request) {
-        if (MessageType.DRAW_CHART.equals(request.getRequestType())) {
+        if (MessageType.DRAW_CHART.equals(request.getRequestType())
+                || MessageType.SIMULATE_DRAW_CHART.equals(request.getRequestType())) {
             final ChartRequest chartRequest = (ChartRequest) request.getRequest();
             final String market = chartRequest.getMarket();
             final LocalDateTime to = chartRequest.getTime();
             final UpbitUnit unit = chartRequest.getUnit();
             final int count = chartRequest.getCount();
             log.info("DRAW_CHART : {}, {}, {}, {}", market, to, unit, count);
+            // 차트 저장 로직 연관 있음
             ChartRequest drawLine240 = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWOFORTY, unit).to(to).count(count).build();
             ChartRequest drawLine120 = DrawLineUpbitChartRequest.builder(market, LinePeriod.ONETWENTY, unit).to(to).count(count).build();
             ChartRequest drawLine60 = DrawLineUpbitChartRequest.builder(market, LinePeriod.SIXTY, unit).to(to).count(count).build();
@@ -107,8 +136,9 @@ public class UpbitChartSubscribeScheduler {
         if (MessageType.SIMULATE.equals(request.getRequestType())) {
             final SimulatorRequest simulatorRequest = (SimulatorRequest) request.getRequest();
             Set<UpbitUnit> mandatoryUnits = simulatorRequest.mandatoryUnits();
-            mandatoryUnits.forEach(unit -> publishScheduler.operate(simulatorRequest.getStart(), simulatorRequest.getEnd(), unit));
-            upbitSimulateStorage.initiate(simulatorRequest);
+            log.warn("SIMULATE : initiate");
+            UpbitSimulation simulation = upbitSimulateStorage.initiate(simulatorRequest);
+            mandatoryUnits.forEach(unit -> publishScheduler.operate(simulatorRequest.getStart(), simulatorRequest.getEnd(), unit, simulation.getId()));
         }
     }
 }

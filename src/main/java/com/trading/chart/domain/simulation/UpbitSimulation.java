@@ -58,14 +58,14 @@ public class UpbitSimulation {
             joinColumns = @JoinColumn(name = "simulation_id"))
     private Set<SimulatedOrder> orderBook;
 
-    public Set<UpbitUnit> mandatoryUnits() {
-        return tradeResources.stream().map(TradeResource::getUnit).collect(Collectors.toSet());
-    }
-
     public void nextStep() {
         int ordinal = this.status.ordinal();
         ordinal++;
         this.status = SimulateStatus.values()[ordinal];
+    }
+
+    public void ready() {
+        this.status = SimulateStatus.READY;
     }
 
     public SimulatorRequest toRequest() {

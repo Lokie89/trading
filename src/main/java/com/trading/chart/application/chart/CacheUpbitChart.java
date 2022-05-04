@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
 
 /**
  * @author SeongRok.Oh
@@ -89,7 +90,7 @@ public class CacheUpbitChart implements Chart {
 
     @Override
     public List<ChartResponse> recent(LocalDateTime to) {
-        List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         List<ChartResponse> chartResponses = new ArrayList<>();
         for (ItemResponse item : items) {
             final String market = item.getName();

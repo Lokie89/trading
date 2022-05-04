@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import java.util.SortedSet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author SeongRok.Oh
@@ -25,7 +25,7 @@ public class UpbitItemTest {
     @Test
     void getItemsTest() {
         final String krwBtcMarket = "KRW-BTC";
-        List<ItemResponse> items = upbitTradeItem.getItems();
+        SortedSet<ItemResponse> items = upbitTradeItem.getItems();
         assertTrue(
                 items.stream().anyMatch(item -> item.getName().equals(krwBtcMarket))
         );

@@ -13,7 +13,8 @@ import java.util.List;
  * @since 2022/04/13
  */
 public interface SimulateStorage {
-    void initiate(SimulatorRequest request);
+    UpbitSimulation initiate(SimulatorRequest request);
     List<UpbitSimulation> getSimulationByStatus(SimulateStatus status);
+    UpbitSimulation getSimulationById(Long id);
     List<SimulatedOrderResponse> getReport(UpbitUser upbitUser);
 }

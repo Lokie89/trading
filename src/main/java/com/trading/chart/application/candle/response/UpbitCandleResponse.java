@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * market : 마켓명
@@ -106,14 +107,14 @@ public class UpbitCandleResponse implements CandleResponse {
         return UpbitChartResponse.builder()
                 .market(market)
                 .time(candleDateTimeKST)
-                .lowPrice(lowPrice)
-                .openingPrice(openingPrice)
-                .tradePrice(tradePrice)
-                .highPrice(highPrice)
-                .volume(accTradeVolume)
+                .lowPrice(Objects.isNull(lowPrice) ? 0 : lowPrice)
+                .openingPrice(Objects.isNull(openingPrice) ? 0 : openingPrice)
+                .tradePrice(Objects.isNull(tradePrice) ? 0 : tradePrice)
+                .highPrice(Objects.isNull(highPrice) ? 0 : highPrice)
+                .volume(Objects.isNull(accTradeVolume) ? 0 : accTradeVolume)
                 .unit(unit)
-                .changePrice(changePrice)
-                .changeRate(changeRate)
+                .changePrice(Objects.isNull(changePrice) ? 0 : changePrice)
+                .changeRate(Objects.isNull(changeRate) ? 0 : changeRate)
                 .build();
     }
 }

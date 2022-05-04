@@ -49,7 +49,8 @@ public class UpbitMatchRequest implements MatchRequest {
 
     @Override
     public ChartRequest toChartRequest() {
-        return SimpleUpbitChartRequest.builder(market, unit).count(matchStandard + matchRange).to(date).build();
+        LocalDateTime chartDate = unit.isNotMinuteUnit() ? date.withHour(9).withMinute(1) : date;
+        return SimpleUpbitChartRequest.builder(market, unit).count(matchStandard + matchRange).to(chartDate).build();
     }
 
     @Override

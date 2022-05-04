@@ -25,13 +25,18 @@ public class UpbitSimulateStorage implements SimulateStorage {
     private final UpbitSimulationRepository repository;
 
     @Override
-    public void initiate(SimulatorRequest request) {
-        repository.save(request.toEntity(SimulateStatus.WAIT));
+    public UpbitSimulation initiate(SimulatorRequest request) {
+        return repository.save(request.toEntity(SimulateStatus.WAIT));
     }
 
     @Override
     public List<UpbitSimulation> getSimulationByStatus(SimulateStatus status) {
         return repository.findAllByStatus(status);
+    }
+
+    @Override
+    public UpbitSimulation getSimulationById(Long id) {
+        return repository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override

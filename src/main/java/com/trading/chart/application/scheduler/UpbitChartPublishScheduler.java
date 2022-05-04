@@ -3,10 +3,12 @@ package com.trading.chart.application.scheduler;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
 import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
+import com.trading.chart.application.chart.request.UpbitSimulatorChartRequest;
 import com.trading.chart.application.chart.response.ChartResponses;
 import com.trading.chart.application.item.TradeItem;
 import com.trading.chart.application.item.response.ItemResponse;
-import com.trading.chart.application.message.*;
+import com.trading.chart.application.message.MessageType;
+import com.trading.chart.application.message.Messenger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.SortedSet;
 
 /**
  * @author SeongRok.Oh
@@ -38,18 +40,18 @@ public class UpbitChartPublishScheduler {
         upbitMarketMessenger.send(null);
     }
 
-    public void operate(LocalDateTime start, LocalDateTime end, UpbitUnit unit) {
-        final List<ItemResponse> items = upbitTradeItem.getKrwItems();
+    public void operate(LocalDateTime start, LocalDateTime end, UpbitUnit unit, Long upbitSimulationId) {
+        final SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         final int count = (int) (Duration.between(start, end).getSeconds() / 60 / unit.getMinute()) + 1;
         for (ItemResponse item : items) {
             final String market = item.getName();
-            upbitSimulatorChartMessenger.send(SimpleUpbitChartRequest.builder(market, unit).to(end).count(count + 240).build());
+            upbitSimulatorChartMessenger.send(UpbitSimulatorChartRequest.builder(market, unit, upbitSimulationId).to(end).count(count + 240).build());
         }
     }
 
     private void operateDepends(final UpbitUnit unit) {
         final int unitMinute = unit.getMinute();
-        final List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        final SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
             int count = 0;
@@ -69,7 +71,7 @@ public class UpbitChartPublishScheduler {
         updateItems();
     }
 
-    @Scheduled(cron = "1 0/1 0-2,3-23 * * *")
+    @Scheduled(cron = "1 0/1 0-2,4-23 * * *")
     public void operateChartOneMinute() {
         log.info("operate {} minutes", 1);
         final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
@@ -83,7 +85,7 @@ public class UpbitChartPublishScheduler {
 //        operateDepends(unit, REQUEST_COUNT);
 //    }
 //
-    @Scheduled(cron = "1 0/5 0-2,3-23 * * *")
+    @Scheduled(cron = "1 0/5 0-2,4-23 * * *")
     public void operateChartFiveMinute() {
         log.info("operate {} minutes", 5);
         final UpbitUnit unit = UpbitUnit.MINUTE_FIVE;
@@ -98,14 +100,14 @@ public class UpbitChartPublishScheduler {
 //        operateDepends(unit, REQUEST_COUNT);
 //    }
 //
-    @Scheduled(cron = "1 0/15 0-2,3-23 * * *")
+    @Scheduled(cron = "1 0/15 0-2,4-23 * * *")
     public void operateChartFifteenMinute() {
         log.info("operate {} minutes", 15);
         final UpbitUnit unit = UpbitUnit.MINUTE_FIFTEEN;
         operateDepends(unit);
     }
 
-    @Scheduled(cron = "1 0/30 0-2,3-23 * * *")
+    @Scheduled(cron = "1 0/30 0-2,4-23 * * *")
     public void operateChartThirtyMinute() {
         log.info("operate {} minutes", 30);
         final UpbitUnit unit = UpbitUnit.MINUTE_THIRTY;
@@ -128,7 +130,7 @@ public class UpbitChartPublishScheduler {
     }
 
     //
-    @Scheduled(cron = "1 0/1 0-2,3-23 * * *")
+    @Scheduled(cron = "1 0/1 0-2,4-23 * * *")
     public void operateChartDay() {
         log.info("operate 1 day");
         final UpbitUnit unit = UpbitUnit.DAY;
@@ -151,7 +153,7 @@ public class UpbitChartPublishScheduler {
         operateDepends(unit);
     }
 
-    @Scheduled(cron = "0 5 2 * * *")
+    @Scheduled(cron = "0 5 3 * * *")
     public void archiveChart() {
         cacheUpbitChart.archive();
         postConstruct.setUp();

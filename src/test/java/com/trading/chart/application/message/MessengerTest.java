@@ -1,6 +1,7 @@
 package com.trading.chart.application.message;
 
 import com.trading.chart.application.candle.request.UpbitUnit;
+import com.trading.chart.application.chart.Chart;
 import com.trading.chart.application.match.request.TradeStrategy;
 import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.scheduler.UpbitChartPublishScheduler;
@@ -28,7 +29,7 @@ import java.time.LocalDate;
  * @since 2022/04/07
  */
 
-@Disabled
+//@Disabled
 @ActiveProfiles("test")
 @DisplayName("메신저 테스트")
 @SpringBootTest
@@ -51,19 +52,22 @@ public class MessengerTest {
     @Autowired
     UpbitUserRepository upbitUserRepository;
 
+    @Autowired
+    Chart cacheUpbitChart;
+
     @DisplayName("시뮬레이터 메신저 테스트")
     @Test
     void simulateMessengerTest() throws InterruptedException {
-        final LocalDate start = LocalDate.of(2022, 1, 1);
-        final LocalDate end = LocalDate.of(2022, 1, 31);
-        TradeResourceResponse buyTradeResource = TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.DAY).build();
-        TradeResourceResponse sellTradeResource = TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.DAY).build();
-        UpbitUser upbitUser = upbitUserRepository.findByUpbitClient("tjdfhrdk10@naver.com").orElseThrow(RuntimeException::new);
-        SimulatorRequest request = UpbitSimulatorRequest.builder(start, end)
-                .client(upbitUser)
-                .seed(1000000)
+        UpbitUser upbitUser = upbitUserRepository.findByUpbitClient("tjdfhrdk10@naver.com").orElse(null);
+        SimulatorRequest request = UpbitSimulatorRequest.builder(
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 1)
+                )
+                .tradeResources(
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.MINUTE_FIVE).build(),
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.MINUTE_FIVE).build()
+                ).client(upbitUser)
                 .cashAtOnce(50000)
-                .tradeResources(buyTradeResource, sellTradeResource)
+                .seed(10000000)
                 .build();
 
 
@@ -107,6 +111,8 @@ public class MessengerTest {
         subscribeScheduler.runWithThread();
         // Check Chart, Simulating, Save Result, Alarm
         simulateScheduler.carry();
+
+        cacheUpbitChart.archive();
 
         Assertions.assertNotNull(upbitSimulator.getReport(upbitUser));
     }

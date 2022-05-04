@@ -18,7 +18,6 @@ import com.trading.chart.application.trader.Trader;
 import com.trading.chart.application.trader.request.UpbitAccountRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
 import com.trading.chart.domain.user.ExchangePlatform;
-import com.trading.chart.domain.user.UpbitUser;
 import com.trading.chart.domain.user.response.TradeResourceResponse;
 import com.trading.chart.repository.user.UpbitUserRepository;
 import org.junit.jupiter.api.*;
@@ -31,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 /**
  * @author SeongRok.Oh
@@ -74,7 +74,7 @@ public class SimulatorTest {
     }
 
     void drawLineBollingerRsi(UpbitUnit unit, LocalDateTime date, Integer count) {
-        List<ItemResponse> items = upbitTradeItem.getKrwItems();
+        SortedSet<ItemResponse> items = upbitTradeItem.getKrwItems();
         for (ItemResponse item : items) {
             final String market = item.getName();
             ChartRequest drawPriceLinesUpbitChartRequest = DrawLineUpbitChartRequest.builder(market, LinePeriod.TWENTY, unit).to(date).count(count).build();

@@ -44,11 +44,11 @@ public class TempController {
     @GetMapping("/simulate")
     public void simulate() {
         SimulatorRequest request = UpbitSimulatorRequest.builder(
-                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 30)
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 2)
                 )
                 .tradeResources(
-                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.DAY).build(),
-                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.DAY).build()
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, TradeStrategy.LOWER_BOLLINGERBANDS, UpbitUnit.MINUTE_FIVE).build(),
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, TradeStrategy.HIGHER_BOLLINGERBANDS, UpbitUnit.MINUTE_FIVE).build()
                 ).client(upbitUserRepository.findByUpbitClient("tjdfhrdk10@naver.com").orElse(null))
                 .cashAtOnce(50000)
                 .seed(10000000)

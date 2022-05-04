@@ -1,7 +1,6 @@
 package com.trading.chart.application.message;
 
-import com.trading.chart.application.chart.request.ChartRequest;
-import com.trading.chart.application.chart.request.SimpleUpbitChartRequest;
+import com.trading.chart.application.chart.request.UpbitSimulatorChartRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,8 @@ public class UpbitSimulatorChartMessenger implements Messenger {
 
     @Override
     public void send(Object request) {
-        ChartRequest chartRequest = (ChartRequest) request;
+        UpbitSimulatorChartRequest chartRequest = (UpbitSimulatorChartRequest) request;
+        chartRequest = chartRequest.toSimulateRequest();
         chartRequest.toMessageRequest()
                 .forEach(req ->
                         messageQueue.publish(
