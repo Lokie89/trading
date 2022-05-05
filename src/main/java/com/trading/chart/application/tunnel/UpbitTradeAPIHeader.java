@@ -52,7 +52,7 @@ public class UpbitTradeAPIHeader implements TradeAPIHeader {
             String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
             builder.withClaim("query_hash", queryHash);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            log.info("Reflection Error. {}", e);
+            log.debug("Reflection Error. {}", e);
         }
     }
 

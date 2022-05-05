@@ -41,7 +41,7 @@ public class CallAPI {
         String response = null;
         try {
             String jsonValue = Objects.nonNull(body) ? objectMapper.writeValueAsString(body) : null;
-            log.info("url : " + url + (Objects.nonNull(jsonValue) ? " body : " + jsonValue : ""));
+            log.debug("url : " + url + (Objects.nonNull(jsonValue) ? " body : " + jsonValue : ""));
             response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(jsonValue, httpHeaders), String.class).getBody();
         } catch (RuntimeException | JsonProcessingException e) {
             e.printStackTrace();

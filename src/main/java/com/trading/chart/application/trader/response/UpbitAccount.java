@@ -3,7 +3,6 @@ package com.trading.chart.application.trader.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.response.ChartResponse;
-import com.trading.chart.application.chart.response.ChartResponses;
 import com.trading.chart.application.chart.response.UpbitChartResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;

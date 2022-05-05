@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.SortedSet;
 
@@ -26,7 +27,7 @@ public class UpbitPostConstruct {
     private final Chart cacheUpbitChart;
     private static final int maxCount = 240;
 
-//    @PostConstruct
+    @PostConstruct
     public void setUp() {
         try {
             baseChart(UpbitUnit.MINUTE_ONE);
@@ -40,7 +41,7 @@ public class UpbitPostConstruct {
             baseChart(UpbitUnit.WEEK);
             baseChart(UpbitUnit.MONTH);
         } catch (InterruptedException e) {
-            log.warn("Thread Error {}", e.getMessage());
+            log.error("Thread Error {}", e.getMessage());
         }
     }
 

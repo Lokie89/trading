@@ -31,13 +31,13 @@ public class UpbitSimulateScheduler {
             OrderResponses orderBook = simulating(simulation);
             simulation.addOrderBook(orderBook);
             simulation.nextStep();
-            log.warn("SIMULATION : SIMULATING");
+            log.debug("SIMULATION : SIMULATING");
         });
     }
 
     private OrderResponses simulating(UpbitSimulation simulation) {
         simulation.nextStep();
-        log.warn("SIMULATION : DONE");
+        log.debug("SIMULATION : DONE");
         return upbitSimulator.simulate(simulation.toRequest());
     }
 

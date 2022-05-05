@@ -41,7 +41,7 @@ public class ConvertType {
                     queryElements.add(field.getName() + "=" + field.get(object));
                 }
             } catch (IllegalAccessException e) {
-                log.info("Reflection Error. {}", e);
+                log.debug("Reflection Error. {}", e);
             }
         }
 
