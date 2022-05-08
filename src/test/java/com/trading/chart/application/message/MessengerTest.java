@@ -29,7 +29,7 @@ import java.time.LocalDate;
  * @since 2022/04/07
  */
 
-//@Disabled
+@Disabled
 @ActiveProfiles("test")
 @DisplayName("메신저 테스트")
 @SpringBootTest

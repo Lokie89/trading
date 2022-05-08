@@ -35,7 +35,7 @@ public class CacheUpbitChart implements Chart {
     private final TradeItem upbitTradeItem;
 
     @Override
-    public void caching(ChartRequest request) {
+    public int caching(ChartRequest request) {
         // 실제 데이터 검증 ( 키 값에 따른 데이터가 있는지, 그 데이터에 lastTime 의 데이터가 있는지, 그 전 데이터가 count 개수 만큼 있는지 )
         ChartKey chartKey = request.getRequestKey();
         ChartResponses charts = cache.get(chartKey);
@@ -53,7 +53,9 @@ public class CacheUpbitChart implements Chart {
             apiCharts = apiCharts.substitute(request);
             charts.updateLast(apiCharts);
             charts.addAll(apiCharts);
+            return 1;
         }
+        return 0;
     }
 
     @Override

@@ -16,5 +16,5 @@ public interface Chart {
     ChartResponses getWorkChart(ChartRequest request);
     void archive();
     List<ChartResponse> recent(LocalDateTime to);
-    void caching(ChartRequest request);
+    int caching(ChartRequest request);
 }

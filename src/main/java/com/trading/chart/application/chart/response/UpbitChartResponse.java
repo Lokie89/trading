@@ -74,7 +74,7 @@ public class UpbitChartResponse implements ChartResponse {
 
     @Override
     public boolean isCreated() {
-        return Objects.nonNull(id);
+        return id != 0;
     }
 
     @Override
@@ -96,8 +96,8 @@ public class UpbitChartResponse implements ChartResponse {
     public boolean isSavable() {
         return Objects.nonNull(priceLines)
                 && priceLines.size() == 5
-                && upperBollingerBand == 0
-                && downBollingerBand == 0;
+                && upperBollingerBand != 0
+                && downBollingerBand != 0;
     }
 
     @Override

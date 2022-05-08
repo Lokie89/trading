@@ -46,11 +46,7 @@ public class UpbitChartBatchRepository {
         }
         List<ChartResponse> createCharts = savableCharts.stream().filter(chart -> !chart.isCreated()).collect(Collectors.toList());
         // Insert Batch 는 PriceLine 의 키값을 받아다 사용할수 없어서 안씀
-        createCharts.stream().map(ChartResponse::toEntity).collect(Collectors.toList()).forEach(chart->{
-            System.out.println(chart);
-            repository.save(chart);
-        });
-//        repository.saveAll();
+        repository.saveAll(createCharts.stream().map(ChartResponse::toEntity).collect(Collectors.toList()));
     }
 
 }

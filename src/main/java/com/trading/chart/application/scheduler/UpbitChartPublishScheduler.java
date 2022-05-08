@@ -36,7 +36,7 @@ public class UpbitChartPublishScheduler {
     private final Messenger upbitSimulatorChartMessenger;
 
     private void updateItems() {
-        log.debug("publish : {}", MessageType.CALL_API_MARKET);
+        log.info("publish : {}", MessageType.CALL_API_MARKET);
         upbitMarketMessenger.send(null);
     }
 
@@ -73,21 +73,21 @@ public class UpbitChartPublishScheduler {
 
     @Scheduled(cron = "1 0/1 0-2,4-23 * * *")
     public void operateChartOneMinute() {
-        log.debug("operate {} minutes", 1);
+        log.info("operate {} minutes", 1);
         final UpbitUnit unit = UpbitUnit.MINUTE_ONE;
         operateDepends(unit);
     }
 
     //    @Scheduled(cron = "1 0/3 * * * *")
 //    public void operateChartThreeMinute() {
-//        log.debug("operate {} minutes", 3);
+//        log.info("operate {} minutes", 3);
 //        final UpbitUnit unit = UpbitUnit.MINUTE_THREE;
 //        operateDepends(unit, REQUEST_COUNT);
 //    }
 //
     @Scheduled(cron = "1 0/5 0-2,4-23 * * *")
     public void operateChartFiveMinute() {
-        log.debug("operate {} minutes", 5);
+        log.info("operate {} minutes", 5);
         final UpbitUnit unit = UpbitUnit.MINUTE_FIVE;
         operateDepends(unit);
     }
@@ -95,28 +95,28 @@ public class UpbitChartPublishScheduler {
     //
 //    @Scheduled(cron = "1 0/10 * * * *")
 //    public void operateChartTenMinute() {
-//        log.debug("operate {} minutes", 10);
+//        log.info("operate {} minutes", 10);
 //        final UpbitUnit unit = UpbitUnit.MINUTE_TEN;
 //        operateDepends(unit, REQUEST_COUNT);
 //    }
 //
     @Scheduled(cron = "1 0/15 0-2,4-23 * * *")
     public void operateChartFifteenMinute() {
-        log.debug("operate {} minutes", 15);
+        log.info("operate {} minutes", 15);
         final UpbitUnit unit = UpbitUnit.MINUTE_FIFTEEN;
         operateDepends(unit);
     }
 
     @Scheduled(cron = "1 0/30 0-2,4-23 * * *")
     public void operateChartThirtyMinute() {
-        log.debug("operate {} minutes", 30);
+        log.info("operate {} minutes", 30);
         final UpbitUnit unit = UpbitUnit.MINUTE_THIRTY;
         operateDepends(unit);
     }
 
-    @Scheduled(cron = "1 0 0/1 * * *")
+    @Scheduled(cron = "1 0 0-2,4-23 * * *")
     public void operateChartSixtyMinute() {
-        log.debug("operate {} minutes", 60);
+        log.info("operate {} minutes", 60);
         final UpbitUnit unit = UpbitUnit.MINUTE_SIXTY;
         operateDepends(unit);
     }
@@ -124,7 +124,7 @@ public class UpbitChartPublishScheduler {
     //
     @Scheduled(cron = "1 0 0/4 * * *")
     public void operateChartTwoFortyMinute() {
-        log.debug("operate {} minutes", 240);
+        log.info("operate {} minutes", 240);
         final UpbitUnit unit = UpbitUnit.MINUTE_TWOFORTY;
         operateDepends(unit);
     }
@@ -132,7 +132,7 @@ public class UpbitChartPublishScheduler {
     //
     @Scheduled(cron = "1 0/1 0-2,4-23 * * *")
     public void operateChartDay() {
-        log.debug("operate 1 day");
+        log.info("operate 1 day");
         final UpbitUnit unit = UpbitUnit.DAY;
         operateDepends(unit);
     }
@@ -140,7 +140,7 @@ public class UpbitChartPublishScheduler {
     //
     @Scheduled(cron = "1 0 9 * * *")
     public void operateChartWeek() {
-        log.debug("operate 1 week");
+        log.info("operate 1 week");
         final UpbitUnit unit = UpbitUnit.WEEK;
         operateDepends(unit);
     }
@@ -148,7 +148,7 @@ public class UpbitChartPublishScheduler {
     //
     @Scheduled(cron = "1 0 9 * * *")
     public void operateChartMonth() {
-        log.debug("operate 1 month");
+        log.info("operate 1 month");
         final UpbitUnit unit = UpbitUnit.MONTH;
         operateDepends(unit);
     }
