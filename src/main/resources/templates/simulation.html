@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1px solid" id="simulation">
+    <tr>
+        <th></th>
+        <th>요청날짜</th>
+        <th>시작날짜</th>
+        <th>종료날짜</th>
+        <th>시드머니</th>
+        <th>한번에</th>
+        <th>타입</th>
+        <th>전략</th>
+        <th>유닛</th>
+        <th>타입</th>
+        <th>전략</th>
+        <th>유닛</th>
+    </tr>
+</table>
+<table border="1px solid" id="orderBook">
+</table>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    let simulated;
+    $(function () {
+        $.ajax({
+            method: 'get',
+            url: '/simulated',
+            statusCode: {
+                200: (simulations) => {
+                    simulated = simulations;
+                    let trs = '';
+                    simulations.forEach((simulation) => {
+                        trs += '<tr>'
+                        trs += '<td><input type="radio" name="simulation" value="' + simulation.id + '"/></td>'
+                        trs += '<td>' + simulation.requestDate + '</td>'
+                        trs += '<td>' + simulation.start + '</td>'
+                        trs += '<td>' + simulation.end + '</td>'
+                        trs += '<td>' + simulation.seed + '</td>'
+                        trs += '<td>' + simulation.cashAtOnce + '</td>'
+                        trs += '<td>' + simulation.tradeResources[0].tradeType + '</td>'
+                        trs += '<td>' + simulation.tradeResources[0].strategy + '</td>'
+                        trs += '<td>' + simulation.tradeResources[0].unit + '</td>'
+                        trs += '<td>' + simulation.tradeResources[1].tradeType + '</td>'
+                        trs += '<td>' + simulation.tradeResources[1].strategy + '</td>'
+                        trs += '<td>' + simulation.tradeResources[1].unit + '</td>'
+                        trs += '</tr>'
+                    })
+
+                    $('#simulation').append(trs);
+                    $('input:radio[name=simulation]').eq(0).attr("checked", true);
+                    changeSimulation($('input:radio[name=simulation]').eq(0).val());
+                }
+            }
+        })
+
+        $('#simulation').on('change', () => {
+            changeSimulation($('input[name="simulation"]:checked').val());
+        })
+    })
+
+    function changeSimulation(id) {
+        let cash = 0;
+        let trs = '<tr>\n' +
+            '        <th>Side</th>\n' +
+            '        <th>Price</th>\n' +
+            '        <th>Market</th>\n' +
+            '        <th>Volume</th>\n' +
+            '        <th>Time</th>\n' +
+            '        <th>Trade</th>\n' +
+            '    </tr>';
+
+        simulated.forEach((simulation) => {
+            if (simulation.id === Number(id)) {
+                let orderBooks = simulation.orderBooks;
+                orderBooks.forEach((orderBook) => {
+                    let trade = orderBook.price * orderBook.volume;
+                    trs += '<tr>'
+                    trs += '<td>' + orderBook.side + '</td>'
+                    trs += '<td>' + orderBook.price + '</td>'
+                    trs += '<td>' + orderBook.market + '</td>'
+                    trs += '<td>' + orderBook.volume + '</td>'
+                    trs += '<td>' + orderBook.orderTime + '</td>'
+                    trs += '<td>' + orderBook.price * orderBook.volume + '</td>'
+                    trs += '</tr>'
+                    if(orderBook.side === 'BUY'){
+                        cash -= trade
+                    }else{
+                        cash += trade
+                    }
+                })
+            }
+        })
+        $('#orderBook').html(trs);
+        $('#orderBook').prepend('<tr><td></td><td></td><td></td><td></td><td>'+cash+'</td></tr>')
+    }
+</script>
+</body>
+</html>

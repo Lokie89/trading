@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +41,7 @@ public class UpbitSimulateStorage implements SimulateStorage {
     @Override
     public List<SimulatedOrderResponse> getReport(UpbitUser upbitUser) {
         return repository.findFirstByUserOrderByRequestDateDesc(upbitUser).getOrderBook().stream()
-                .map(SimulatedOrder::toDto)
+                .map(SimulatedOrder::toResponse)
                 .collect(Collectors.toList())
                 ;
     }

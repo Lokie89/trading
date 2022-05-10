@@ -29,7 +29,7 @@ public class SimulatedOrder {
     private Double volume;
     private LocalDateTime orderTime;
 
-    public SimulatedOrderResponse toDto() {
+    public SimulatedOrderResponse toResponse() {
         return SimulatedOrderResponse.builder()
                 .side(side)
                 .price(price)

@@ -12,6 +12,13 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+  thymeleaf:
+    prefix: classpath:templates/
+    check-template: true
+    suffix: .html
+    mode: HTML5
+    cache: false
+    template-resolver-order: 0
 logging:
   level:
     org:

@@ -1,12 +1,11 @@
 package com.trading.chart.domain.simulation;
 
-import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.simulator.request.SimulatorRequest;
 import com.trading.chart.application.simulator.request.UpbitSimulatorRequest;
 import com.trading.chart.domain.user.TradeResource;
 import com.trading.chart.domain.user.UpbitUser;
-import com.trading.chart.domain.user.User;
+import com.trading.chart.infra.simulation.response.UpbitSimulationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +14,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,6 +53,7 @@ public class UpbitSimulation {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "simulate_order_book",
             joinColumns = @JoinColumn(name = "simulation_id"))
+    @OrderBy("orderTime")
     private Set<SimulatedOrder> orderBook;
 
     public void nextStep() {
@@ -79,7 +77,19 @@ public class UpbitSimulation {
 
     public void addOrderBook(OrderResponses orderResponses) {
         orderBook = new HashSet<>(orderResponses.toEntity());
+    }
 
+    public UpbitSimulationResponse toResponse() {
+        return UpbitSimulationResponse.builder()
+                .id(id)
+                .requestDate(requestDate)
+                .start(start)
+                .end(end)
+                .seed(seed)
+                .cashAtOnce(cashAtOnce)
+                .tradeResources(tradeResources.stream().map(TradeResource::toDto).collect(Collectors.toList()))
+                .orderBooks(orderBook.stream().map(SimulatedOrder::toResponse).collect(Collectors.toList()))
+                .build();
     }
 
 }

@@ -27,7 +27,7 @@ public class UpbitPostConstruct {
     private final Chart cacheUpbitChart;
     private static final int maxCount = 240;
 
-    @PostConstruct
+//    @PostConstruct
     public void setUp() {
         try {
             baseChart(UpbitUnit.MINUTE_ONE);
