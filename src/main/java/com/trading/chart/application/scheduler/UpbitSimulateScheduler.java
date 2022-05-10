@@ -24,7 +24,7 @@ public class UpbitSimulateScheduler {
     private final Simulator upbitSimulator;
 
     @Transactional
-    @Scheduled(cron = "0 */3 0-2,4-23 * * *")
+    @Scheduled(cron = "0 */1 0-2,4-23 * * *")
     public void carry() {
         List<UpbitSimulation> waitingList = upbitSimulator.getSimulationByStatus(SimulateStatus.READY);
         waitingList.forEach(simulation -> {

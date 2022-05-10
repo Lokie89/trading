@@ -42,14 +42,14 @@ public class SimulatorController {
     private final Simulator upbitSimulator;
 
     @GetMapping("/simulate")
-    public void simulate(@Valid SimulateRequest simulateRequest) {
+    public @ResponseBody void simulate(@Valid SimulateRequest simulateRequest) {
         UpbitUser upbitUser = upbitUserRepository.findByUpbitClient("tjdfhrdk10@naver.com").orElse(null);
         SimulatorRequest request = UpbitSimulatorRequest.builder(
                         LocalDate.parse(simulateRequest.getStart(), DateTimeFormatter.ISO_DATE), LocalDate.parse(simulateRequest.getEnd(), DateTimeFormatter.ISO_DATE)
                 )
                 .tradeResources(
                         TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.BUY, simulateRequest.getBuyStrategy(), simulateRequest.getBuyUnit()).build(),
-                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, simulateRequest.getBuyStrategy(), simulateRequest.getSellUnit()).build()
+                        TradeResourceResponse.builder(ExchangePlatform.UPBIT, TradeType.SELL, simulateRequest.getSellStrategy(), simulateRequest.getSellUnit()).build()
                 ).client(upbitUser)
                 .cashAtOnce(simulateRequest.getCashAtOnce())
                 .seed(simulateRequest.getSeed())
