@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 
 /**
@@ -46,19 +47,27 @@ public class UpbitExchange implements Exchange {
 
     // TODO : abstract 메서드로 나눠보기
     private List<OrderResponse> exchangeMarket(UserResponse user, String market, LocalDateTime date, AccountResponses accounts) {
-        List<OrderResponse> orderResponseList = new ArrayList<>();
+        List<OrderResponse> orderResponses = new ArrayList<>();
         TradeRequest buyTradeRequest = user.toTradeRequest(market, date, TradeType.BUY, accounts);
         if (user.isTradeStatus(buyTradeRequest) && user.isAvailableTrade() && user.isLimited()) {
-            orderResponseList.add(upbitTrader.trade(buyTradeRequest));
+            OrderResponse orderResponse = upbitTrader.trade(buyTradeRequest);
+            if (Objects.nonNull(orderResponse)) {
+                user.apply(orderResponse);
+                orderResponses.add(orderResponse);
+            }
         }
 
         TradeRequest sellTradeRequest = user.toTradeRequest(market, date, TradeType.SELL, accounts);
         if (user.isTradeStatus(sellTradeRequest) && accounts.stream()
                 .filter(account -> market.replace("KRW-", "").equals(account.getCurrency()))
                 .anyMatch(AccountResponse::isOwn)) {
-            orderResponseList.add(upbitTrader.trade(sellTradeRequest));
+            OrderResponse orderResponse = upbitTrader.trade(sellTradeRequest);
+            if (Objects.nonNull(orderResponse)) {
+                user.apply(orderResponse);
+                orderResponses.add(orderResponse);
+            }
         }
-        return orderResponseList;
+        return orderResponses;
     }
 
 }

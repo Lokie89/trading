@@ -73,31 +73,35 @@
             '        <th>Volume</th>\n' +
             '        <th>Time</th>\n' +
             '        <th>Trade</th>\n' +
+            '        <th>Remain</th>\n' +
             '    </tr>';
 
         simulated.forEach((simulation) => {
             if (simulation.id === Number(id)) {
-                let orderBooks = simulation.orderBooks;
-                orderBooks.forEach((orderBook) => {
-                    let trade = orderBook.price * orderBook.volume;
-                    trs += '<tr>'
-                    trs += '<td>' + orderBook.side + '</td>'
-                    trs += '<td>' + orderBook.price + '</td>'
-                    trs += '<td>' + orderBook.market + '</td>'
-                    trs += '<td>' + orderBook.volume + '</td>'
-                    trs += '<td>' + orderBook.orderTime + '</td>'
-                    trs += '<td>' + orderBook.price * orderBook.volume + '</td>'
-                    trs += '</tr>'
-                    if(orderBook.side === 'BUY'){
+                let orderBook = simulation.orderBook;
+                cash += simulation.seed;
+                orderBook.forEach((order) => {
+                    let trade = Math.round(order.price * order.volume);
+                    if (order.side === 'BUY') {
                         cash -= trade
-                    }else{
+                    } else {
                         cash += trade
                     }
+                    trs += '<tr><td style="background-color: '
+                    trs += order.side === 'BUY' ? 'red"' : 'blue"'
+                    trs += '>' + order.side + '</td>'
+                    trs += '<td>' + order.price + '</td>'
+                    trs += '<td>' + order.market + '</td>'
+                    trs += '<td>' + order.volume + '</td>'
+                    trs += '<td>' + order.orderTime + '</td>'
+                    trs += '<td>' + trade + '</td>'
+                    trs += '<td>' + cash + '</td>'
+                    trs += '</tr>'
                 })
             }
         })
         $('#orderBook').html(trs);
-        $('#orderBook').prepend('<tr><td></td><td></td><td></td><td></td><td>'+cash+'</td></tr>')
+        $('#orderBook').prepend('<tr><td></td><td></td><td></td><td></td><td>' + cash + '</td><td></td></tr>')
     }
 </script>
 </body>

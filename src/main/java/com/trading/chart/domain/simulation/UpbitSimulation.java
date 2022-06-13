@@ -1,8 +1,10 @@
 package com.trading.chart.domain.simulation;
 
+import com.trading.chart.application.order.request.TradeType;
 import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.simulator.request.SimulatorRequest;
 import com.trading.chart.application.simulator.request.UpbitSimulatorRequest;
+import com.trading.chart.application.simulator.response.SimulatedOrderResponse;
 import com.trading.chart.domain.user.TradeResource;
 import com.trading.chart.domain.user.UpbitUser;
 import com.trading.chart.infra.simulation.response.UpbitSimulationResponse;
@@ -15,6 +17,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,6 +83,12 @@ public class UpbitSimulation {
     }
 
     public UpbitSimulationResponse toResponse() {
+        List<SimulatedOrderResponse> orderBookResponse = orderBook.stream().map(SimulatedOrder::toResponse).collect(Collectors.toList());
+        List<SimulatedOrderResponse> sellOrderBooks = orderBookResponse.stream().filter(order -> TradeType.SELL.equals(order.getSide())).collect(Collectors.toList());
+        List<SimulatedOrderResponse> buyOrderBooks = orderBookResponse.stream().filter(order -> TradeType.BUY.equals(order.getSide()) && sellOrderBooks.contains(order)).collect(Collectors.toList());
+
+
+
         return UpbitSimulationResponse.builder()
                 .id(id)
                 .requestDate(requestDate)
@@ -88,7 +97,7 @@ public class UpbitSimulation {
                 .seed(seed)
                 .cashAtOnce(cashAtOnce)
                 .tradeResources(tradeResources.stream().map(TradeResource::toDto).collect(Collectors.toList()))
-                .orderBooks(orderBook.stream().map(SimulatedOrder::toResponse).collect(Collectors.toList()))
+                .orderBook(orderBookResponse)
                 .build();
     }
 

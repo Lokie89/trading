@@ -16,11 +16,11 @@ import java.util.Objects;
  * @author SeongRok.Oh
  * @since 2022/02/02
  */
+@Getter
 public class TradeResourceResponse {
     private final ExchangePlatform platform;
     private final TradeType tradeType;
     private final TradeStrategy strategy;
-    @Getter
     private final UpbitUnit unit;
     private final Integer matchStandard;
     private final Integer matchRange;

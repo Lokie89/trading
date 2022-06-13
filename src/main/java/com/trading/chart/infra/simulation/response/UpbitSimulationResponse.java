@@ -1,5 +1,6 @@
 package com.trading.chart.infra.simulation.response;
 
+import com.trading.chart.application.simulator.response.SimulatedOrderGatheredResponse;
 import com.trading.chart.application.simulator.response.SimulatedOrderResponse;
 import com.trading.chart.domain.user.response.TradeResourceResponse;
 import lombok.AllArgsConstructor;
@@ -25,5 +26,6 @@ public class UpbitSimulationResponse {
     private Integer seed;
     private Integer cashAtOnce;
     private List<TradeResourceResponse> tradeResources;
-    private List<SimulatedOrderResponse> orderBooks;
+    private List<SimulatedOrderResponse> orderBook;
+    private List<SimulatedOrderGatheredResponse> gathered;
 }

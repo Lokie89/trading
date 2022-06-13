@@ -1,6 +1,7 @@
 package com.trading.chart.domain.user.response;
 
 import com.trading.chart.application.order.request.TradeType;
+import com.trading.chart.application.order.response.OrderResponse;
 import com.trading.chart.application.trade.request.TradeRequest;
 import com.trading.chart.application.trade.request.UpbitTradeRequest;
 import com.trading.chart.application.trader.response.AccountResponses;
@@ -71,6 +72,11 @@ public class UpbitUserResponse implements UserResponse {
     @Override
     public Integer minimumOfTradeResource() {
         return tradeResources.stream().mapToInt(resource -> resource.getUnit().getMinute()).min().orElse(1);
+    }
+
+    @Override
+    public void apply(OrderResponse order) {
+        accounts.apply(order);
     }
 
     public static Builder builder() {

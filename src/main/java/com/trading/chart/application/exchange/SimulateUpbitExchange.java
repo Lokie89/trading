@@ -51,6 +51,7 @@ public class SimulateUpbitExchange implements Exchange {
         if (user.isTradeStatus(buyTradeRequest) && user.isAvailableTrade() && user.isLimited()) {
             OrderResponse orderResponse = simulateUpbitTrader.trade(buyTradeRequest);
             if (Objects.nonNull(orderResponse)) {
+                user.apply(orderResponse);
                 orderResponses.add(orderResponse);
             }
         }
@@ -62,6 +63,7 @@ public class SimulateUpbitExchange implements Exchange {
                 .anyMatch(AccountResponse::isOwn)) {
             OrderResponse orderResponse = simulateUpbitTrader.trade(sellTradeRequest);
             if (Objects.nonNull(orderResponse)) {
+                user.apply(orderResponse);
                 orderResponses.add(orderResponse);
             }
         }

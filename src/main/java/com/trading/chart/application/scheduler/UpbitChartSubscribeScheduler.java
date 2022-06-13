@@ -66,6 +66,7 @@ public class UpbitChartSubscribeScheduler {
                 useApi = cacheUpbitChart.caching(chartRequest);
             } catch (HttpClientErrorException e) {
                 e.printStackTrace();
+                log.info("Reload : {} {} {} {}", chartRequest.getMarket(), chartRequest.getTime(), chartRequest.getUnit(), chartRequest.getCount());
                 upbitChartMessenger.send(chartRequest);
             }
             upbitDrawChartMessenger.send(chartRequest);
@@ -77,7 +78,8 @@ public class UpbitChartSubscribeScheduler {
                 useApi = cacheUpbitChart.caching(chartRequest);
             } catch (HttpClientErrorException e) {
                 e.printStackTrace();
-                upbitSimulatorChartMessenger.send(request);
+                log.info("Reload : {} {} {} {}", chartRequest.getMarket(), chartRequest.getTime(), chartRequest.getUnit(), chartRequest.getCount());
+                upbitSimulatorChartMessenger.send(chartRequest);
             }
             upbitSimulatorDrawChartMessenger.send(chartRequest);
         }
