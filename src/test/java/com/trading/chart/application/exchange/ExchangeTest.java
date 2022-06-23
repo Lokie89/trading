@@ -3,33 +3,14 @@ package com.trading.chart.application.exchange;
 import com.trading.chart.application.candle.request.UpbitUnit;
 import com.trading.chart.application.chart.Chart;
 import com.trading.chart.application.chart.ChartIndicator;
-import com.trading.chart.application.chart.request.ChartRequest;
-import com.trading.chart.application.chart.request.DrawBollingerBandsUpbitChartRequest;
-import com.trading.chart.application.chart.request.DrawLineUpbitChartRequest;
-import com.trading.chart.application.chart.request.LinePeriod;
 import com.trading.chart.application.item.TradeItem;
-import com.trading.chart.application.item.response.ItemResponse;
-import com.trading.chart.application.match.request.TradeStrategy;
-import com.trading.chart.application.order.request.TradeType;
-import com.trading.chart.application.order.response.OrderResponses;
 import com.trading.chart.application.trader.Trader;
-import com.trading.chart.application.trader.request.UpbitAccountRequest;
-import com.trading.chart.application.trader.response.AccountResponses;
-import com.trading.chart.application.trader.response.UpbitAccount;
-import com.trading.chart.domain.user.ExchangePlatform;
-import com.trading.chart.domain.user.response.TradeResourceResponse;
-import com.trading.chart.domain.user.response.UpbitUserResponse;
 import com.trading.chart.repository.user.UpbitUserRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author SeongRok.Oh
